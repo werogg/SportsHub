@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "231776314396",
+    "firebase_url": "https://sportshubproject.firebaseio.com",
+    "project_id": "sportshubproject",
+    "storage_bucket": "sportshubproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:231776314396:android:e683f52f5bfe9c1884abd9",
+        "android_client_info": {
+          "package_name": "edu.ub.sportshub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "231776314396-08ueeulltr0o9kvogm18630p6lupfjer.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo67TDE9I37bqxon8k9NS6TaI_p71DVPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "231776314396-08ueeulltr0o9kvogm18630p6lupfjer.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
