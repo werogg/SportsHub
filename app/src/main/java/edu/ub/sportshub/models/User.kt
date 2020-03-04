@@ -1,4 +1,4 @@
-package edu.ub.sportshub.account
+package edu.ub.sportshub.models
 
 class User(
     username: String,
