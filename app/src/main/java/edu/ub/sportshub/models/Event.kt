@@ -15,13 +15,14 @@ import java.util.*
  *  @property deleted indicates if the event is visible (non-public visible).
  *  @constructor Creates a full set up event.
  */
-class Event (creatorUid : String,
-             title: String,
-             description : String,
-             eventImages : MutableList<String>,
-             startEventDate : Calendar,
-             creationDate : Calendar,
-             deleted : Boolean
+class Event(
+    creatorUid: String,
+    title: String,
+    description: String,
+    eventImages: MutableList<String>,
+    startEventDate: Date,
+    creationDate: Date,
+    deleted: Boolean
             ) {
 
     private var creatorUid : String = creatorUid
@@ -47,13 +48,13 @@ class Event (creatorUid : String,
             field = value
         }
 
-    private var startEventDate : Calendar = startEventDate
+    private var startEventDate : Date = startEventDate
         get() = field
         set(value) {
             field = value
         }
 
-    private var creationDate : Calendar = creationDate
+    private var creationDate : Date = creationDate
         get() = field
         set(value) {
             field = value
