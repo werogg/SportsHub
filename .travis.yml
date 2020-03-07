@@ -40,4 +40,4 @@ before_script: >
   "system-images;android-21;default;armeabi-v7a"
 script:
     # Build the library + run unit tests, run device tests, build the test app
-    - ./gradlew jobdispatcher:build testapp:assemble
+    - ./gradlew jobdispatcher:build app:assemble
