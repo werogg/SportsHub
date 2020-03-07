@@ -23,11 +23,9 @@ android:
     # https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943
     - tools
     - tools
-before_script:
-  - cp app/google-services.json proguard-tests/google-services.json
 script:
   - ./gradlew clean
-  - ./gradlew assembleDebug proguard-tests:build check
+  - ./gradlew assembleDebug check
 after_success: ./scripts/artifactory.sh
 after_failure:
   # tests
