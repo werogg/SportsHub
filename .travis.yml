@@ -1,35 +1,43 @@
+# https://docs.travis-ci.com/user/languages/android
 language: android
 jdk: oraclejdk8
-sudo: required # See https://github.com/travis-ci/travis-ci/issues/5582
+# Container builds don't have enough memory to reliably finish without being
+# killed, so pretend sudo is required so we don't use the container infra.
+# See: https://github.com/travis-ci/travis-ci/issues/5582
+sudo: required
+
 env:
- global:
- - ANDROID_API=24
- - EMULATOR_API=21
- - ANDROID_BUILD_TOOLS=24.0.2
- - ADB_INSTALL_TIMEOUT=5 # minutes
-licenses:
- - android-sdk-preview-license-.+
- - android-sdk-license-.+
- - google-gdk-license-.+
+    global:
+        - ADB_INSTALL_TIMEOUT=10 # Default is 2 minutes, bump to 10
+
+# "avoid uploading the cache after every build"
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+    - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+
 cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
+    directories:
+        - $HOME/.gradle/caches/
+        - $HOME/.gradle/wrapper/
+        - $HOME/.android/build-cache
+
 before_install:
   - mkdir "$ANDROID_HOME/licenses" || true
-  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
-  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-  - chmod +x gradlew
-  - ./gradlew dependencies || true
+  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
+  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de7af1a06de9f4b1727b84351f2910" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+
 android:
   components:
     # https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943
     - tools
     - tools
 
+# Download emulator images: https://developer.android.com/studio/command-line/sdkmanager.html
+before_script: >
+  echo y | ${ANDROID_HOME}tools/bin/sdkmanager --channel=3
+  "system-images;android-16;default;armeabi-v7a" "system-images;android-17;default;armeabi-v7a"
+  "system-images;android-18;default;armeabi-v7a" "system-images;android-19;default;armeabi-v7a"
+  "system-images;android-21;default;armeabi-v7a"
 script:
-  - "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
+    # Build the library + run unit tests, run device tests, build the test app
+    - ./gradlew jobdispatcher:build testapp:assemble
