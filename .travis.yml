@@ -23,6 +23,8 @@ android:
     # https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943
     - tools
     - tools
+before_install:
+ - chmod +x gradlew
 script:
   - ./gradlew clean
   - ./gradlew assembleDebug check
