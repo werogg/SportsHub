@@ -22,6 +22,6 @@ class EventUnitTest {
      */
     @Test
     fun isCompleted_isCorrect() {
-        assertEquals(true, event.isCompleted())
+        assertEquals(false, event.isCompleted())
     }
 }
