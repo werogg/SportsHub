@@ -4,6 +4,7 @@ class User(
     username: String,
     fullname: String,
     biography: String,
+    birthDate: String,
     mail: String,
     profilePicture: String,
     uid: String,
@@ -21,6 +22,11 @@ class User(
             field = value
         }
     private var biography : String = biography
+        get() = field
+        set(value) {
+            field = value
+        }
+    private var birthDate : String = birthDate
         get() = field
         set(value) {
             field = value
