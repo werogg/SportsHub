@@ -5,51 +5,54 @@ class User(
     fullname: String,
     biography: String,
     birthDate: String,
-    mail: String,
+    email: String,
     profilePicture: String,
     uid: String,
     banned: Boolean
 ) {
-
     private var username : String = username
-        get() = field
-        set(value) {
-            field = value
-        }
     private var fullname : String = fullname
-        get() = field
-        set(value) {
-            field = value
-        }
     private var biography : String = biography
-        get() = field
-        set(value) {
-            field = value
-        }
     private var birthDate : String = birthDate
-        get() = field
-        set(value) {
-            field = value
-        }
-    private var mail : String = mail
-        get() = field
-        set(value) {
-            field = value
-        }
+    private var email : String = email
     private var profilePicture : String = profilePicture
-        get() = field
-        set(value) {
-            field = value
-        }
     private var uid : String = uid
-        get() = field
-        set(value) {
-            field = value
-        }
     private var banned : Boolean = banned
-        get() = field
-        set(value) {
-            field = value
-        }
+
+    constructor() : this(
+        "", "", "", "", "", "", "", false
+    )
+
+    fun getUsername() : String {
+        return username
+    }
+
+    fun getFullname() : String {
+        return fullname
+    }
+
+    fun getBiography() : String {
+        return biography
+    }
+
+    fun getBirthdate() : String {
+        return birthDate
+    }
+
+    fun getMail() : String {
+        return email
+    }
+
+    fun getProfilePicture() : String {
+        return profilePicture
+    }
+
+    fun getUid() : String {
+        return uid
+    }
+
+    fun isBanned() : Boolean {
+        return banned
+    }
 
 }
