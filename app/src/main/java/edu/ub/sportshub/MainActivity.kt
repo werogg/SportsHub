@@ -1,24 +1,32 @@
 package edu.ub.sportshub
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import edu.ub.sportshub.auth.login.LoginActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
-import edu.ub.sportshub.helpers.StoreDatabaseHelper
-import edu.ub.sportshub.models.User
+import edu.ub.sportshub.home.HomeActivity
 
 class MainActivity : AppCompatActivity() {
 
+    private val authDatabaseHelper = AuthDatabaseHelper()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_login)
 
-        //Las dos clases del LogIn al manifest, y cambiar el theme a notoolbar.
-        val login = new Intent(this,LoginIn::class.java)
-        startActivity(login)
+        // Define intent to RegisterActivity
+        var intent = Intent(this, HomeActivity::class.java)
+
+        // If user is not logged re-define intent to login
+        if (!authDatabaseHelper.isUserLogged()) {
+            intent = Intent(this, LoginActivity::class.java)
+        }
+
+        startActivity(intent)
     }
 
+    /*
     fun registerTestButton(view : View) {
         var textView = findViewById<TextView>(R.id.textView)
         var authDatabaseHelper = AuthDatabaseHelper()
@@ -44,5 +52,6 @@ class MainActivity : AppCompatActivity() {
             }
 
     }
+    */
 
 }

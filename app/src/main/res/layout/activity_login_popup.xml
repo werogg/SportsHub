@@ -28,11 +28,12 @@
         android:id="@+id/txt_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="56dp"
+        android:autofillHints=""
         android:ems="10"
-        android:inputType="textPersonName"
+        android:hint="@string/txt_forgot_mail_hint"
+        android:inputType="textWebEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_forgotpopup" />
 
@@ -40,14 +41,15 @@
         android:id="@+id/btn_forgotpopup"
         android:layout_width="146dp"
         android:layout_height="70dp"
-        android:layout_marginBottom="216dp"
-        android:text="@string/btn_forgotpopup"
         android:background="@drawable/bnt_login"
+        android:text="@string/btn_forgotpopup"
         android:textColor="@drawable/btn_letr"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_email"
+        app:layout_constraintVertical_bias="0.333" />
 
     <Button
         android:id="@+id/btn_back"
@@ -56,8 +58,8 @@
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginBottom="36dp"
-        android:text="@string/btn_volver"
         android:background="@drawable/bnt_login"
+        android:text="@string/btn_back"
         android:textColor="@drawable/btn_letr"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
