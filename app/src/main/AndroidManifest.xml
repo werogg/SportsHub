@@ -27,7 +27,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:noHistory="true" />
         <activity
-            android:name=".auth.login.LoginPopupActivity"
+            android:name=".auth.login.LoginForgotPasswordActivity"
             android:label="@string/title_activity_login_popup"
             android:theme="@style/AppTheme.NoActionBar" />
 

@@ -70,4 +70,8 @@ class AuthDatabaseHelper : DatabaseHelper() {
     fun getCurrentUser(): FirebaseUser? {
         return mFirebaseAuth.currentUser
     }
+
+    fun sendPasswordResetEmail(email : String) {
+        mFirebaseAuth.sendPasswordResetEmail(email)
+    }
 }

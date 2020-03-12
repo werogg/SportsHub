@@ -52,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
      * Start intent to go to forgot password activity
      */
     private fun onForgotPasswordButton() {
-        val popupIntent = Intent(this, LoginPopupActivity::class.java);
+        val popupIntent = Intent(this, LoginForgotPasswordActivity::class.java);
         startActivity(popupIntent)
     }
 
