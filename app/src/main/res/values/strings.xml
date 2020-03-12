@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">SportsHub</string>
+    <string name="app_name">MyLogin</string>
+    <string name="btn_login">LOG IN</string>
+    <string name="btn_signup">SIGN UP</string>
+    <string name="txt_forgot">Has olvidado tu contraseña?</string>
+    <string name="txt_user">    USUARI</string>
+    <string name="txt_pass">    PASSWORD</string>
+    <string name="btn_forgotpopup">ENVIAR</string>
+    <string name="btn_volver">VOLVER</string>
+    <string name="txt_forgotpopup">Introduce la cuenta de correo eléctronico asociada a esta cuenta, se le enviará un correo de recuperación</string>
 </resources>

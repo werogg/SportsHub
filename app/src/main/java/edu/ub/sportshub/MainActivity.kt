@@ -13,6 +13,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //Las dos clases del LogIn al manifest, y cambiar el theme a notoolbar.
+        val login = new Intent(this,LoginIn::class.java)
+        startActivity(login)
     }
 
     fun registerTestButton(view : View) {
