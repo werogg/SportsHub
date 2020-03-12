@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseUser
 import edu.ub.sportshub.MainActivity
 import edu.ub.sportshub.models.User
 
@@ -46,6 +47,8 @@ class AuthDatabaseHelper : DatabaseHelper() {
                         false
                     )
                     mStoreDatabaseHelper.storeUser(newUser)
+                    mFirebaseAuth.currentUser!!.sendEmailVerification()
+                    signOut()
                 }
             }
     }
@@ -58,5 +61,13 @@ class AuthDatabaseHelper : DatabaseHelper() {
         mFirebaseAuth.signOut()
         val intent = Intent(appCompatActivity, MainActivity::class.java)
         appCompatActivity.startActivity(intent)
+    }
+
+    fun signOut()  {
+        mFirebaseAuth.signOut()
+    }
+
+    fun getCurrentUser(): FirebaseUser? {
+        return mFirebaseAuth.currentUser
     }
 }

@@ -26,6 +26,8 @@
     email will be sent to you.</string>
     <string name="error_wrong_username">There is no account record with this username</string>
     <string name="error_wrong_password">The password is invalid</string>
+    <string name="error_user_banned">Your account is banned, please contact the support</string>
+    <string name="error_user_not_verified">Your account is not verified. \nCheck your email to activate it</string>
     <!-- End -->
 
 </resources>

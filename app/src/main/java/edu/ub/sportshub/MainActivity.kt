@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         // If user is not logged re-define intent to login
         if (!authDatabaseHelper.isUserLogged()) {
             intent = Intent(this, LoginActivity::class.java)
+        } else if (!authDatabaseHelper.getCurrentUser()?.isEmailVerified!!) {
+            authDatabaseHelper.signOut()
+            intent = Intent(this, LoginActivity::class.java)
         }
 
         registerTestButton()
