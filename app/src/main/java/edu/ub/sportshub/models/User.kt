@@ -1,23 +1,15 @@
 package edu.ub.sportshub.models
 
 class User(
-    username: String,
-    fullName: String,
-    biography: String,
-    birthDate: String,
-    email: String,
-    profilePicture: String,
-    uid: String,
-    banned: Boolean
+    private var username: String,
+    private var fullName: String,
+    private var biography: String,
+    private var birthDate: String,
+    private var email: String,
+    private var profilePicture: String,
+    private var uid: String,
+    private var banned: Boolean
 ) {
-    private var username : String = username
-    private var fullName : String = fullName
-    private var biography : String = biography
-    private var birthDate : String = birthDate
-    private var email : String = email
-    private var profilePicture : String = profilePicture
-    private var uid : String = uid
-    private var banned : Boolean = banned
 
     constructor() : this(
         "", "", "", "", "", "", "", false
