@@ -4,11 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import edu.ub.sportshub.R
 import edu.ub.sportshub.auth.signup.SignupActivity
+import edu.ub.sportshub.helpers.AuthDatabaseHelper
+import edu.ub.sportshub.helpers.StoreDatabaseHelper
+import edu.ub.sportshub.home.HomeActivity
+import edu.ub.sportshub.models.User
 
 class LoginActivity : AppCompatActivity() {
+
+    private val authDatabaseHelper = AuthDatabaseHelper()
+    private val storeDatabaseHelper = StoreDatabaseHelper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +70,47 @@ class LoginActivity : AppCompatActivity() {
         executeLogin(user, password)
     }
 
-    fun executeLogin(user : String, password : String) {
-        // TODO LOGIN FUNC
+    private fun executeLogin(user : String, password : String) {
+        if (user == "" || password == "") {
+            Toast.makeText(applicationContext, getString(R.string.error_empty_login_fields), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val usersCollectionRef = storeDatabaseHelper.getUsersCollection()
+
+        usersCollectionRef.whereEqualTo("username", user).get()
+            .addOnSuccessListener {
+                if (it.documents.size == 1) {
+                    val mail = it.documents.get(0).toObject(User::class.java)?.getEmail()
+                    continueLogin(mail, password)
+                } else {
+                    Toast.makeText(applicationContext, getString(R.string.error_wrong_username), Toast.LENGTH_SHORT).show()
+                    val textUsername = findViewById<TextView>(R.id.txt_user)
+                    textUsername.error = getString(R.string.error_wrong_username)
+                    textUsername.requestFocus()
+                    textUsername.text = ""
+                }
+            }
+    }
+
+    private fun continueLogin(mail : String?, password : String) {
+        if (!mail.isNullOrEmpty()) {
+            authDatabaseHelper.loginAccount(mail!!, password)
+                .addOnSuccessListener {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                }
+                .addOnFailureListener {
+                    val errorCode = (it as FirebaseAuthException).errorCode
+
+                    if (errorCode == "ERROR_WRONG_PASSWORD")  {
+                        Toast.makeText(applicationContext, getString(R.string.error_wrong_password), Toast.LENGTH_LONG).show();
+                        val textPassword = findViewById<TextView>(R.id.txt_pass)
+                        textPassword.error = getString(R.string.error_wrong_password)
+                        textPassword.requestFocus()
+                        textPassword.text = ""
+                    }
+                }
+        }
     }
 }

@@ -1,21 +1,31 @@
 <resources>
     <string name="app_name">MyLogin</string>
+    <string name="title_activity_register">RegisterActivity</string>
+
+
+
+    <!-- Login Activity Resources -->
+    <string name="title_activity_login">Login</string>
     <string name="btn_login">LOG IN</string>
     <string name="btn_signup">SIGN UP</string>
     <string name="txt_forgot">Forgotten your password?</string>
     <string name="txt_user_hint">Username</string>
     <string name="txt_password_hint">Password</string>
+
+        <!-- Errors -->
+        <string name="error_empty_login_fields">Username/Password field is empty, please fill
+        them to login</string>
+    <!-- End -->
+
+    <!-- Forgot Password Activity Resources -->
+    <string name="title_activity_login_popup">Forgot your password?</string>
     <string name="txt_forgot_mail_hint">Mail address</string>
     <string name="btn_forgotpopup">ENVIAR</string>
     <string name="btn_back">VOLVER</string>
     <string name="txt_forgotpopup">Enter the email address associated with this account, a recovery
     email will be sent to you.</string>
-    <string name="title_activity_register">RegisterActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-    <string name="title_activity_login">Login</string>
-    <string name="title_activity_login_popup">Forgot your password?</string>
+    <string name="error_wrong_username">There is no account record with this username</string>
+    <string name="error_wrong_password">The password is invalid</string>
+    <!-- End -->
+
 </resources>

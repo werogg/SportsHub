@@ -2,6 +2,8 @@ package edu.ub.sportshub
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import edu.ub.sportshub.auth.login.LoginActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
@@ -13,7 +15,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_main)
+
 
         // Define intent to RegisterActivity
         var intent = Intent(this, HomeActivity::class.java)
@@ -23,13 +26,11 @@ class MainActivity : AppCompatActivity() {
             intent = Intent(this, LoginActivity::class.java)
         }
 
+        registerTestButton()
         startActivity(intent)
     }
 
-    /*
-    fun registerTestButton(view : View) {
-        var textView = findViewById<TextView>(R.id.textView)
-        var authDatabaseHelper = AuthDatabaseHelper()
+    private fun registerTestButton() {
         authDatabaseHelper.createAccount(
             "supwer00@gmail.com",
             "password123",
@@ -37,11 +38,10 @@ class MainActivity : AppCompatActivity() {
             "joel otero",
             "23/05/2000",
             ""
-        ).addOnFailureListener {
-            textView.text = it.message
-        }
+        )
     }
 
+    /*
     fun retrieveUserTestButton(view : View) {
         var textView = findViewById<TextView>(R.id.textView)
         var storeDatabaseHelper = StoreDatabaseHelper()

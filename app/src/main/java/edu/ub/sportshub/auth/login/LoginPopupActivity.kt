@@ -16,8 +16,8 @@ class LoginPopupActivity : AppCompatActivity() {
         val buttonBack = findViewById<Button>(R.id.btn_back)
 
         buttonBack.setOnClickListener(){
-            val main = Intent(this, MainActivity::class.java);
-            startActivity(main)
+            val intent = Intent(this, LoginActivity::class.java);
+            startActivity(intent)
         }
     }
 

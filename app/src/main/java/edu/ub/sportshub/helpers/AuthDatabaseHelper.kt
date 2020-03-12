@@ -1,7 +1,10 @@
 package edu.ub.sportshub.helpers
 
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
+import edu.ub.sportshub.MainActivity
 import edu.ub.sportshub.models.User
 
 class AuthDatabaseHelper : DatabaseHelper() {
@@ -49,5 +52,11 @@ class AuthDatabaseHelper : DatabaseHelper() {
 
     fun loginAccount(email : String, password: String) : Task<AuthResult> {
         return mFirebaseAuth.signInWithEmailAndPassword(email, password)
+    }
+
+    fun signOut(appCompatActivity: AppCompatActivity)  {
+        mFirebaseAuth.signOut()
+        val intent = Intent(appCompatActivity, MainActivity::class.java)
+        appCompatActivity.startActivity(intent)
     }
 }

@@ -12,7 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".home.HomeActivity"></activity>
+        <activity
+            android:name=".home.HomeActivity"
+            android:noHistory="true" />
 
         <activity
             android:name=".auth.signup.SignupActivity"
@@ -22,16 +24,17 @@
         <activity
             android:name=".auth.login.LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:noHistory="true" />
         <activity
             android:name=".auth.login.LoginPopupActivity"
             android:label="@string/title_activity_login_popup"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

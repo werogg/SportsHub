@@ -2,7 +2,7 @@ package edu.ub.sportshub.models
 
 class User(
     username: String,
-    fullname: String,
+    fullName: String,
     biography: String,
     birthDate: String,
     email: String,
@@ -11,7 +11,7 @@ class User(
     banned: Boolean
 ) {
     private var username : String = username
-    private var fullname : String = fullname
+    private var fullName : String = fullName
     private var biography : String = biography
     private var birthDate : String = birthDate
     private var email : String = email
@@ -27,19 +27,19 @@ class User(
         return username
     }
 
-    fun getFullname() : String {
-        return fullname
+    fun getFullName() : String {
+        return fullName
     }
 
     fun getBiography() : String {
         return biography
     }
 
-    fun getBirthdate() : String {
+    fun getBirthDate() : String {
         return birthDate
     }
 
-    fun getMail() : String {
+    fun getEmail() : String {
         return email
     }
 
