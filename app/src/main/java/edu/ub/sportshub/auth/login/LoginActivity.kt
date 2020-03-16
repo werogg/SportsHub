@@ -23,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
 
     private val authDatabaseHelper = AuthDatabaseHelper()
     private val storeDatabaseHelper = StoreDatabaseHelper()
+    private lateinit var loginButton : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
         val buttonLogin = findViewById<Button>(R.id.btn_login)
         val buttonSignup = findViewById<Button>(R.id.btn_signup)
         val textForgot = findViewById<TextView>(R.id.txt_login)
+        loginButton = findViewById<Button>(R.id.btn_login)
 
 
         buttonLogin.setOnClickListener(){
@@ -68,8 +70,9 @@ class LoginActivity : AppCompatActivity() {
      * Retrieve user, password and try to login
      */
     private fun onLoginButton() {
-        val textUser = findViewById<TextView>(R.id.txt_user)
-        val textPassword = findViewById<TextView>(R.id.txt_pass)
+        loginButton.isEnabled = false
+        val textUser = findViewById<TextView>(R.id.txt_username_signup)
+        val textPassword = findViewById<TextView>(R.id.txt_pass_signup)
         val user = textUser.text.toString()
         val password = textPassword.text.toString()
         executeLogin(user, password)
@@ -82,6 +85,7 @@ class LoginActivity : AppCompatActivity() {
     private fun executeLogin(user : String, password : String) {
         if (user == "" || password == "") {
             Toast.makeText(applicationContext, getString(R.string.error_empty_login_fields), Toast.LENGTH_SHORT).show()
+            loginButton.isEnabled = true
             return
         }
 
@@ -94,10 +98,11 @@ class LoginActivity : AppCompatActivity() {
                     continueLogin(mail, password)
                 } else {
                     Toast.makeText(applicationContext, getString(R.string.error_wrong_username), Toast.LENGTH_SHORT).show()
-                    val textUsername = findViewById<TextView>(R.id.txt_user)
+                    val textUsername = findViewById<TextView>(R.id.txt_username_signup)
                     textUsername.error = getString(R.string.error_wrong_username)
                     textUsername.requestFocus()
                     textUsername.text = ""
+                    loginButton.isEnabled = true
                 }
             }
     }
@@ -121,12 +126,13 @@ class LoginActivity : AppCompatActivity() {
 
                         if (errorCode == "ERROR_WRONG_PASSWORD")  {
                             Toast.makeText(applicationContext, getString(R.string.error_wrong_password), Toast.LENGTH_LONG).show()
-                            val textPassword = findViewById<TextView>(R.id.txt_pass)
+                            val textPassword = findViewById<TextView>(R.id.txt_pass_signup)
                             textPassword.error = getString(R.string.error_wrong_password)
                             textPassword.requestFocus()
                             textPassword.text = ""
                         }
                     }
+                    loginButton.isEnabled = true
                 }
         }
     }
@@ -147,6 +153,7 @@ class LoginActivity : AppCompatActivity() {
                 if (user != null) {
                     if (user.isBanned()) {
                         Toast.makeText(applicationContext, getString(R.string.error_user_banned), Toast.LENGTH_SHORT).show()
+                        loginButton.isEnabled = true
                     // Need this check to avoid crash for no time to get authed user if spammed
                     } else if (authDatabaseHelper.isUserLogged()) {
                         if (!(authDatabaseHelper.getCurrentUser()!!.isEmailVerified)) {
@@ -161,6 +168,7 @@ class LoginActivity : AppCompatActivity() {
                                 snackbar.dismiss()
                             })
                             snackbar.show()
+                            loginButton.isEnabled = true
                         } else {
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)

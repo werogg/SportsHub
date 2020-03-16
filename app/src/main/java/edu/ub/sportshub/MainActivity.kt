@@ -29,19 +29,7 @@ class MainActivity : AppCompatActivity() {
             intent = Intent(this, LoginActivity::class.java)
         }
 
-        registerTestButton()
         startActivity(intent)
-    }
-
-    private fun registerTestButton() {
-        authDatabaseHelper.createAccount(
-            "supwer00@gmail.com",
-            "password123",
-            "werogg",
-            "joel otero",
-            "23/05/2000",
-            ""
-        )
     }
 
     /*

@@ -7,6 +7,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import edu.ub.sportshub.MainActivity
 import edu.ub.sportshub.models.User
+import java.util.*
 
 class AuthDatabaseHelper : DatabaseHelper() {
 
@@ -21,36 +22,8 @@ class AuthDatabaseHelper : DatabaseHelper() {
         return mFirebaseAuth.currentUser != null
     }
 
-    /**
-     * Creates an account on SportsHub database
-     * @return true if the account was successfully created
-     */
-    fun createAccount(email: String,
-                      password: String,
-                      username : String,
-                      fullname : String,
-                      birthDate : String,
-                      profilePicture : String
-    ) : Task<AuthResult> {
-        val biography = ""
+    fun createAccount (email : String, password: String): Task<AuthResult> {
         return mFirebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val newUser = User(
-                        username,
-                        fullname,
-                        biography,
-                        birthDate,
-                        email,
-                        profilePicture,
-                        mFirebaseAuth.currentUser!!.uid,
-                        false
-                    )
-                    mStoreDatabaseHelper.storeUser(newUser)
-                    mFirebaseAuth.currentUser!!.sendEmailVerification()
-                    signOut()
-                }
-            }
     }
 
     fun loginAccount(email : String, password: String) : Task<AuthResult> {

@@ -36,6 +36,9 @@
     <string name="txt_forgotpopup">Enter the email address associated with this account, a recovery
     email will be sent to you.</string>
     <string name="password_recovery_email_sent">"A password recovery email was sent to "</string>
+    <string name="error_username_already_in_use">Username already in use!</string>
+    <string name="error_weak_password">Your password is too weak</string>
+    <string name="error_email_already_exists">This mail is already registered</string>
     <!-- End -->
 
 </resources>

@@ -4,7 +4,7 @@ class User(
     private var username: String,
     private var fullName: String,
     private var biography: String,
-    private var birthDate: String,
+    private var signupDate: String,
     private var email: String,
     private var profilePicture: String,
     private var uid: String,
@@ -27,8 +27,8 @@ class User(
         return biography
     }
 
-    fun getBirthDate() : String {
-        return birthDate
+    fun getSignupDate() : String {
+        return signupDate
     }
 
     fun getEmail() : String {

@@ -17,7 +17,7 @@ class LoginForgotPasswordActivity : AppCompatActivity() {
 
         val buttonBack = findViewById<Button>(R.id.btn_back)
         val buttonSendEmail = findViewById<Button>(R.id.btn_send_email)
-        val emailTextBox = findViewById<EditText>(R.id.txt_email)
+        val emailTextBox = findViewById<EditText>(R.id.txt_email_signup)
 
         buttonBack.setOnClickListener {
             onButtonBack()

@@ -12,9 +12,6 @@ class StoreDatabaseHelper : DatabaseHelper() {
 
     fun storeUser(user : User) {
         usersCollectionRef.document(user.getUid()).set(user)
-            .addOnFailureListener {
-                // TODO handle store user exception
-            }
     }
 
     fun retrieveUser(uid : String) : Task<DocumentSnapshot> {

@@ -9,7 +9,7 @@
     tools:context=".auth.login.LoginActivity">
 
     <EditText
-        android:id="@+id/txt_user"
+        android:id="@+id/txt_username_signup"
         android:layout_width="324dp"
         android:layout_height="58dp"
         android:layout_marginStart="16dp"
@@ -27,7 +27,7 @@
         app:layout_constraintTop_toBottomOf="@+id/img_login" />
 
     <EditText
-        android:id="@+id/txt_pass"
+        android:id="@+id/txt_pass_signup"
         android:layout_width="324dp"
         android:layout_height="58dp"
         android:layout_marginStart="24dp"
@@ -40,7 +40,7 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_user"
+        app:layout_constraintTop_toBottomOf="@+id/txt_username_signup"
         android:autofillHints="" />
 
     <Button
@@ -53,7 +53,7 @@
         android:textColor="@drawable/btn_letr"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_pass" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_pass_signup" />
 
     <Button
         android:id="@+id/btn_signup"
