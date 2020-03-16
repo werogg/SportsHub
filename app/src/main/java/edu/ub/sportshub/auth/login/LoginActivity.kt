@@ -30,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
 
         val buttonLogin = findViewById<Button>(R.id.btn_login)
         val buttonSignup = findViewById<Button>(R.id.btn_signup)
-        val textForgot = findViewById<TextView>(R.id.txt_forgot)
+        val textForgot = findViewById<TextView>(R.id.txt_login)
 
 
         buttonLogin.setOnClickListener(){
@@ -52,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
      * Start intent to go to forgot password activity
      */
     private fun onForgotPasswordButton() {
-        val popupIntent = Intent(this, LoginForgotPasswordActivity::class.java);
+        val popupIntent = Intent(this, LoginForgotPasswordActivity::class.java)
         startActivity(popupIntent)
     }
 
@@ -70,8 +70,8 @@ class LoginActivity : AppCompatActivity() {
     private fun onLoginButton() {
         val textUser = findViewById<TextView>(R.id.txt_user)
         val textPassword = findViewById<TextView>(R.id.txt_pass)
-        val user = textUser.text.toString();
-        val password = textPassword.text.toString();
+        val user = textUser.text.toString()
+        val password = textPassword.text.toString()
         executeLogin(user, password)
     }
 
@@ -114,13 +114,13 @@ class LoginActivity : AppCompatActivity() {
                 }
                 .addOnFailureListener {
                     if (it is FirebaseTooManyRequestsException) {
-                        Toast.makeText(applicationContext, getString(R.string.error_wrong_password), Toast.LENGTH_LONG).show();
+                        Toast.makeText(applicationContext, getString(R.string.error_wrong_password), Toast.LENGTH_LONG).show()
                     }
                     else if (it is FirebaseAuthException) {
                         val errorCode = it.errorCode
 
                         if (errorCode == "ERROR_WRONG_PASSWORD")  {
-                            Toast.makeText(applicationContext, getString(R.string.error_wrong_password), Toast.LENGTH_LONG).show();
+                            Toast.makeText(applicationContext, getString(R.string.error_wrong_password), Toast.LENGTH_LONG).show()
                             val textPassword = findViewById<TextView>(R.id.txt_pass)
                             textPassword.error = getString(R.string.error_wrong_password)
                             textPassword.requestFocus()
