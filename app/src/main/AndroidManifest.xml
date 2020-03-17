@@ -11,32 +11,39 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".event.CreateEventActivity" />
+        <activity android:name=".event.EventActivity" />
+        <activity android:name=".profile.ProfileActivity" />
         <activity
             android:name=".home.HomeActivity"
-            android:noHistory="true" />
+            android:noHistory="true"
 
+            ><intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter></activity>
         <activity
             android:name=".auth.signup.SignupActivity"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".auth.login.LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".auth.login.LoginForgotPasswordActivity"
             android:label="@string/title_activity_login_popup"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".MainActivity"
-            android:noHistory="true" >
-            <intent-filter>
+        <activity
+            android:name=".MainActivity"
+            android:noHistory="true">
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
     </application>
 
