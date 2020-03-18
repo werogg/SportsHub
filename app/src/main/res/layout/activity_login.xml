@@ -21,6 +21,7 @@
         android:ems="10"
         android:hint="@string/txt_user_hint"
         android:inputType="textPersonName"
+        android:textColorHint="#99FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,13 +36,14 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
+        android:autofillHints=""
         android:ems="10"
         android:hint="@string/txt_password_hint"
         android:inputType="textPassword"
+        android:textColorHint="#99FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_username_signup"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_username_signup" />
 
     <Button
         android:id="@+id/btn_login"
