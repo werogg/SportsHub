@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">SportsHub!</string>
-    <string name="title_activity_register">RegisterActivity</string>
+    <string name="app_name" translatable="false">SportsHub!</string>
+    <string name="title_activity_register" translatable="false">RegisterActivity</string>
 
 
     <!-- Login & Signup Activity Resources -->
-    <string name="title_activity_login">Login</string>
+    <string name="title_activity_login" translatable="false">Login</string>
     <string name="btn_login">LOG IN</string>
     <string name="btn_signup">SIGN UP</string>
     <string name="txt_forgot">Forgotten your password?</string>
@@ -22,7 +22,7 @@
     <string name="error_wrong_username">There is no account record with this username</string>
     <string name="error_wrong_password">The password is invalid</string>
     <string name="error_user_banned">Your account is banned, please contact the support</string>
-    <string name="error_user_not_verified">Your account is not verified. \nCheck your email to activate it</string>
+    <string name="error_user_not_verified">Your account is not verified.  Check your email to activate it</string>
     <string name="error_age_not_permitted">You don\'t reach the permitted age to join our community</string>
     <!-- End -->
 
@@ -30,7 +30,7 @@
     <string name="title_activity_login_popup">Forgot your password?</string>
     <string name="txt_already_account">Already have an account?</string>
     <string name="txt_forgot_mail_hint">Mail address</string>
-    <string name="btn_forgotpopup">ENVIAR</string>
+    <string name="btn_forgotpopup">SEND</string>
     <string name="btn_back">VOLVER</string>
     <string name="txt_forgotpopup">Enter the email address associated with this account, a recovery
     email will be sent to you.</string>
@@ -38,6 +38,7 @@
     <string name="error_username_already_in_use">Username already in use!</string>
     <string name="error_weak_password">Your password is too weak</string>
     <string name="error_email_already_exists">This mail is already registered</string>
+    <string name="create_event_floating_button">Create</string>
     <!-- End -->
 
 </resources>
