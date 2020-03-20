@@ -53,6 +53,8 @@
     <string name="button_select_hour">"HOUR"</string>
     <string name="button_add_image">"ADD IMAGE"</string>
     <string name="button_add_event">"ADD EVENT"</string>
+    <string name="will_assist">Will assist</string>
+    <string name="like">like</string>
     <!--End-->
 
 </resources>

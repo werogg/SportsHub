@@ -12,17 +12,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".event.CreateEventActivity" />
-        <activity android:name=".event.EventActivity" />
+        <activity android:name=".event.EventActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".profile.ProfileActivity" />
         <activity
             android:name=".home.HomeActivity"
-            android:noHistory="true"
+            android:noHistory="true">
 
-            ><intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter></activity>
+            </activity>
         <activity
             android:name=".auth.signup.SignupActivity"
             android:label="@string/title_activity_register"
@@ -45,6 +47,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDoDS5XK6HPbhAKrfOvSnHSM4-b9NLGql8"/>
     </application>
 
 </manifest>

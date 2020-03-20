@@ -1,89 +1,351 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".event.EventActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/collapsableEventPicture"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar_secondary" />
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/collapsableEventPicture"
             android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#009688"
+                app:contentScrim="@color/colorPrimary"
+                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax"
+                    app:layout_collapseParallaxMultiplier="0.7"
+                    app:srcCompat="@drawable/ic_launcher_background" />
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:fitsSystemWindows="true"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                    app:buttonGravity="top"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+                    >
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/imageView6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginLeft="2dp"
+                            android:tint="#000000"
+                            app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+                            app:layout_constraintStart_toEndOf="@+id/textView8"
+                            app:layout_constraintTop_toTopOf="@+id/imageView5"
+                            app:layout_constraintVertical_bias="1.0"
+                            app:srcCompat="@drawable/outline_thumb_up_alt_black_36" />
+
+                        <TextView
+                            android:id="@+id/textView8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginLeft="2dp"
+                            android:gravity="end"
+                            android:shadowColor="@color/colorPrimaryDark"
+                            android:shadowDx="2"
+                            android:shadowDy="2"
+                            android:shadowRadius="5"
+                            android:text="223.6k"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/white"
+                            android:textSize="24dp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                            app:layout_constraintStart_toEndOf="@+id/imageView5"
+                            app:layout_constraintTop_toTopOf="@+id/textView7" />
+
+                        <ImageView
+                            android:id="@+id/imageView5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginLeft="2dp"
+                            android:tint="#000000"
+                            app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                            app:layout_constraintStart_toEndOf="@+id/textView7"
+                            app:layout_constraintTop_toTopOf="@+id/textView7"
+                            app:srcCompat="@drawable/outline_star_border_black_36" />
+
+                        <TextView
+                            android:id="@+id/textView7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:shadowColor="@color/colorPrimaryDark"
+                            android:shadowDx="2"
+                            android:shadowDy="2"
+                            android:shadowRadius="5"
+                            android:text="8.2k"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/white"
+                            android:textSize="24dp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.appcompat.widget.Toolbar>
+
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#009688"
-            app:contentScrim="@color/colorPrimary"
-            app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
-            app:title="Test">
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:tint="@color/colorPrimaryDark"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_anchor="@id/collapsableEventPicture"
+            app:layout_anchorGravity="bottom|right|end"
+            app:srcCompat="@drawable/baseline_edit_24" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/ic_launcher_background" />
-
-            <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:backgroundTint="@color/colorPrimary"
-        app:srcCompat="@drawable/baseline_edit_24"
-        android:tint="@color/colorPrimaryDark"
-        app:layout_anchor="@id/collapsableEventPicture"
-        app:layout_anchorGravity="bottom|right|end"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp" />
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:background="@android:color/background_light"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-            <TextView
-                android:id="@+id/textView"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/eventNameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="Nike F.C."
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"></TextView>
+
+                <TextView
+                    android:id="@+id/hourTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="16:14 PM"
+                    android:textColor="#FF717171"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:tint="#FF717171"
+                    app:layout_constraintBottom_toBottomOf="@+id/dateTextView"
+                    app:layout_constraintStart_toEndOf="@+id/dateTextView"
+                    app:layout_constraintTop_toTopOf="@+id/dateTextView"
+                    app:srcCompat="@drawable/baseline_alarm_black_24" />
+
+                <TextView
+                    android:id="@+id/dateTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="16/04/2020"
+                    android:textColor="#FF717171"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintTop_toTopOf="@+id/imageView"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tint="#FF717171"
+                    app:layout_constraintBottom_toTopOf="@+id/lineDivider2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.19"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lineDivider"
+                    app:srcCompat="@drawable/baseline_calendar_today_black_24" />
+
+                <View
+                    android:id="@+id/lineDivider"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#889F9F9F"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/descTextView" />
+
+                <View
+                    android:id="@+id/lineDivider2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#889F9F9F"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lineDivider" />
+
+                <View
+                    android:id="@+id/lineDivider3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="200dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#889F9F9F"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/mapView" />
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addressTextView" />
+
+                <TextView
+                    android:id="@+id/descTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas imperdiet vel nunc id dignissim. In quis tortor sit amet metus commodo suscipit. Sed vitae ante neque. Praesent rutrum libero vel eros fermentum, nec sollicitudin nulla mollis. Cras scelerisque nunc vitae neque aliquam varius. Vivamus maximus sagittis libero porta ultricies. Nam tincidunt quis dolor eu interdum. Nulla facilisi. Donec sit amet finibus est. Proin auctor maximus augue eu imperdiet. Donec lobortis gravida ultricies. Praesent accumsan lorem sem, id dignissim tortor feugiat non. Morbi elit augue, eleifend et lorem at, placerat placerat libero. Curabitur viverra turpis ac gravida vestibulum. Nam orci diam, accumsan ut convallis vel, faucibus ut urna. Morbi quis porta urna."
+                    android:textColor="#808080"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/eventNameTextView"></TextView>
+
+                <TextView
+                    android:id="@+id/addressTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="🏠"
+                    android:textColor="#808080"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/lineDivider2"></TextView>
+
+                <TextView
+                    android:id="@+id/addressTextView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="08914, El toro, Badalona"
+                    android:textColor="#808080"
+                    app:layout_constraintBottom_toBottomOf="@+id/addressTextView"
+                    app:layout_constraintStart_toEndOf="@+id/addressTextView"
+                    app:layout_constraintTop_toTopOf="@+id/addressTextView"></TextView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center">
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/will_assist_floating_button"
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fringilla, nibh vitae vehicula finibus, ipsum tortor lacinia augue, id scelerisque dui nisl a est. Mauris vulputate malesuada feugiat."
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"></TextView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+                android:layout_margin="20dp"
+                android:contentDescription="@string/appbar_scrolling_view_behavior"
+                android:text="@string/will_assist"
+                android:theme="@style/floatingButtonTheme"
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                app:icon="@drawable/outline_star_border_black_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/like_floating_button"
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:contentDescription="@string/appbar_scrolling_view_behavior"
+                android:text="@string/like"
+                android:theme="@style/floatingButtonTheme"
+                app:icon="@drawable/outline_thumb_up_alt_black_24" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</LinearLayout>

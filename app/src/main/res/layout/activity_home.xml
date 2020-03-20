@@ -11,7 +11,7 @@
         android:id="@+id/toolbar" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/create_event_floating_button"
+        android:id="@+id/like_floating_button"
         android:theme="@style/floatingButtonTheme"
         style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
         android:layout_width="wrap_content"
