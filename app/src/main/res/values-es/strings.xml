@@ -21,7 +21,6 @@
     <string name="txt_forgot_mail_hint">Correo electrónico</string>
     <string name="btn_forgotpopup">ENVIAR</string>
     <string name="btn_back">VOLVER</string>
-    <string name="title_activity_login" translatable="false">Introduce la dirección de correo electrónico asociada a esta cuenta, se te enviará un mail de recuperación</string>
     <string name="txt_forgotpopup">Introduce la dirección de correo asociada a la cuenta, te enviaremos un mail de recuperación.</string>
     <string name="password_recovery_email_sent">Se te ha enviado un correo de recuperación</string>
     <string name="error_username_already_in_use">El usuario ya esta en uso!</string>
