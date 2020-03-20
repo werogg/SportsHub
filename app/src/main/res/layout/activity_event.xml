@@ -30,6 +30,7 @@
 
 
                 <ImageView
+                    android:id="@+id/bannerImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
@@ -52,20 +53,20 @@
                         android:layout_height="match_parent">
 
                         <ImageView
-                            android:id="@+id/imageView6"
+                            android:id="@+id/thumbUpIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="2dp"
                             android:layout_marginLeft="2dp"
                             android:tint="#000000"
-                            app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-                            app:layout_constraintStart_toEndOf="@+id/textView8"
-                            app:layout_constraintTop_toTopOf="@+id/imageView5"
+                            app:layout_constraintBottom_toBottomOf="@+id/assistsIcon"
+                            app:layout_constraintStart_toEndOf="@+id/likesTextView"
+                            app:layout_constraintTop_toTopOf="@+id/assistsIcon"
                             app:layout_constraintVertical_bias="1.0"
                             app:srcCompat="@drawable/outline_thumb_up_alt_black_36" />
 
                         <TextView
-                            android:id="@+id/textView8"
+                            android:id="@+id/likesTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="2dp"
@@ -80,24 +81,24 @@
                             android:textColor="@android:color/white"
                             android:textSize="24dp"
                             android:textStyle="bold"
-                            app:layout_constraintBottom_toBottomOf="@+id/textView7"
-                            app:layout_constraintStart_toEndOf="@+id/imageView5"
-                            app:layout_constraintTop_toTopOf="@+id/textView7" />
+                            app:layout_constraintBottom_toBottomOf="@+id/assistsTextView"
+                            app:layout_constraintStart_toEndOf="@+id/assistsIcon"
+                            app:layout_constraintTop_toTopOf="@+id/assistsTextView" />
 
                         <ImageView
-                            android:id="@+id/imageView5"
+                            android:id="@+id/assistsIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="2dp"
                             android:layout_marginLeft="2dp"
                             android:tint="#000000"
-                            app:layout_constraintBottom_toBottomOf="@+id/textView7"
-                            app:layout_constraintStart_toEndOf="@+id/textView7"
-                            app:layout_constraintTop_toTopOf="@+id/textView7"
+                            app:layout_constraintBottom_toBottomOf="@+id/assistsTextView"
+                            app:layout_constraintStart_toEndOf="@+id/assistsTextView"
+                            app:layout_constraintTop_toTopOf="@+id/assistsTextView"
                             app:srcCompat="@drawable/outline_star_border_black_36" />
 
                         <TextView
-                            android:id="@+id/textView7"
+                            android:id="@+id/assistsTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="end"
@@ -123,6 +124,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/editEventFloatingButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
@@ -269,7 +271,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/addressTextView" />
+                    app:layout_constraintTop_toBottomOf="@+id/addressIcon" />
 
                 <TextView
                     android:id="@+id/descTextView"
@@ -288,7 +290,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/eventNameTextView"></TextView>
 
                 <TextView
-                    android:id="@+id/addressTextView"
+                    android:id="@+id/addressIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -300,14 +302,14 @@
                     app:layout_constraintTop_toTopOf="@+id/lineDivider2"></TextView>
 
                 <TextView
-                    android:id="@+id/addressTextView2"
+                    android:id="@+id/addressTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="08914, El toro, Badalona"
                     android:textColor="#808080"
-                    app:layout_constraintBottom_toBottomOf="@+id/addressTextView"
-                    app:layout_constraintStart_toEndOf="@+id/addressTextView"
-                    app:layout_constraintTop_toTopOf="@+id/addressTextView"></TextView>
+                    app:layout_constraintBottom_toBottomOf="@+id/addressIcon"
+                    app:layout_constraintStart_toEndOf="@+id/addressIcon"
+                    app:layout_constraintTop_toTopOf="@+id/addressIcon"></TextView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
