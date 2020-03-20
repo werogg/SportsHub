@@ -52,7 +52,10 @@
     <string name="button_add_event">"ADD EVENT"</string>
     <string name="will_assist" translatable="false">Will assist</string>
     <string name="like" translatable="false">like</string>
+    <!--End-->
 
+    <!-- Edit Event -->
+    <string name="edit_event_text">Edit Event</string>
     <!--End-->
 
     <!-- Profile -->

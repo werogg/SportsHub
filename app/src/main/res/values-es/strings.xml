@@ -36,4 +36,5 @@
     <string name="button_select_hour">HORA</string>
     <string name="button_add_image">IMAGEN</string>
     <string name="button_add_event">GUARDAR</string>
+    <string name="edit_event_text">Editar Evento</string>
 </resources>
