@@ -28,4 +28,13 @@
     <string name="error_weak_password">Tu contraseña es demasiado débil</string>
     <string name="error_email_already_exists">Este correo ya ha sido registrado</string>
     <string name="create_event_floating_button">Crear</string>
+    <string name="create_event_text">Crear Evento</string>
+    <string name="title_text">Titulo</string>
+    <string name="where_text">Dónde</string>
+    <string name="when_text">Cuándo</string>
+    <string name="description_text">Descripción</string>
+    <string name="button_select_day">DÍA</string>
+    <string name="button_select_hour">HORA</string>
+    <string name="button_add_image">IMAGEN</string>
+    <string name="button_add_event">GUARDAR</string>
 </resources>

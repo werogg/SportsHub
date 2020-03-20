@@ -41,14 +41,11 @@
     <string name="create_event_floating_button">Create</string>
     <!-- End -->
     <!--- Creation Event -->
-    <string name="create_event_text">"    Create Event"</string>
+    <string name="create_event_text">Create Event</string>
     <string name="title_text">"Title"</string>
     <string name="where_text">"Where"</string>
     <string name="when_text">"When ?"</string>
     <string name="description_text">"Description"</string>
-    <string name="what_bring_text">"What should I bring ?"</string>
-    <string name="much_cost">"How much does it cost ?"</string>
-    <string name="text_input">"Text input"</string>
     <string name="button_select_day">"DAY"</string>
     <string name="button_select_hour">"HOUR"</string>
     <string name="button_add_image">"ADD IMAGE"</string>
