@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="287dp"
+                android:layout_marginTop="60dp"
+                android:background="@drawable/cage_profile">
+
+                <TextView
+                    android:id="@+id/txt_name"
+                    android:layout_width="249dp"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="1dp"
+                    android:fontFamily="monospace"
+                    android:gravity="center"
+                    android:text="Manolo Lama"
+                    android:textSize="30sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+                <TextView
+                    android:id="@+id/txt_location"
+                    android:layout_width="312dp"
+                    android:layout_height="22dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="serif-monospace"
+                    android:gravity="center"
+                    android:text="Torredonjimeno, Spain"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.495"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_name"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="409dp"
+                    android:layout_height="170dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="161dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="46dp" />
+
+                        <TextView
+                            android:id="@+id/txt_nfollowers"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="cursive"
+                            android:gravity="center"
+                            android:text="XXX"
+                            android:textAlignment="center"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/txt_followers"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="cursive"
+                            android:gravity="center"
+                            android:text="Followers"
+                            android:textSize="24sp" />
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="58dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="78dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp" />
+
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="match_parent"
+                            android:layout_height="76dp"
+                            app:srcCompat="@drawable/common_google_signin_btn_icon_dark_normal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="47dp" />
+
+                        <TextView
+                            android:id="@+id/txt_nfollowees"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="cursive"
+                            android:gravity="center"
+                            android:text="XXX"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/txt_followees"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="cursive"
+                            android:gravity="center"
+                            android:text="Followees"
+                            android:textSize="24sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/btn_follow"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bnt_follow"
+                android:fontFamily="sans-serif-smallcaps"
+                android:text="Summary"
+                android:textColor="@drawable/btn_letrprofile"
+                android:textSize="24sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="13dp" />
+
+            <TextView
+                android:id="@+id/txt_myevents"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:fontFamily="cursive"
+                android:text="  My Events"
+                android:textSize="30sp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_myevents"
+                android:layout_width="match_parent"
+                android:layout_height="147dp">
+
+                <ScrollView
+                    android:layout_width="409dp"
+                    android:layout_height="145dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </ScrollView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_myactivity"
+                android:layout_width="match_parent"
+                android:layout_height="147dp">
+
+                <TextView
+                    android:id="@+id/txt_myactivity"
+                    android:layout_width="412dp"
+                    android:layout_height="43dp"
+                    android:background="#FFFFFF"
+                    android:fontFamily="cursive"
+                    android:text="  My Activity"
+                    android:textSize="30sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ScrollView
+                    android:layout_width="410dp"
+                    android:layout_height="77dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_myactivity">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </ScrollView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        layout="@layout/layout_toolbar_secondary_profile"
+        android:id="@+id/toolbar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
