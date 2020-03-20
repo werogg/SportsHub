@@ -1,13 +1,22 @@
 package edu.ub.sportshub.event
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.text.Layout
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.widget.ImageView
+import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import edu.ub.sportshub.R
 
 class EventActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -23,6 +32,28 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         mMapView.onCreate(savedInstanceState)
 
         mMapView.getMapAsync(this)
+
+        val collapsableEventPicture = findViewById<AppBarLayout>(R.id.collapsableEventPicture)
+
+        collapsableEventPicture.setOnClickListener {
+            onBannerImageClick()
+        }
+    }
+
+    private fun onBannerImageClick() {
+        val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val customView = inflater.inflate(R.layout.full_image, null)
+        val coord = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
+        val pwindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
+        val image = customView.findViewById(R.id.fullImage) as ImageView
+        image.setImageResource(R.drawable.ic_launcher_background)
+        pwindow.isOutsideTouchable = true
+        pwindow.isFocusable = true
+        pwindow.showAtLocation(coord, Gravity.CENTER,0,0)
+        val goBackButton = customView.findViewById(R.id.goBackFloatingButton) as FloatingActionButton
+        goBackButton.setOnClickListener {
+            pwindow.dismiss()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
