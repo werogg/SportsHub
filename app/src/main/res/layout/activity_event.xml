@@ -125,7 +125,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/goBackFloatingButton"
+            android:id="@+id/event_edit_event_floating_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"

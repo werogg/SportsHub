@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.text.Layout
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -22,22 +21,33 @@ import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.profile.ProfileActivity
-import org.w3c.dom.Text
 
 class EventActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMapView : MapView
+    private var popupWindow : PopupWindow? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event)
 
+        setupActivityFunctionalities(savedInstanceState)
+    }
+
+    private fun setupActivityFunctionalities(savedInstanceState: Bundle?) {
+        setupListeners()
+        setupMaps(savedInstanceState)
+    }
+
+    private fun setupMaps(savedInstanceState: Bundle?) {
         mMapView = findViewById(R.id.mapView)
 
         mMapView.onCreate(savedInstanceState)
 
         mMapView.getMapAsync(this)
+    }
 
+    private fun setupListeners() {
         val collapsableEventPicture = findViewById<AppBarLayout>(R.id.collapsableEventPicture)
 
         collapsableEventPicture.setOnClickListener {
@@ -62,6 +72,16 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
             onHomeClick()
         }
 
+        val editButton = findViewById<FloatingActionButton>(R.id.event_edit_event_floating_button)
+
+        editButton.setOnClickListener {
+            onEditEventButtonClicked()
+        }
+    }
+
+    private fun onEditEventButtonClicked() {
+        val goEdit = Intent(this, EditEventActivity::class.java)
+        startActivity(goEdit)
     }
 
     private fun onHomeClick() {
@@ -78,15 +98,28 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val customView = inflater.inflate(R.layout.full_image, null)
         val coord = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
-        val pwindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
+        popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
         val image = customView.findViewById(R.id.fullImage) as ImageView
         image.setImageResource(R.drawable.ic_launcher_background)
-        pwindow.isOutsideTouchable = true
-        pwindow.isFocusable = true
-        pwindow.showAtLocation(coord, Gravity.CENTER,0,0)
+        //pwindow.isOutsideTouchable = true
+        //pwindow.isFocusable = true
+        popupWindow!!.showAtLocation(coord, Gravity.CENTER,0,0)
+
         val goBackButton = customView.findViewById(R.id.goBackFloatingButton) as FloatingActionButton
         goBackButton.setOnClickListener {
-            pwindow.dismiss()
+            popupWindow!!.dismiss()
+            popupWindow = null
+        }
+
+    }
+
+    override fun onBackPressed() {
+        if (popupWindow != null) {
+            popupWindow!!.dismiss()
+            popupWindow = null
+        } else {
+            val goHome = Intent(this, HomeActivity::class.java)
+            startActivity(goHome)
         }
     }
 
