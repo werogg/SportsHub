@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import edu.ub.sportshub.R
+import edu.ub.sportshub.event.EventActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.profile.ProfileActivity
 import kotlinx.android.synthetic.main.activity_home.*
@@ -22,7 +24,6 @@ class HomeActivity : AppCompatActivity() {
             val popupIntent = Intent(this, ProfileActivity::class.java)
             startActivity(popupIntent)
         }
-
         val fragmentAdapter = ViewPagerAdapter(supportFragmentManager)
         pager.adapter = fragmentAdapter
 

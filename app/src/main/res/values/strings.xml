@@ -50,7 +50,7 @@
     <string name="button_select_hour">"HOUR"</string>
     <string name="button_add_image">"ADD IMAGE"</string>
     <string name="button_add_event">"ADD EVENT"</string>
-    <string name="will_assist" translatable="false">Will assist</string>
+    <string name="will_assist">Assist</string>
     <string name="like" translatable="false">like</string>
     <!--End-->
 
@@ -61,7 +61,7 @@
     <!-- Profile -->
     <string name="title_activity_profile" translatable="false">Profile</string>
     <string name="button_edit_event">EDIT</string>
-    <string name="title_activity_edit_profile">edit profile</string>
+    <string name="title_activity_edit_profile" translatable="false">edit profile</string>
     <!-- End -->
 
 </resources>

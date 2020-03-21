@@ -17,6 +17,7 @@
             android:orientation="vertical" >
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/nikeCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -44,7 +45,7 @@
                             android:id="@+id/tv1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Football Match, Barcelona"
+                            android:text="Nike F.C"
                             android:textSize="25sp"
                             android:textStyle="bold" />
 
@@ -54,7 +55,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="15dp"
-                            android:text="Description" />
+                            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas imperdiet vel nunc id dignissim. In quis tortor sit..." />
 
                     </LinearLayout>
 
