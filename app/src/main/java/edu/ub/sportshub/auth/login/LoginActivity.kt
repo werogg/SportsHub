@@ -19,6 +19,7 @@ import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.User
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlin.system.exitProcess
 
 class LoginActivity : AppCompatActivity() {
 
@@ -82,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        return
+        exitProcess(0)
     }
 
     /**
