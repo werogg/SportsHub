@@ -81,6 +81,10 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    override fun onBackPressed() {
+        return
+    }
+
     /**
      * First state of login flow
      * Search email by username

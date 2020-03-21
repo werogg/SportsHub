@@ -44,6 +44,11 @@ class SignupActivity : AppCompatActivity() {
     }
 
 
+    override fun onBackPressed() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+    }
+
     /**
      * Signup logic
      * First, check if user +18 and username is not registered

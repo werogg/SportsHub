@@ -34,6 +34,11 @@ class LoginForgotPasswordActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    override fun onBackPressed() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun onButtonSendRecoveryEmail(email : String) {
         val authDatabaseHelper = AuthDatabaseHelper()
         authDatabaseHelper.sendPasswordResetEmail(email)
