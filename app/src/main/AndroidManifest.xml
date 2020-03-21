@@ -20,9 +20,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".home.HomeActivity"
-            android:noHistory="true">
-
-            </activity>
+            android:noHistory="true"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
         <activity
             android:name=".auth.signup.SignupActivity"
             android:label="@string/title_activity_register"
