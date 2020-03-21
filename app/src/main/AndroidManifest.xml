@@ -21,7 +21,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".home.HomeActivity"
-            android:noHistory="true"
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
