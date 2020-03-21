@@ -118,7 +118,7 @@
         app:layout_constraintTop_toBottomOf="@+id/description_text" />
 
     <Button
-        android:id="@+id/button_create"
+        android:id="@+id/edit_event_activity_edit_event_button"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_event_button"
