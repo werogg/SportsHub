@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -25,6 +24,7 @@ import edu.ub.sportshub.profile.ProfileActivity
 class EventActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMapView : MapView
+    private var popupWindowImage : PopupWindow? = null
     private var popupWindow : PopupWindow? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +77,12 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         editButton.setOnClickListener {
             onEditEventButtonClicked()
         }
+
+        val notificationsButton = findViewById<ImageView>(R.id.toolbar_secondary_notifications)
+
+        notificationsButton.setOnClickListener {
+            notificationsButtonClicked()
+        }
     }
 
     private fun onEditEventButtonClicked() {
@@ -98,26 +104,40 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val customView = inflater.inflate(R.layout.full_image, null)
         val coord = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
-        popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
+        popupWindowImage = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
         val image = customView.findViewById(R.id.fullImage) as ImageView
         image.setImageResource(R.drawable.ic_launcher_background)
         //pwindow.isOutsideTouchable = true
         //pwindow.isFocusable = true
-        popupWindow!!.showAtLocation(coord, Gravity.CENTER,0,0)
+        popupWindowImage!!.showAtLocation(coord, Gravity.CENTER,0,0)
 
         val goBackButton = customView.findViewById(R.id.goBackFloatingButton) as FloatingActionButton
         goBackButton.setOnClickListener {
-            popupWindow!!.dismiss()
-            popupWindow = null
+            popupWindowImage!!.dismiss()
+            popupWindowImage = null
         }
 
     }
 
+    private fun notificationsButtonClicked() {
+        val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val customView = inflater.inflate(R.layout.fragment_notifications_secondary, null)
+        val coord = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
+        popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
+        popupWindow!!.width = coord.width
+        popupWindow!!.height = coord.height
+        popupWindow!!.showAtLocation(coord, Gravity.CENTER,0,0)
+    }
+
     override fun onBackPressed() {
-        if (popupWindow != null) {
+        if (popupWindowImage != null) {
+            popupWindowImage!!.dismiss()
+            popupWindowImage = null
+        } else if (popupWindow != null) {
             popupWindow!!.dismiss()
             popupWindow = null
-        } else {
+        }
+        else {
             val goHome = Intent(this, HomeActivity::class.java)
             startActivity(goHome)
         }
@@ -154,11 +174,6 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onDestroy() {
         super.onDestroy()
         mMapView.onDestroy()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        mMapView.onSaveInstanceState(outState)
     }
 
     override fun onLowMemory() {
