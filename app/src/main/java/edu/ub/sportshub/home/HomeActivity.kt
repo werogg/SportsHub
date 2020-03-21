@@ -13,6 +13,7 @@ import edu.ub.sportshub.event.CreateEventActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.profile.ProfileActivity
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlin.system.exitProcess
 
 class HomeActivity : AppCompatActivity() {
 
@@ -80,47 +81,6 @@ class HomeActivity : AppCompatActivity() {
      * 5 clicks to logout
      */
     override fun onBackPressed() {
-
-        if (!::signoutToast.isInitialized) {
-            signoutToast = Toast.makeText(this, getString(R.string.four_clicks_left_logout), Toast.LENGTH_SHORT)
-            signoutToast.show()
-        }
-
-        backClicksCounter++;
-        when {
-            backClicksCounter > 4 -> authDatabaseHelper.signOut(this)
-            backClicksCounter == 1 -> {
-                signoutToast.cancel()
-                signoutToast = Toast.makeText(this, getString(R.string.four_clicks_left_logout), Toast.LENGTH_SHORT)
-                signoutToast.show()
-            }
-            backClicksCounter == 2 -> {
-                signoutToast.cancel()
-                signoutToast = Toast.makeText(this, getString(R.string.three_clicks_left_logout), Toast.LENGTH_SHORT)
-                signoutToast.show()
-            }
-            backClicksCounter == 3 -> {
-                signoutToast.cancel()
-                signoutToast = Toast.makeText(this, getString(R.string.two_clicks_left_logout), Toast.LENGTH_SHORT)
-                signoutToast.show()
-            }
-            backClicksCounter == 4 -> {
-                signoutToast.cancel()
-                signoutToast = Toast.makeText(this, getString(R.string.one_click_left_logout), Toast.LENGTH_SHORT)
-                signoutToast.show()
-            }
-        }
-
-        var delayTime = 3000L;
-        Thread(Runnable {
-            run(){
-                try {
-                    Thread.sleep(delayTime);
-                    backClicksCounter = 0;
-                } catch (e : InterruptedException) {
-                    e.printStackTrace();
-                }
-            }
-        }).start()
+        exitProcess(0)
     }
 }
