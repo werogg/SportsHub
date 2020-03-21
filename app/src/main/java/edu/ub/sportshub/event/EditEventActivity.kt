@@ -5,16 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.profile.ProfileActivity
 
-class CreateEventActivity : AppCompatActivity() {
+class EditEventActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_event)
+        setContentView(R.layout.activity_edit_event)
         setupActivityFunctionalities()
     }
 
@@ -44,17 +45,12 @@ class CreateEventActivity : AppCompatActivity() {
             homeTextClicked()
         }
 
-        val createEventButton = findViewById<Button>(R.id.create_event_activity_create_event_button)
+        val editEventButton = findViewById<Button>(R.id.edit_event_activity_edit_event_button)
 
-        createEventButton.setOnClickListener {
-            onCreateEventButtonClicked()
+        editEventButton.setOnClickListener {
+            onEditEventButtonClicked()
         }
 
-    }
-
-    private fun onCreateEventButtonClicked() {
-        val intent = Intent(this, EventActivity::class.java)
-        startActivity(intent)
     }
 
     private fun homeTextClicked() {
@@ -65,5 +61,10 @@ class CreateEventActivity : AppCompatActivity() {
     private fun profileClicked() {
         val popupIntent = Intent(this, ProfileActivity::class.java)
         startActivity(popupIntent)
+    }
+
+    private fun onEditEventButtonClicked() {
+        val intent = Intent(this, EventActivity::class.java)
+        startActivity(intent)
     }
 }

@@ -38,7 +38,9 @@
     <string name="button_add_event">GUARDAR</string>
     <string name="edit_event_text">Editar Evento</string>
     <string name="will_assist">Asistir</string>
-    <string name="button_edit_event">Editar</string>
-
-
+    <string name="button_edit_event">EDITAR</string>
+    <string name="four_clicks_left_logout">Faltan 4 clicks para cerrar la sesión</string>
+    <string name="three_clicks_left_logout">Faltan 3 clicks para cerrar la sesión</string>
+    <string name="two_clicks_left_logout">Faltan 2 clicks para cerrar la sesión</string>
+    <string name="one_click_left_logout">Faltan 1 clicks para cerrar la sesión</string>
 </resources>

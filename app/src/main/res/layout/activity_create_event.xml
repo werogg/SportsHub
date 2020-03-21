@@ -110,28 +110,25 @@
         android:layout_marginStart="224dp"
         android:layout_marginLeft="224dp"
         android:layout_marginTop="88dp"
-        android:background="@drawable/btn_event_bottom"
+        android:background="@drawable/btn_event_button"
         android:text="@string/button_add_image"
-        android:textColor="@drawable/btn_letr"
+        android:textColor="@color/white"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="@+id/image_selector"
         app:layout_constraintTop_toBottomOf="@+id/description_text" />
 
     <Button
-        android:id="@+id/button_create"
+        android:id="@+id/create_event_activity_create_event_button"
         android:layout_width="140dp"
-        android:layout_height="66dp"
-        android:layout_marginTop="36dp"
-        android:background="@drawable/btn_event_bottom"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_event_button"
         android:text="@string/button_add_event"
-        android:textColor="@drawable/btn_letr"
+        android:textColor="@color/white"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_selector"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/image_selector" />
 
     <ImageView
         android:id="@+id/image_selector"
