@@ -203,7 +203,7 @@
                             android:id="@+id/divider6"
                             android:layout_width="297dp"
                             android:layout_height="2dp"
-                            android:background="@drawable/btn_event_bottom" />
+                            android:background="@drawable/btn_event_button" />
 
                         <Space
                             android:layout_width="wrap_content"

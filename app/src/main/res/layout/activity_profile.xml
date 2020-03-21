@@ -2,8 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -12,7 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
@@ -224,7 +225,7 @@
     </ScrollView>
 
     <include
-        layout="@layout/layout_toolbar_primary_profile"
-        android:id="@+id/toolbar" />
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar_primary_profile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

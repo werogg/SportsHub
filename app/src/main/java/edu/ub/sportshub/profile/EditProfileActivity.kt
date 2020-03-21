@@ -18,7 +18,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_editprofile2)
+        setContentView(R.layout.activity_editprofile)
 
         val home = findViewById<TextView>(R.id.toolbar_my_profile_home)
         home.setOnClickListener(){
