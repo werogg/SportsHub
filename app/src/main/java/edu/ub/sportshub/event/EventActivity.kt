@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -20,6 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.profile.ProfileActivity
+import kotlin.system.exitProcess
 
 class EventActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -120,26 +122,24 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun notificationsButtonClicked() {
+        val displayMetrics = applicationContext.resources.displayMetrics
+        val dpValue1 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 350f, displayMetrics)
+        val dpValue2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480f, displayMetrics)
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val customView = inflater.inflate(R.layout.fragment_notifications_secondary, null)
         val coord = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
         popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
-        popupWindow!!.width = coord.width
-        popupWindow!!.height = coord.height
-        popupWindow!!.showAtLocation(coord, Gravity.CENTER,0,0)
+        popupWindow!!.width = dpValue1.toInt()
+        popupWindow!!.height = dpValue2.toInt()
+        popupWindow!!.showAtLocation(coord, Gravity.TOP,0,220)
     }
 
     override fun onBackPressed() {
         if (popupWindowImage != null) {
             popupWindowImage!!.dismiss()
             popupWindowImage = null
-        } else if (popupWindow != null) {
-            popupWindow!!.dismiss()
-            popupWindow = null
-        }
-        else {
-            val goHome = Intent(this, HomeActivity::class.java)
-            startActivity(goHome)
+        } else {
+            super.onBackPressed()
         }
     }
 

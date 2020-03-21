@@ -67,8 +67,21 @@
     <string name="two_clicks_left_logout">2 clicks left to logout</string>
     <string name="one_click_left_logout">1 click left to logout</string>
     <string name="followers">Followers</string>
-    <string name="followees">followees</string>
-    <string name="preferences">preferences</string>
+    <string name="followees">Followees</string>
+    <string name="preferences">Preferences</string>
+    <string name="activities">Activities</string>
+    <string name="my_events">My events</string>
+    <string name="my_activities">My activities</string>
+    <string name="events">Events</string>
+    <string name="new_profile_image">New image</string>
+    <string name="new_profile_description">Description</string>
+    <string name="add_preference">Add</string>
+    <string name="delete_preference">Remove</string>
+    <string name="profile_personal_information">Personal Information</string>
+    <string name="validate">Validate</string>
+    <string name="eventsFragment">Events</string>
+    <string name="usersFragment">Users</string>
+    <string name="mapFragment">Map</string>
     <!-- End -->
 
 </resources>

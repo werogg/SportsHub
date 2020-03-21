@@ -8,46 +8,56 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.PopupWindow
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.auth.login.LoginActivity
 import edu.ub.sportshub.home.HomeActivity
 
-
-class EditProfileActivity : AppCompatActivity() {
+class ProfileOtherActivity : AppCompatActivity() {
 
     private var popupWindow : PopupWindow? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_editprofile)
+        setContentView(R.layout.activity_profile_other)
 
         setupListeners()
     }
 
     private fun setupListeners() {
-        val home = findViewById<TextView>(R.id.toolbar_my_profile_home)
+        val home = findViewById<TextView>(R.id.toolbar_primary_home)
+
         home.setOnClickListener(){
             buttonHomeClicked()
         }
 
-        val validate = findViewById<Button>(R.id.btn_validate2)
-        validate.setOnClickListener(){
-            buttonSaveClicked()
-        }
-
-        val signout = findViewById<TextView>(R.id.toolbar_signout)
-        signout.setOnClickListener(){
-            textSignOutClicked()
-        }
-
-        val notificationsButton = findViewById<ImageView>(R.id.profile_toolbar_primary_notifications)
+        val notificationsButton = findViewById<ImageView>(R.id.toolbar_primary_notifications)
 
         notificationsButton.setOnClickListener {
             notificationsButtonClicked()
         }
+
+        val profileText = findViewById<TextView>(R.id.toolbar_primary_txt_my_profile)
+
+        profileText.setOnClickListener {
+            onProfileClick()
+        }
+
+        val profileImage = findViewById<CircleImageView>(R.id.toolbar_primary_image_my_profile)
+
+        profileImage.setOnClickListener {
+            onProfileClick()
+        }
+    }
+
+    private fun onProfileClick() {
+        val goProfile = Intent(this, ProfileActivity::class.java)
+        startActivity(goProfile)
     }
 
     private fun notificationsButtonClicked() {
@@ -56,25 +66,15 @@ class EditProfileActivity : AppCompatActivity() {
         val dpValue2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480f, displayMetrics)
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val customView = inflater.inflate(R.layout.fragment_notifications_primary, null)
-        val coord = findViewById<ConstraintLayout>(R.id.editprofile_constraint_layout)
+        val coord = findViewById<ConstraintLayout>(R.id.profile_other_constraint_layout)
         popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
         popupWindow!!.width = dpValue1.toInt()
         popupWindow!!.height = dpValue2.toInt()
-        popupWindow!!.showAtLocation(coord, Gravity.TOP,0,300)
-    }
-
-    private fun textSignOutClicked() {
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun buttonSaveClicked() {
-        val goProfile = Intent(this, ProfileActivity::class.java)
-        startActivity(goProfile)
+        popupWindow!!.showAtLocation(coord, Gravity.TOP,0,220)
     }
 
     private fun buttonHomeClicked() {
-        val goHome = Intent(this, HomeActivity::class.java)
-        startActivity(goHome)
+        val intent = Intent(this,HomeActivity::class.java)
+        startActivity(intent)
     }
 }

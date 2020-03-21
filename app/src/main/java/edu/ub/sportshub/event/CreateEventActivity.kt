@@ -1,16 +1,26 @@
 package edu.ub.sportshub.event
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.TypedValue
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.profile.ProfileActivity
 
 class CreateEventActivity : AppCompatActivity() {
+
+    private var popupWindow : PopupWindow? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +60,25 @@ class CreateEventActivity : AppCompatActivity() {
             onCreateEventButtonClicked()
         }
 
+        val notificationsButton = findViewById<ImageView>(R.id.toolbar_secondary_notifications)
+
+        notificationsButton.setOnClickListener {
+            notificationsButtonClicked()
+        }
+
+    }
+
+    private fun notificationsButtonClicked() {
+        val displayMetrics = applicationContext.resources.displayMetrics
+        val dpValue1 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 350f, displayMetrics)
+        val dpValue2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480f, displayMetrics)
+        val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val customView = inflater.inflate(R.layout.fragment_notifications_secondary, null)
+        val coord = findViewById<ConstraintLayout>(R.id.create_event_constraint_layout)
+        popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
+        popupWindow!!.width = dpValue1.toInt()
+        popupWindow!!.height = dpValue2.toInt()
+        popupWindow!!.showAtLocation(coord, Gravity.TOP,0,300)
     }
 
     private fun onCreateEventButtonClicked() {

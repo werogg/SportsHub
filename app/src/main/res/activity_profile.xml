@@ -297,7 +297,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="serif-monospace"
-                android:text=" My Events"
+                android:text="@string/my_events"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -344,7 +344,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="serif-monospace"
-                    android:text=" My Activities"
+                    android:text="@string/my_activities"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 

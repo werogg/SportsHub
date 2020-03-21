@@ -43,4 +43,20 @@
     <string name="three_clicks_left_logout">Faltan 3 clicks para cerrar la sesión</string>
     <string name="two_clicks_left_logout">Faltan 2 clicks para cerrar la sesión</string>
     <string name="one_click_left_logout">Faltan 1 clicks para cerrar la sesión</string>
+    <string name="followers">Seguidores</string>
+    <string name="followees">Seguidos</string>
+    <string name="preferences">Preferencias</string>
+    <string name="activities">Actividades</string>
+    <string name="my_events">Mis eventos</string>
+    <string name="my_activities">Mis actividades</string>
+    <string name="events">Eventos</string>
+    <string name="new_profile_image">Nueva Imagen</string>
+    <string name="new_profile_description">Descripción</string>
+    <string name="add_preference">Añadir</string>
+    <string name="delete_preference">Eliminar</string>
+    <string name="profile_personal_information">Información Personal</string>
+    <string name="validate">Validar</string>
+    <string name="eventsFragment">Eventos</string>
+    <string name="usersFragment">Usuarios</string>
+    <string name="mapFragment">Mapa</string>
 </resources>

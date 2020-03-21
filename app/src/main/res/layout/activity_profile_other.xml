@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_other_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -200,11 +201,11 @@
 
                     <TextView
                         android:id="@+id/txt_description"
-                        android:layout_width="194dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="0"
+                        android:layout_marginLeft="10dp"
                         android:fontFamily="serif-monospace"
-                        android:gravity="center"
+                        android:gravity="center|left"
                         android:text="@string/preferences"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -224,6 +225,7 @@
                             android:id="@+id/imageView13"
                             android:layout_width="19dp"
                             android:layout_height="26dp"
+                            android:layout_marginLeft="5dp"
                             app:srcCompat="@drawable/outline_star_border_black_48" />
 
                         <Space
@@ -311,8 +313,9 @@
                             android:id="@+id/txt_externevents"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
                             android:fontFamily="serif-monospace"
-                            android:text=" Events"
+                            android:text="@string/events"
                             android:textSize="24sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -349,8 +352,9 @@
                         android:id="@+id/txt_externactivities"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
                         android:fontFamily="serif-monospace"
-                        android:text=" Activities"
+                        android:text="@string/activities"
                         android:textSize="24sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -365,7 +369,7 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/layout_toolbar_primary_profile"
+        layout="@layout/layout_toolbar_primary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

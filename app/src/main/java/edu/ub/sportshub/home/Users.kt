@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 
 import edu.ub.sportshub.R
 import edu.ub.sportshub.profile.ProfileActivity
+import edu.ub.sportshub.profile.ProfileOtherActivity
 
 /**
  * A simple [Fragment] subclass.
@@ -33,10 +34,21 @@ class Users : Fragment() {
         userCard.setOnClickListener {
             userCardClicked()
         }
+
+        val userCard2 = view.findViewById<CardView>(R.id.userCard2)
+
+        userCard2.setOnClickListener {
+            userCard2Clicked()
+        }
     }
 
     private fun userCardClicked() {
         val intent = Intent(activity, ProfileActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun userCard2Clicked() {
+        val intent = Intent(activity, ProfileOtherActivity::class.java)
         startActivity(intent)
     }
 

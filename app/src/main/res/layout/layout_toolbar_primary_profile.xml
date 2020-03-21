@@ -15,7 +15,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/profile_toolbar_primary_notifications"
             android:layout_width="37dp"
             android:layout_height="38dp"
             android:tint="@color/colorPrimaryDark"
@@ -66,9 +66,9 @@
             android:text="1"
             android:textColor="@android:color/holo_red_dark"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-            app:layout_constraintStart_toStartOf="@+id/imageView4"
-            app:layout_constraintTop_toTopOf="@+id/imageView4"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_toolbar_primary_notifications"
+            app:layout_constraintStart_toStartOf="@+id/profile_toolbar_primary_notifications"
+            app:layout_constraintTop_toTopOf="@+id/profile_toolbar_primary_notifications"
             app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.appcompat.widget.Toolbar>
