@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">SportsHub!</string>
     <string name="title_activity_register" translatable="false">RegisterActivity</string>
 
@@ -60,8 +60,13 @@
 
     <!-- Profile -->
     <string name="title_activity_profile" translatable="false">Profile</string>
-    <string name="button_edit_event">EDIT</string>
+    <string name="button_edit_event">EDIT PROFILE</string>
     <string name="title_activity_edit_profile" translatable="false">edit profile</string>
+    <string name="followers" translatable="false">Followers</string>
+    <string name="followees" translatable="false">Followees</string>
+    <string name="preferences" translatable="false">Preferences</string>
     <!-- End -->
+
+
 
 </resources>
