@@ -109,10 +109,10 @@
         android:layout_height="66dp"
         android:layout_marginStart="224dp"
         android:layout_marginLeft="224dp"
-        android:layout_marginTop="88dp"
-        android:background="@drawable/btn_event_bottom"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/btn_event_button"
         android:text="@string/button_add_image"
-        android:textColor="@drawable/btn_letr"
+        android:textColor="@color/white"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="@+id/image_selector"
         app:layout_constraintTop_toBottomOf="@+id/description_text" />
@@ -120,29 +120,26 @@
     <Button
         android:id="@+id/button_create"
         android:layout_width="140dp"
-        android:layout_height="66dp"
-        android:layout_marginTop="36dp"
-        android:background="@drawable/btn_event_bottom"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_event_button"
         android:text="@string/button_edit_event"
-        android:textColor="@drawable/btn_letr"
+        android:textColor="@color/white"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_selector"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/image_selector" />
 
     <ImageView
         android:id="@+id/image_selector"
         android:layout_width="208dp"
         android:layout_height="149dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/description_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.147"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description_text"
-        android:contentDescription="@string/description_text"
         app:srcCompat="@drawable/event_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
