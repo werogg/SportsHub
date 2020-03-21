@@ -1,6 +1,7 @@
 package edu.ub.sportshub.event
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -17,7 +18,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
+import edu.ub.sportshub.home.HomeActivity
+import edu.ub.sportshub.profile.ProfileActivity
+import org.w3c.dom.Text
 
 class EventActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -38,6 +43,35 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         collapsableEventPicture.setOnClickListener {
             onBannerImageClick()
         }
+
+        val profileText = findViewById<TextView>(R.id.toolbar_secondary_txt_my_profile)
+
+        profileText.setOnClickListener {
+            onProfileClick()
+        }
+
+        val profileImage = findViewById<CircleImageView>(R.id.toolbar_secondary_image_my_profile)
+
+        profileImage.setOnClickListener {
+            onProfileClick()
+        }
+
+        val homeText = findViewById<TextView>(R.id.toolbar_secondary_home)
+
+        homeText.setOnClickListener {
+            onHomeClick()
+        }
+
+    }
+
+    private fun onHomeClick() {
+        val goHome = Intent(this, HomeActivity::class.java)
+        startActivity(goHome)
+    }
+
+    private fun onProfileClick() {
+        val goProfile = Intent(this, ProfileActivity::class.java)
+        startActivity(goProfile)
     }
 
     private fun onBannerImageClick() {

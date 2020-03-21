@@ -18,16 +18,24 @@ class EditProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editprofile)
 
-        val home = findViewById<TextView>(R.id.size)
+        val home = findViewById<TextView>(R.id.toolbar_primary_home)
         home.setOnClickListener(){
-            val gohome = Intent(this,HomeActivity::class.java)
-            startActivity(gohome)
+            buttonHomeClicked()
         }
 
         val validate = findViewById<ImageButton>(R.id.btn_validate)
         validate.setOnClickListener(){
-            val goprofile = Intent(this,ProfileActivity::class.java)
-            startActivity(goprofile)
+            buttonSaveClicked()
         }
+    }
+
+    private fun buttonSaveClicked() {
+        val goProfile = Intent(this, ProfileActivity::class.java)
+        startActivity(goProfile)
+    }
+
+    private fun buttonHomeClicked() {
+        val goHome = Intent(this, HomeActivity::class.java)
+        startActivity(goHome)
     }
 }

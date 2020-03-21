@@ -61,6 +61,7 @@
     <!-- Profile -->
     <string name="title_activity_profile" translatable="false">Profile</string>
     <string name="button_edit_event">EDIT</string>
+    <string name="title_activity_edit_profile">edit profile</string>
     <!-- End -->
 
 </resources>

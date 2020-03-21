@@ -16,6 +16,7 @@ import edu.ub.sportshub.R
 import edu.ub.sportshub.auth.signup.SignupActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
+import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.User
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -76,6 +77,8 @@ class LoginActivity : AppCompatActivity() {
         val user = textUser.text.toString()
         val password = textPassword.text.toString()
         executeLogin(user, password)
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
     }
 
     /**

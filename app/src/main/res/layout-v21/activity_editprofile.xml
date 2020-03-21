@@ -21,7 +21,7 @@
 
             <include
                 android:id="@+id/toolbar"
-                layout="@layout/layout_toolbar_secondary_editprofile" />
+                layout="@layout/layout_toolbar_primary" />
 
             <Space
                 android:layout_width="match_parent"

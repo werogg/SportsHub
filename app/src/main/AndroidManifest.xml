@@ -13,11 +13,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".event.CreateEventActivity" />
         <activity android:name=".event.EventActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".profile.ProfileActivity"
@@ -44,12 +39,16 @@
         <activity
             android:name=".MainActivity"
             android:noHistory="true">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
+        <activity
+            android:name=".profile.EditProfileActivity"
+            android:label="@string/title_activity_edit_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

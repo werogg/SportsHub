@@ -27,7 +27,7 @@
             app:tintMode="src_in" />
 
         <TextView
-            android:id="@+id/appName"
+            android:id="@+id/toolbar_my_profile_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txt_edit"
+            android:id="@+id/toolbar_edit_my_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
