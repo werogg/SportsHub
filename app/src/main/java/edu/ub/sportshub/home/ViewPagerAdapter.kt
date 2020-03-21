@@ -16,9 +16,10 @@ class ViewPagerAdapter(fm:FragmentManager) : FragmentPagerAdapter(fm){
             1 -> {
                 Users()
             }
-            else-> {
-                return Map()
+            2-> {
+                Map()
             }
+            else -> Events()
 
         }
     }
@@ -29,11 +30,10 @@ class ViewPagerAdapter(fm:FragmentManager) : FragmentPagerAdapter(fm){
 
     override fun getPageTitle(position: Int): CharSequence? {
         return when (position){
-            0 -> Resources.getSystem().getString(R.string.eventsFragment)
-            1 -> Resources.getSystem().getString(R.string.usersFragment)
-            else -> {
-                return Resources.getSystem().getString(R.string.mapFragment)
-            }
+            0 -> "Event"
+            1 -> "User"
+            2 -> "Map"
+            else -> "error"
         }
     }
 }

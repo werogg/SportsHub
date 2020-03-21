@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.get
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
@@ -77,8 +78,10 @@ class HomeActivity : AppCompatActivity() {
     private fun setupFragments() {
         val fragmentAdapter = ViewPagerAdapter(supportFragmentManager)
         pager.adapter = fragmentAdapter
-
         tab_layout.setupWithViewPager(pager)
+        tab_layout.getTabAt(0)?.text = getString(R.string.eventsFragment)
+            tab_layout.getTabAt(1)?.text = getString(R.string.usersFragment)
+            tab_layout.getTabAt(2)?.text =getString(R.string.mapFragment)
     }
 
     fun logout(view : View) {
