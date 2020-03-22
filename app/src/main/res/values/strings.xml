@@ -1,3 +1,87 @@
 <resources>
-    <string name="app_name">SportsHub</string>
+    <string name="app_name" translatable="false">SportsHub!</string>
+    <string name="title_activity_register" translatable="false">RegisterActivity</string>
+
+
+    <!-- Login & Signup Activity Resources -->
+    <string name="title_activity_login" translatable="false">Login</string>
+    <string name="btn_login">LOG IN</string>
+    <string name="btn_signup">SIGN UP</string>
+    <string name="txt_forgot">Forgotten your password?</string>
+    <string name="txt_user_hint">Username</string>
+    <string name="txt_fullname_hint">Full Name</string>
+    <string name="txt_password_hint">Password</string>
+    <string name="txt_repeat_password_hint">Repeat Password</string>
+    <string name="txt_email_hint">Email</string>
+    <string name="go_login_hint">Login</string>
+    <string name="cb_18y">I confirm that I am at least 18 years old</string>
+
+    <!-- Errors -->
+    <string name="error_empty_login_fields">Username/Password field is empty, please fill
+    them to login</string>
+    <string name="error_wrong_username">There is no account record with this username</string>
+    <string name="error_wrong_password">The password is invalid</string>
+    <string name="error_user_banned">Your account is banned, please contact the support</string>
+    <string name="error_user_not_verified">Your account is not verified.  Check your email to activate it</string>
+    <string name="error_age_not_permitted">You don\'t reach the permitted age to join our community</string>
+    <!-- End -->
+
+    <!-- Forgot Password Activity Resources -->
+    <string name="title_activity_login_popup">Forgot your password?</string>
+    <string name="txt_already_account">Already have an account?</string>
+    <string name="txt_forgot_mail_hint">Mail address</string>
+    <string name="btn_forgotpopup">SEND</string>
+    <string name="btn_back">VOLVER</string>
+    <string name="txt_forgotpopup">Enter the email address associated with this account, a recovery
+    email will be sent to you.</string>
+    <string name="password_recovery_email_sent">"A password recovery email was sent to "</string>
+    <string name="error_username_already_in_use">Username already in use!</string>
+    <string name="error_weak_password">Your password is too weak</string>
+    <string name="error_email_already_exists">This mail is already registered</string>
+    <string name="create_event_floating_button">Create</string>
+    <!-- End -->
+    <!--- Creation Event -->
+    <string name="create_event_text">Create Event</string>
+    <string name="title_text">"Title"</string>
+    <string name="where_text">"Where"</string>
+    <string name="when_text">"When ?"</string>
+    <string name="description_text">"Description"</string>
+    <string name="button_select_day">"DAY"</string>
+    <string name="button_select_hour">"HOUR"</string>
+    <string name="button_add_image">"ADD IMAGE"</string>
+    <string name="button_add_event">"ADD EVENT"</string>
+    <string name="will_assist">Assist</string>
+    <string name="like" translatable="false">like</string>
+    <!--End-->
+
+    <!-- Edit Event -->
+    <string name="edit_event_text">Edit Event</string>
+    <!--End-->
+
+    <!-- Profile -->
+    <string name="title_activity_profile" translatable="false">Profile</string>
+    <string name="button_edit_event">EDIT</string>
+    <string name="title_activity_edit_profile" translatable="false">edit profile</string>
+    <string name="four_clicks_left_logout">4 clicks left to logout</string>
+    <string name="three_clicks_left_logout">3 clicks left to logout</string>
+    <string name="two_clicks_left_logout">2 clicks left to logout</string>
+    <string name="one_click_left_logout">1 click left to logout</string>
+    <string name="followers">Followers</string>
+    <string name="followees">Followees</string>
+    <string name="preferences">Preferences</string>
+    <string name="activities">Activities</string>
+    <string name="my_events">My events</string>
+    <string name="my_activities">My activities</string>
+    <string name="events">Events</string>
+    <string name="new_profile_image">New image</string>
+    <string name="new_profile_description">Description</string>
+    <string name="add_preference">Add</string>
+    <string name="delete_preference">Remove</string>
+    <string name="profile_personal_information">Personal Information</string>
+    <string name="validate">Validate</string>
+    <string name="eventsFragment">Events</string>
+    <string name="usersFragment">Users</string>
+    <string name="mapFragment">Map</string>
+    <!-- End -->
+
 </resources>

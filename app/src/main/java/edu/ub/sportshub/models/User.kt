@@ -1,55 +1,50 @@
 package edu.ub.sportshub.models
 
 class User(
-    username: String,
-    fullname: String,
-    biography: String,
-    birthDate: String,
-    mail: String,
-    profilePicture: String,
-    uid: String,
-    banned: Boolean
+    private var username: String,
+    private var fullName: String,
+    private var biography: String,
+    private var signupDate: String,
+    private var email: String,
+    private var profilePicture: String,
+    private var uid: String,
+    private var banned: Boolean
 ) {
 
-    private var username : String = username
-        get() = field
-        set(value) {
-            field = value
-        }
-    private var fullname : String = fullname
-        get() = field
-        set(value) {
-            field = value
-        }
-    private var biography : String = biography
-        get() = field
-        set(value) {
-            field = value
-        }
-    private var birthDate : String = birthDate
-        get() = field
-        set(value) {
-            field = value
-        }
-    private var mail : String = mail
-        get() = field
-        set(value) {
-            field = value
-        }
-    private var profilePicture : String = profilePicture
-        get() = field
-        set(value) {
-            field = value
-        }
-    private var uid : String = uid
-        get() = field
-        set(value) {
-            field = value
-        }
-    private var banned : Boolean = banned
-        get() = field
-        set(value) {
-            field = value
-        }
+    constructor() : this(
+        "", "", "", "", "", "", "", false
+    )
+
+    fun getUsername() : String {
+        return username
+    }
+
+    fun getFullName() : String {
+        return fullName
+    }
+
+    fun getBiography() : String {
+        return biography
+    }
+
+    fun getSignupDate() : String {
+        return signupDate
+    }
+
+    fun getEmail() : String {
+        return email
+    }
+
+    fun getProfilePicture() : String {
+        return profilePicture
+    }
+
+    fun getUid() : String {
+        return uid
+    }
+
+    fun isBanned() : Boolean {
+        return banned
+    }
 
 }
