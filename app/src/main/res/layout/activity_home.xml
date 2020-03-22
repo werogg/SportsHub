@@ -35,8 +35,9 @@
 
     <SearchView
         android:id="@+id/searchView"
-        android:layout_width="410dp"
-        android:layout_height="49dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="false"
         android:gravity="center"
         android:iconifiedByDefault="false"
         app:layout_constraintEnd_toEndOf="parent"
