@@ -38,15 +38,17 @@ class Events : Fragment() {
         showFollowingUsersEvents()
     }
 
-    private fun retrieveUser() {
-
-    }
-
     private fun showFollowingUsersEvents() {
         var loggedUserUid = authDatabaseHelper.getCurrentUser()?.uid.toString()
         storeDatabaseHelper.retrieveUser(loggedUserUid).addOnSuccessListener {
             var user = it.toObject(User::class.java)
+            var followingUsers = user?.getFollowingUsers()
 
+            if (followingUsers != null) {
+                for (user in followingUsers) {
+                    // TODO get user events and show them
+                }
+            }
         }
 
     }
