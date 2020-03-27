@@ -134,6 +134,8 @@ class SignupActivity : AppCompatActivity() {
             fullname.text.toString(),
             "",
             Timestamp.now(),
+            mutableListOf("123", "456"),
+            mutableListOf("789", "101112"),
             email.text.toString(),
             "",
             authDatabaseHelper.getCurrentUser()!!.uid,
