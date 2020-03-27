@@ -78,8 +78,6 @@ class LoginActivity : AppCompatActivity() {
         val user = textUser.text.toString()
         val password = textPassword.text.toString()
         executeLogin(user, password)
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
     }
 
     override fun onBackPressed() {
