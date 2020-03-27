@@ -1,5 +1,7 @@
 package edu.ub.sportshub.event
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,26 +9,52 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.PopupWindow
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.firebase.Timestamp
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.profile.ProfileActivity
+import kotlinx.android.synthetic.main.activity_create_event.*
+import java.util.*
 
 class CreateEventActivity : AppCompatActivity() {
 
     private var popupWindow : PopupWindow? = null
+    private val c = Calendar.getInstance()
+    private val year = c.get(Calendar.YEAR)
+    private val month = c.get(Calendar.MONTH)
+    private val day = c.get(Calendar.DAY_OF_MONTH)
+    private val hour = c.get(Calendar.HOUR_OF_DAY)
+    private val minute = c.get(Calendar.MINUTE)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_event)
         setupActivityFunctionalities()
+
+        val buttonDay = findViewById<Button>(R.id.button_day)
+        val buttonHour = findViewById<Button>(R.id.button_hour)
+        val buttonNewEvent = findViewById<Button>(R.id.button_add_event)
+
+
+        buttonDay.setOnClickListener(){
+            onButtonDay()
+        }
+
+        buttonHour.setOnClickListener(){
+            onButtonHour()
+        }
+
+        buttonNewEvent.setOnClickListener(){
+            onButtonNewEvent()
+        }
+
+
     }
+
 
     private fun setupActivityFunctionalities() {
         setupListeners()
@@ -54,7 +82,7 @@ class CreateEventActivity : AppCompatActivity() {
             homeTextClicked()
         }
 
-        val createEventButton = findViewById<Button>(R.id.create_event_activity_create_event_button)
+        val createEventButton = findViewById<Button>(R.id.button_add_event)
 
         createEventButton.setOnClickListener {
             onCreateEventButtonClicked()
@@ -95,4 +123,42 @@ class CreateEventActivity : AppCompatActivity() {
         val popupIntent = Intent(this, ProfileActivity::class.java)
         startActivity(popupIntent)
     }
+    private fun onButtonDay() {
+
+        val dpd = DatePickerDialog(this,DatePickerDialog.OnDateSetListener {
+                view, year, month, day ->
+
+            viewTextCreate.text = " $day  $month  $year"
+        }, year, month, day)
+
+        dpd.show()
+
+        //dateStamp = Timestamp(Date(year,month,day))
+
+    }
+
+    private fun onButtonHour() {
+
+        val c = Calendar.getInstance()
+
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+
+            viewTextCreate.text = "$hour $minute"
+        }
+
+        TimePickerDialog(this, timeSetListener, hour, minute, true).show()
+
+
+    }
+
+    private fun onButtonNewEvent() {
+        val titeEvent = findViewById<EditText>(R.id.title_text)
+        val whereEvent = findViewById<EditText>(R.id.where_text)  //Geocoder
+        val descEvent = findViewById<EditText>(R.id.description_text)
+
+        var dateStamp : Timestamp? = null
+
+    }
+
+
 }

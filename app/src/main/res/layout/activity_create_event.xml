@@ -112,7 +112,7 @@
         app:layout_constraintTop_toTopOf="@+id/image_selector" />
 
     <Button
-        android:id="@+id/create_event_activity_create_event_button"
+        android:id="@+id/button_add_event"
         android:layout_width="140dp"
         android:layout_height="55dp"
         android:background="@drawable/rounded_button_shape"
