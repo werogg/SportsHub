@@ -1,10 +1,14 @@
 package edu.ub.sportshub.models
 
+import com.google.firebase.Timestamp
+
 class User(
     private var username: String,
     private var fullName: String,
     private var biography: String,
-    private var signupDate: String,
+    private var signupDate: Timestamp,
+    private var eventsLiked: MutableList<String>,
+    private var eventsAssist: MutableList<String>,
     private var email: String,
     private var profilePicture: String,
     private var uid: String,
@@ -12,7 +16,7 @@ class User(
 ) {
 
     constructor() : this(
-        "", "", "", "", "", "", "", false
+        "", "", "", Timestamp.now(), mutableListOf(), mutableListOf(), "", "", "", false
     )
 
     fun getUsername() : String {
@@ -27,7 +31,7 @@ class User(
         return biography
     }
 
-    fun getSignupDate() : String {
+    fun getSignupDate() : Timestamp {
         return signupDate
     }
 
@@ -47,4 +51,11 @@ class User(
         return banned
     }
 
+    fun getEventsLiked() : MutableList<String> {
+        return eventsLiked
+    }
+
+    fun getEventsAssist() : MutableList<String> {
+        return eventsAssist
+    }
 }
