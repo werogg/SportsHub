@@ -61,7 +61,7 @@ class User(
     fun getEventsAssist() : MutableList<String> {
         return eventsAssist
     }
-
+  
     fun getFollowingUsers() : MutableList<String> {
         return followingUsers
     }
