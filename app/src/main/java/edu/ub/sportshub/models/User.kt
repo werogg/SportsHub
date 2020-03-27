@@ -9,6 +9,8 @@ class User(
     private var signupDate: Timestamp,
     private var eventsLiked: MutableList<String>,
     private var eventsAssist: MutableList<String>,
+    private var followingUsers: MutableList<String>,
+    private var followersUsers: MutableList<String>,
     private var email: String,
     private var profilePicture: String,
     private var uid: String,
@@ -16,7 +18,8 @@ class User(
 ) {
 
     constructor() : this(
-        "", "", "", Timestamp.now(), mutableListOf(), mutableListOf(), "", "", "", false
+        "", "", "", Timestamp.now(), mutableListOf(), mutableListOf(),
+        mutableListOf(), mutableListOf(), "", "", "", false
     )
 
     fun getUsername() : String {
@@ -57,5 +60,13 @@ class User(
 
     fun getEventsAssist() : MutableList<String> {
         return eventsAssist
+    }
+
+    fun getFollowingUsers() : MutableList<String> {
+        return followingUsers
+    }
+
+    fun getFollowersUsers() : MutableList<String> {
+        return followersUsers
     }
 }
