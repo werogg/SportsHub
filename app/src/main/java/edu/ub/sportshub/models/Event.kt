@@ -73,4 +73,25 @@ class Event(
     fun getAssists() : Int {
         return usersAssists.size
     }
+
+
+    fun getPosition() : GeoPoint {
+        return position
+    }
+
+    fun getStartEventDate() : Timestamp {
+        return startEventDate
+    }
+
+    fun getCreatorUid() : String {
+        return creatorUid
+    }
+
+    fun getUsersLiked() : MutableList<String> {
+        return usersLiked
+    }
+
+    fun getUsersAssists() : MutableList<String> {
+        return usersAssists
+    }
 }
