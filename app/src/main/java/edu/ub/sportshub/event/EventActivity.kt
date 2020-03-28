@@ -2,6 +2,7 @@ package edu.ub.sportshub.event
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.TypedValue
@@ -17,7 +18,9 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.firestore.FieldValue
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
@@ -27,7 +30,6 @@ import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.utils.StringUtils
-import kotlin.system.exitProcess
 
 class EventActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -39,6 +41,8 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
     private var eventId : String? = null
     private var event : Event? = null
     private var googleMap : GoogleMap? = null
+    private var liked = false
+    private var assist = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +81,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         val dateTextView = findViewById<TextView>(R.id.dateTextView)
         val hourTextView = findViewById<TextView>(R.id.hourTextView)
         val addressTextView = findViewById<TextView>(R.id.addressTextView)
+        val likeButton = findViewById<ExtendedFloatingActionButton>(R.id.like_floating_button)
 
         // Update them with event info
         eventDescriptionTextView.text = event?.getDescription()
@@ -85,6 +90,14 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         likesTextView.text = StringUtils.compactNumberString(event?.getLikes()!!)
         assistsTextView.text = StringUtils.compactNumberString(event?.getAssists()!!)
 
+        if (event?.getUsersLiked()!!.contains(mAuthDatabaseHelper.getCurrentUser()?.uid)) {
+            liked = true
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                likeButton.icon = getDrawable(R.drawable.baseline_thumb_up_alt_24)
+            } else {
+                likeButton.icon = resources.getDrawable(R.drawable.baseline_thumb_up_alt_24)
+            }
+        }
 
         Picasso.with(applicationContext)
             .load(event?.getEventImage())
@@ -155,6 +168,122 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         notificationsButton.setOnClickListener {
             notificationsButtonClicked()
         }
+
+        val likeButton = findViewById<ExtendedFloatingActionButton>(R.id.like_floating_button)
+
+        likeButton.setOnClickListener {
+            onLikeButtonClicked()
+        }
+
+        val assistButton = findViewById<ExtendedFloatingActionButton>(R.id.will_assist_floating_button)
+
+        assistButton.setOnClickListener {
+            onAssistButtonClicked()
+        }
+    }
+
+    private fun onAssistButtonClicked() {
+        // TODO notifications
+
+        if (eventId != null) {
+
+            val assistButton = findViewById<ExtendedFloatingActionButton>(R.id.will_assist_floating_button)
+            val userId = mAuthDatabaseHelper.getCurrentUser()?.uid
+
+            if (assist) {
+                // Remove the user from event's user liked list
+                mStoreDatabaseHelper.retrieveEventRef(eventId!!)
+                    .update(
+                        "usersAssists",
+                        FieldValue.arrayRemove(userId)
+                    )
+                // Remove the event from the user's events liked list
+                mStoreDatabaseHelper.retrieveUserRef(userId!!)
+                    .update("eventsAssist",
+                        FieldValue.arrayRemove(eventId)
+                    )
+                assist = false
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    assistButton.icon = getDrawable(R.drawable.outline_star_border_24)
+                } else {
+                    assistButton.icon = resources.getDrawable(R.drawable.outline_star_border_24)
+                }
+            } else {
+                // Add the user to event's user liked list
+                mStoreDatabaseHelper.retrieveEventRef(eventId!!)
+                    .update(
+                        "usersAssists",
+                        FieldValue.arrayUnion(mAuthDatabaseHelper.getCurrentUser()?.uid)
+                    )
+
+                // Add the event from to user's events liked list
+                mStoreDatabaseHelper.retrieveUserRef(userId!!)
+                    .update("eventsAssist",
+                        FieldValue.arrayUnion(eventId)
+                    )
+
+                assist = true
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    assistButton.icon = getDrawable(R.drawable.baseline_star_24)
+                } else {
+                    assistButton.icon = resources.getDrawable(R.drawable.baseline_star_24)
+                }
+            }
+        }
+    }
+
+    private fun onLikeButtonClicked() {
+        // TODO notifications
+
+        if (eventId != null) {
+            val likeButton = findViewById<ExtendedFloatingActionButton>(R.id.like_floating_button)
+            val userId = mAuthDatabaseHelper.getCurrentUser()?.uid
+
+            if (liked) {
+                // Remove the user from event's user liked list
+                mStoreDatabaseHelper.retrieveEventRef(eventId!!)
+                    .update(
+                        "usersLiked",
+                        FieldValue.arrayRemove(userId)
+                    )
+                // Remove the event from the user's events liked list
+                mStoreDatabaseHelper.retrieveUserRef(userId!!)
+                    .update("eventsLiked",
+                        FieldValue.arrayRemove(eventId)
+                    )
+                liked = false
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    likeButton.icon = getDrawable(R.drawable.outline_thumb_up_alt_24)
+                } else {
+                    likeButton.icon = resources.getDrawable(R.drawable.outline_thumb_up_alt_24)
+                }
+            } else {
+                // Add the user to event's user liked list
+                mStoreDatabaseHelper.retrieveEventRef(eventId!!)
+                    .update(
+                        "usersLiked",
+                        FieldValue.arrayUnion(mAuthDatabaseHelper.getCurrentUser()?.uid)
+                    )
+
+                // Add the event from to user's events liked list
+                mStoreDatabaseHelper.retrieveUserRef(userId!!)
+                    .update("eventsLiked",
+                        FieldValue.arrayUnion(eventId)
+                    )
+
+                liked = true
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    likeButton.icon = getDrawable(R.drawable.baseline_thumb_up_alt_24)
+                } else {
+                    likeButton.icon = resources.getDrawable(R.drawable.baseline_thumb_up_alt_24)
+                }
+            }
+        }
+
     }
 
     private fun onEditEventButtonClicked() {
