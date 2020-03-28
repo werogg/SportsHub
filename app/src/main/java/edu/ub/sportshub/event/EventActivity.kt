@@ -72,7 +72,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         val assistsTextView = findViewById<TextView>(R.id.assistsTextView)
         val likesTextView = findViewById<TextView>(R.id.likesTextView)
         val eventTitleTextView = findViewById<TextView>(R.id.eventNameTextView)
-        val eventDescriptionTextView = findViewById<TextView>(R.id.eventNameTextView)
+        val eventDescriptionTextView = findViewById<TextView>(R.id.descTextView)
         val eventBannerImageView = findViewById<ImageView>(R.id.bannerImage)
         val dateTextView = findViewById<TextView>(R.id.dateTextView)
         val hourTextView = findViewById<TextView>(R.id.hourTextView)
