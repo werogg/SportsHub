@@ -38,6 +38,9 @@ class Event(
         GeoPoint(0.0, 0.0)
     )
 
+    fun getEventImage() : String {
+        return eventImage
+    }
 
     /**
      * Check if this [Event] is completed.

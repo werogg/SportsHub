@@ -2,14 +2,21 @@ package edu.ub.sportshub.home
 
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 
 import edu.ub.sportshub.R
 import edu.ub.sportshub.event.EventActivity
@@ -17,6 +24,8 @@ import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
+import edu.ub.sportshub.utils.ImageUtils
+import java.lang.Exception
 
 /**
  * A simple [Fragment] subclass.
@@ -104,9 +113,17 @@ class Events : Fragment() {
 
 
         for (event in eventsToShow) {
+            val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
             val eventView = LayoutInflater.from(context).inflate(R.layout.event_view, null);
             val eventViewTitleView = eventView.findViewById<TextView>(R.id.title)
             val eventViewDescriptionView = eventView.findViewById<TextView>(R.id.description)
+            val eventViewBannerImage = eventView.findViewById<ImageView>(R.id.eventImage)
+
+            Picasso.with(context)
+                .load(event.getEventImage())
+                .resize(dpSize, dpSize)
+                .into(eventViewBannerImage)
+
 
             eventViewTitleView.text = event.getTitle()
             eventViewDescriptionView.text = event.getDescription()
