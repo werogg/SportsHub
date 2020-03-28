@@ -23,7 +23,7 @@ import edu.ub.sportshub.models.User
 /**
  * A simple [Fragment] subclass.
  */
-class Events : Fragment() {
+class EventsFragment : Fragment() {
 
     private var storeDatabaseHelper = StoreDatabaseHelper()
     private var authDatabaseHelper = AuthDatabaseHelper()

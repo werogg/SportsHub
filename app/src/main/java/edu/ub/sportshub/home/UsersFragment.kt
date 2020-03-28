@@ -16,7 +16,7 @@ import edu.ub.sportshub.profile.ProfileOtherActivity
 /**
  * A simple [Fragment] subclass.
  */
-class Users : Fragment() {
+class UsersFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
