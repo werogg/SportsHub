@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -17,25 +18,94 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
+import edu.ub.sportshub.helpers.AuthDatabaseHelper
+import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
+import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.profile.ProfileActivity
+import edu.ub.sportshub.utils.StringUtils
 import kotlin.system.exitProcess
 
 class EventActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private var mAuthDatabaseHelper = AuthDatabaseHelper()
+    private var mStoreDatabaseHelper = StoreDatabaseHelper()
     private lateinit var mMapView : MapView
     private var popupWindowImage : PopupWindow? = null
     private var popupWindow : PopupWindow? = null
+    private var eventId : String? = null
+    private var event : Event? = null
+    private var googleMap : GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event)
 
+        eventId = intent.getStringExtra("eventId")
         setupActivityFunctionalities(savedInstanceState)
+
+        if (eventId != null) {
+            mStoreDatabaseHelper.retrieveEvent(eventId!!).addOnSuccessListener {
+                event = it.toObject(Event::class.java)
+
+                if (event?.getCreatorUid()!! == mAuthDatabaseHelper.getCurrentUser()?.uid) {
+                    val editButton = findViewById<FloatingActionButton>(R.id.event_edit_event_floating_button)
+                    editButton.visibility = View.VISIBLE
+                }
+
+                updateEventInfo()
+            } .addOnFailureListener {
+                finish()
+            }
+        }
+
     }
 
+    /**
+     * Update the event related info
+     */
+    private fun updateEventInfo() {
+        // Retrieve all info views
+        val assistsTextView = findViewById<TextView>(R.id.assistsTextView)
+        val likesTextView = findViewById<TextView>(R.id.likesTextView)
+        val eventTitleTextView = findViewById<TextView>(R.id.eventNameTextView)
+        val eventDescriptionTextView = findViewById<TextView>(R.id.eventNameTextView)
+        val eventBannerImageView = findViewById<ImageView>(R.id.bannerImage)
+        val dateTextView = findViewById<TextView>(R.id.dateTextView)
+        val hourTextView = findViewById<TextView>(R.id.hourTextView)
+        val addressTextView = findViewById<TextView>(R.id.addressTextView)
+
+        // Update them with event info
+        eventDescriptionTextView.text = event?.getDescription()
+        eventTitleTextView.text = event?.getTitle()
+
+        likesTextView.text = StringUtils.compactNumberString(event?.getLikes()!!)
+        assistsTextView.text = StringUtils.compactNumberString(event?.getAssists()!!)
+
+
+        Picasso.with(applicationContext)
+            .load(event?.getEventImage())
+            .into(eventBannerImageView)
+        dateTextView.text = StringUtils.getFormatedDateFromTimestamp(event?.getStartEventDate()!!)
+        hourTextView.text = StringUtils.getFormatedHourFromTimestamp(event?.getStartEventDate()!!)
+        addressTextView.text = StringUtils.getAddressFromLocation(applicationContext,
+            event?.getPosition()?.latitude!!, event?.getPosition()?.longitude!!)
+
+        // Animate and focus google map
+        if (googleMap != null) {
+            val coords = LatLng(event!!.getPosition().latitude, event!!.getPosition().longitude)
+            googleMap?.addMarker(MarkerOptions().position(coords).title(event?.getTitle()))
+            val location = CameraUpdateFactory.newLatLngZoom(coords, 15F)
+            googleMap?.animateCamera(location)
+        }
+    }
+
+    /**
+     * Setup all activity functionalities
+     */
     private fun setupActivityFunctionalities(savedInstanceState: Bundle?) {
         setupListeners()
         setupMaps(savedInstanceState)
@@ -102,15 +172,16 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         startActivity(goProfile)
     }
 
+
     private fun onBannerImageClick() {
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val customView = inflater.inflate(R.layout.full_image, null)
         val coord = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
         popupWindowImage = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
         val image = customView.findViewById(R.id.fullImage) as ImageView
-        image.setImageResource(R.drawable.ic_launcher_background)
-        //pwindow.isOutsideTouchable = true
-        //pwindow.isFocusable = true
+        Picasso.with(applicationContext)
+            .load(event?.getEventImage())
+            .into(image)
         popupWindowImage!!.showAtLocation(coord, Gravity.CENTER,0,0)
 
         val goBackButton = customView.findViewById(R.id.goBackFloatingButton) as FloatingActionButton
@@ -144,11 +215,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
-        val eventName = findViewById<TextView>(R.id.eventNameTextView)
-        val coords = LatLng(41.3855398, 2.1639748)
-        googleMap?.addMarker(MarkerOptions().position(coords).title(eventName.text.toString()))
-        val location = CameraUpdateFactory.newLatLngZoom(coords, 15F)
-        googleMap?.animateCamera(location)
+        this.googleMap = googleMap
     }
 
     override fun onStart() {
