@@ -109,7 +109,8 @@ class Events : Fragment() {
             for (eventId in eventsOwnedIds) {
                 storeDatabaseHelper.retrieveEvent(eventId).addOnSuccessListener {
                     val event = it.toObject(Event::class.java)
-                    if (event != null) {
+                    // Just add it to the view if the event is not deleted
+                    if (event != null && !event.isDeleted()) {
                         // Add it to events that will be shown and update the view
                         eventsToShow.add(event)
                         updateShowingEvents()

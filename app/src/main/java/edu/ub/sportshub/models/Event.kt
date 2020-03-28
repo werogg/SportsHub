@@ -94,4 +94,8 @@ class Event(
     fun getUsersAssists() : MutableList<String> {
         return usersAssists
     }
+
+    fun isDeleted() : Boolean {
+        return deleted
+    }
 }
