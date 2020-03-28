@@ -2,30 +2,23 @@ package edu.ub.sportshub.home
 
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.TypedValue
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
-
 import edu.ub.sportshub.R
 import edu.ub.sportshub.event.EventActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
-import edu.ub.sportshub.utils.ImageUtils
-import java.lang.Exception
 
 /**
  * A simple [Fragment] subclass.
@@ -51,21 +44,29 @@ class Events : Fragment() {
         showFollowingUsersEvents()
     }
 
+    /**
+     * Setup listener to refresh events with swipe down
+     */
     private fun setupRefreshListener() {
-        var refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
+        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
         refreshingLayout?.setOnRefreshListener {
             eventsToShow.clear()
             showFollowingUsersEvents()
         }
     }
 
+    /**
+     * First step to show events on the home page
+     */
     private fun showFollowingUsersEvents() {
-        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
-        var loggedUserUid = authDatabaseHelper.getCurrentUser()?.uid.toString()
+        if (maxEventsReached()) return
+        val loggedUserUid = authDatabaseHelper.getCurrentUser()?.uid.toString()
+        // Retrieve the current logged user
         storeDatabaseHelper.retrieveUser(loggedUserUid).addOnSuccessListener { loggedUser ->
             val currentUser = loggedUser.toObject(User::class.java)
-            val followingUsers = currentUser?.getFollowingUsers()
 
+            // Get his followed users and for every user go to second step
+            val followingUsers = currentUser?.getFollowingUsers()
             if (followingUsers != null) {
                 for (followedUserUid in followingUsers) {
                     showFollowingUsersEventsSecondStep(followedUserUid)
@@ -74,36 +75,48 @@ class Events : Fragment() {
         }
     }
 
+    /**
+     * Second step to show events on the home page
+     */
     private fun showFollowingUsersEventsSecondStep(followedUserUid: String) {
-        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
-
+        if (maxEventsReached()) return
+        // Retrieve the followed user and go to the Third step
         storeDatabaseHelper.retrieveUser(followedUserUid).addOnSuccessListener {
             val followedUser = it.toObject(User::class.java)
             showFollowingUsersEventsThirdStep(followedUser)
         }
     }
 
+    /**
+     * Third step to show events on the home page
+     */
     private fun showFollowingUsersEventsThirdStep(followedUser: User?) {
-        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
+        if (maxEventsReached()) return
+        // Get user events ids
         val eventsOwnedIds = followedUser?.getEventsOwned()
         if (eventsOwnedIds != null) {
+            // Retrieve every event by his eventId
             for (eventId in eventsOwnedIds) {
                 storeDatabaseHelper.retrieveEvent(eventId).addOnSuccessListener {
                     val event = it.toObject(Event::class.java)
                     if (event != null) {
+                        // Add it to events that will be shown and update the view
                         eventsToShow.add(event)
                         updateShowingEvents()
                     }
-                }.addOnFailureListener {
-                    //refreshingLayout?.isRefreshing = false
                 }
             }
         }
     }
 
+    /**
+     * Update the view which contains the events
+     */
     private fun updateShowingEvents() {
+        // Get the refreshing layout to check his state
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
 
+        // Sort the events by time
         eventsToShow.sortBy {
             it.getCreationDate().seconds
         }
@@ -137,5 +150,9 @@ class Events : Fragment() {
             eventContainer?.addView(eventView)
         }
         refreshingLayout?.isRefreshing = false
+    }
+
+    private fun maxEventsReached() : Boolean {
+        return eventsToShow.size == 30
     }
 }
