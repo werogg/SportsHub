@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
 import android.widget.*
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import edu.ub.sportshub.R
@@ -132,7 +133,12 @@ class SignupActivity : AppCompatActivity() {
             username.text.toString(),
             fullname.text.toString(),
             "",
-            Date().toString(),
+            Timestamp.now(),
+            mutableListOf(),
+            mutableListOf(),
+            mutableListOf(),
+            mutableListOf(),
+            mutableListOf(),
             email.text.toString(),
             "",
             authDatabaseHelper.getCurrentUser()!!.uid,
