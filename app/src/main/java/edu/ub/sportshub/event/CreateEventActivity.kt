@@ -2,7 +2,6 @@ package edu.ub.sportshub.event
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
@@ -21,19 +20,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
-import edu.ub.sportshub.helpers.DatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.utils.StringUtils
 import kotlinx.android.synthetic.main.activity_create_event.*
-import kotlinx.android.synthetic.main.activity_event.*
 import java.io.IOException
 import java.util.*
 
@@ -168,7 +163,6 @@ class CreateEventActivity : AppCompatActivity() {
         buttonDay.setOnClickListener {
             onButtonDay()
         }
-
 
 
         val buttonHour = findViewById<Button>(R.id.button_hour)
@@ -313,9 +307,14 @@ class CreateEventActivity : AppCompatActivity() {
         val titleEvent = findViewById<EditText>(R.id.title_text)
         val whereEvent = findViewById<AutoCompleteTextView>(R.id.where_text)  //Geocoder
         val descEvent = findViewById<EditText>(R.id.description_text)
+        val dayStamp = Timestamp(Date(year, month, day, hour, minute))
+        var notCorrectTime = false
+
+        if ((dayStamp.seconds-Timestamp.now().seconds)>0) notCorrectTime=true
 
         if (dateSelected and hourSelected and imageUploaded and titleEvent.text.toString().isNotEmpty()
-        and whereEvent.text.toString().isNotEmpty() and descEvent.text.toString().isNotEmpty()) {
+        and whereEvent.text.toString().isNotEmpty() and descEvent.text.toString().isNotEmpty()
+        and !latitude.equals(0.0) and !longitude.equals(0.0) and notCorrectTime) {
 
             val event = Event(
                 "",
@@ -323,7 +322,7 @@ class CreateEventActivity : AppCompatActivity() {
                 titleEvent.text.toString(),
                 descEvent.text.toString(),
                 imageSelected!!,
-                Timestamp(Date(year, month, day, hour, minute)),
+                dayStamp,
                 Timestamp.now(),
                 false,
                 mutableListOf(),
