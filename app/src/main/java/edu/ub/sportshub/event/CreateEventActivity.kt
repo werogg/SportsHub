@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.text.Editable
-import android.text.Layout
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.Gravity

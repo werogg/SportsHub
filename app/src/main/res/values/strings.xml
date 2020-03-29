@@ -84,6 +84,7 @@
     <string name="mapFragment">Map</string>
     <string name="event_image_uploaded">Image Uploaded!</string>
     <string name="event_created">The Event has been created!</string>
+    <string name="event_image_not_uploaded">Error: Image not uploaded! Try again!</string>
     <!-- End -->
 
 </resources>
