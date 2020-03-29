@@ -40,12 +40,17 @@ class EventsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainer)
+        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
 
         setupRefreshListener()
 
+        eventsToShow.clear()
+        eventContainer?.removeAllViews()
+
+        refreshingLayout?.isRefreshing = true
+
         Thread(Runnable {
-            eventsToShow.clear()
-            eventContainer?.removeAllViews()
+
             showFollowingUsersEvents()
         }).start()
     }
@@ -67,8 +72,6 @@ class EventsFragment : Fragment() {
      * First step to show events on the home page
      */
     private fun showFollowingUsersEvents() {
-        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
-        refreshingLayout?.isRefreshing = true
         if (maxEventsReached()) return
         val loggedUserUid = authDatabaseHelper.getCurrentUser()?.uid.toString()
         // Retrieve the current logged user
