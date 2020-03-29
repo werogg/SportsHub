@@ -1,11 +1,16 @@
 package edu.ub.sportshub.event
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.location.Address
+import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -16,7 +21,9 @@ import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.profile.ProfileActivity
+import edu.ub.sportshub.utils.StringUtils
 import kotlinx.android.synthetic.main.activity_create_event.*
+import java.io.IOException
 import java.util.*
 
 class CreateEventActivity : AppCompatActivity() {
@@ -28,6 +35,10 @@ class CreateEventActivity : AppCompatActivity() {
     private val day = c.get(Calendar.DAY_OF_MONTH)
     private val hour = c.get(Calendar.HOUR_OF_DAY)
     private val minute = c.get(Calendar.MINUTE)
+    private var suggestionsAddresses = mutableListOf<Address>()
+    private var autoCompleteAdapter : ArrayAdapter<String>? = null
+    private var latitude = 0.0
+    private var longitude = 0.0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +69,64 @@ class CreateEventActivity : AppCompatActivity() {
 
     private fun setupActivityFunctionalities() {
         setupListeners()
+        setupAddressAutocomplete()
+    }
+
+   private fun notifyResult(value : String) {
+        if (value.isNotEmpty()) {
+            autoCompleteAdapter?.clear()
+
+            for (string in StringUtils.getAdressArrayFromName(this, value)) {
+                autoCompleteAdapter?.add(string)
+            }
+
+            for (address in suggestionsAddresses) {
+                autoCompleteAdapter?.add("${address.featureName} ${address.countryName} ${address.postalCode}")
+            }
+
+            autoCompleteAdapter!!.notifyDataSetChanged()
+        }
+    }
+
+    private fun setupAddressAutocomplete() {
+        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
+
+        autoCompleteAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line)
+        autoCompleteAdapter!!.setNotifyOnChange(false)
+
+        val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.where_text)
+
+        autoCompleteTextView.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                var value = p0.toString()
+
+                if (value.isNotEmpty()) {
+                    Thread(Runnable {
+                        notifyResult(value)
+                    }).start()
+
+                } else {
+                    autoCompleteAdapter?.clear()
+                }
+            }
+        })
+
+        autoCompleteTextView.setOnItemClickListener { _, _, i, _ ->
+            if (i < suggestionsAddresses.size) {
+                val selected = suggestionsAddresses[i]
+                latitude = selected.latitude
+                longitude = selected.longitude
+            }
+        }
+
+        autoCompleteTextView.threshold = 2
+        autoCompleteTextView.setAdapter(autoCompleteAdapter)
     }
 
     /**
@@ -93,7 +162,6 @@ class CreateEventActivity : AppCompatActivity() {
         notificationsButton.setOnClickListener {
             notificationsButtonClicked()
         }
-
     }
 
     private fun notificationsButtonClicked() {
@@ -153,10 +221,16 @@ class CreateEventActivity : AppCompatActivity() {
 
     private fun onButtonNewEvent() {
         val titeEvent = findViewById<EditText>(R.id.title_text)
-        val whereEvent = findViewById<EditText>(R.id.where_text)  //Geocoder
+        val whereEvent = findViewById<AutoCompleteTextView>(R.id.where_text)  //Geocoder
         val descEvent = findViewById<EditText>(R.id.description_text)
 
         var dateStamp : Timestamp? = null
+
+        // Obtener lat y long de address
+        val locLat = StringUtils.getLocationFromName(applicationContext, whereEvent.text.toString())?.latitude
+        val locLong = StringUtils.getLocationFromName(applicationContext, whereEvent.text.toString())?.longitude
+        val toast = Toast.makeText(applicationContext, "Latitude: $locLat\nLongitude: $locLong", Toast.LENGTH_LONG)
+        toast.show()
 
     }
 
