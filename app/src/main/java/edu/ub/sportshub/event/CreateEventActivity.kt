@@ -66,7 +66,6 @@ class CreateEventActivity : AppCompatActivity() {
 
     }
 
-
     private fun setupActivityFunctionalities() {
         setupListeners()
         setupAddressAutocomplete()
@@ -78,10 +77,6 @@ class CreateEventActivity : AppCompatActivity() {
 
             for (string in StringUtils.getAdressArrayFromName(this, value)) {
                 autoCompleteAdapter?.add(string)
-            }
-
-            for (address in suggestionsAddresses) {
-                autoCompleteAdapter?.add("${address.featureName} ${address.countryName} ${address.postalCode}")
             }
 
             autoCompleteAdapter!!.notifyDataSetChanged()
@@ -107,6 +102,7 @@ class CreateEventActivity : AppCompatActivity() {
                 var value = p0.toString()
 
                 if (value.isNotEmpty()) {
+
                     Thread(Runnable {
                         runOnUiThread {
                             notifyResult(value)
