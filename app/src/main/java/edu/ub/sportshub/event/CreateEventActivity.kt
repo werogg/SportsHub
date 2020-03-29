@@ -66,7 +66,6 @@ class CreateEventActivity : AppCompatActivity() {
 
     }
 
-
     private fun setupActivityFunctionalities() {
         setupListeners()
         setupAddressAutocomplete()
@@ -83,7 +82,7 @@ class CreateEventActivity : AppCompatActivity() {
             for (address in suggestionsAddresses) {
                 autoCompleteAdapter?.add("${address.featureName} ${address.countryName} ${address.postalCode}")
             }
-
+          
             autoCompleteAdapter!!.notifyDataSetChanged()
         }
     }
