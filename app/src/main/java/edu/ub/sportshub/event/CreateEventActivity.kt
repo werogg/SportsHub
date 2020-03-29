@@ -8,12 +8,15 @@ import android.content.Intent
 import android.location.Address
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.Layout
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -55,6 +58,8 @@ class CreateEventActivity : AppCompatActivity() {
     private var databaseHelper = StoreDatabaseHelper()
     private var authDatabaseHelper = AuthDatabaseHelper()
     private var imageSelected : String? = null
+    private var progressBar : ProgressBar? = null
+    private var addressHandler : Handler? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,18 +145,26 @@ class CreateEventActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val value = p0.toString()
+                if (addressHandler == null) addressHandler = Handler()
 
-                if (value.isNotEmpty()) {
-                    Thread(Runnable {
-                        runOnUiThread {
-                            notifyResult(value)
-                        }
-                    }).start()
+                val runnable = Runnable {
+                    val value = p0.toString()
 
-                } else {
-                    autoCompleteAdapter?.clear()
+                    if (value.isNotEmpty()) {
+                        Thread(Runnable {
+                            runOnUiThread {
+                                notifyResult(value)
+                            }
+                        }).start()
+
+                    } else {
+                        autoCompleteAdapter?.clear()
+                    }
                 }
+
+                addressHandler!!.removeCallbacks(runnable)
+                addressHandler!!.postDelayed(runnable, 2000)
+
             }
         })
 
@@ -275,8 +288,15 @@ class CreateEventActivity : AppCompatActivity() {
     }
 
     private fun uploadImage() {
+        val rootLayout = findViewById<ConstraintLayout>(R.id.create_event_constraint_layout)
+        progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleLarge)
+        var params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        params.addRule(RelativeLayout.CENTER_VERTICAL)
+        params.addRule(RelativeLayout.CENTER_HORIZONTAL)
+        rootLayout.addView(progressBar, params)
 
         if (filePath != null){
+            progressBar?.visibility = View.VISIBLE
             val key = UUID.randomUUID().toString()
 
             val reference = storageReference.child(
@@ -285,6 +305,14 @@ class CreateEventActivity : AppCompatActivity() {
             reference.putFile(filePath!!)
                 .addOnSuccessListener {
                     getImageUrl(reference)
+                }
+                .addOnFailureListener {
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.event_image_not_uploaded),
+                        Toast.LENGTH_SHORT
+                        ).show()
+                    progressBar?.visibility = View.GONE
                 }
         }
 
@@ -296,7 +324,11 @@ class CreateEventActivity : AppCompatActivity() {
             imageUploaded = true
             Toast.makeText(this, getString(R.string.event_image_uploaded), Toast.LENGTH_SHORT)
                 .show()
+            progressBar?.visibility = View.GONE
         }
+            .addOnFailureListener {
+                progressBar?.visibility = View.GONE
+            }
     }
 
     private fun onCreateEventButtonClicked() {
