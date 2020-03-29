@@ -2,7 +2,6 @@ package edu.ub.sportshub.event
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
@@ -22,18 +21,15 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
-import edu.ub.sportshub.helpers.DatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.utils.StringUtils
 import kotlinx.android.synthetic.main.activity_create_event.*
-import kotlinx.android.synthetic.main.activity_event.*
 import java.io.IOException
 import java.util.*
 
@@ -48,8 +44,6 @@ class CreateEventActivity : AppCompatActivity() {
     private var minute = calendar.get(Calendar.MINUTE)
     private var suggestionsAddresses = mutableListOf<Address>()
     private var autoCompleteAdapter : ArrayAdapterNoFilter? = null
-    private var latitude = 0.0
-    private var longitude = 0.0
     private val PICK_IMAGE_REQUEST = 22
     private var filePath : Uri? = null
     private var firebaseStorage = FirebaseStorage.getInstance()
@@ -72,65 +66,6 @@ class CreateEventActivity : AppCompatActivity() {
     private fun setupActivityFunctionalities() {
         setupListeners()
         setupAddressAutocomplete()
-    }
-
-   private fun notifyResult(value : String) {
-        if (value.isNotEmpty()) {
-            autoCompleteAdapter?.clear()
-
-            for (string in StringUtils.getAdressArrayFromName(this, value)) {
-                autoCompleteAdapter?.add(string)
-            }
-
-            for (address in suggestionsAddresses) {
-                autoCompleteAdapter?.add("${address.featureName} ${address.countryName} ${address.postalCode}")
-            }
-          
-            autoCompleteAdapter!!.notifyDataSetChanged()
-        }
-    }
-
-    private fun setupAddressAutocomplete() {
-        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
-
-        autoCompleteAdapter = ArrayAdapterNoFilter(this, android.R.layout.simple_dropdown_item_1line)
-        autoCompleteAdapter!!.setNotifyOnChange(false)
-
-        val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.where_text)
-
-        autoCompleteTextView.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                var value = p0.toString()
-
-                if (value.isNotEmpty()) {
-                    Thread(Runnable {
-                        runOnUiThread {
-                            notifyResult(value)
-                        }
-                    }).start()
-
-                } else {
-                    autoCompleteAdapter?.clear()
-                }
-            }
-        })
-
-        autoCompleteTextView.setOnItemClickListener { _, _, i, _ ->
-            if (i < suggestionsAddresses.size) {
-                val selected = suggestionsAddresses[i]
-                latitude = selected.latitude
-                longitude = selected.longitude
-            }
-        }
-
-        autoCompleteTextView.threshold = 2
-        autoCompleteTextView.setAdapter(autoCompleteAdapter)
     }
 
     /**
@@ -169,8 +104,6 @@ class CreateEventActivity : AppCompatActivity() {
             onButtonDay()
         }
 
-
-
         val buttonHour = findViewById<Button>(R.id.button_hour)
 
         buttonHour.setOnClickListener {
@@ -190,6 +123,62 @@ class CreateEventActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupAddressAutocomplete() {
+        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
+
+        autoCompleteAdapter = ArrayAdapterNoFilter(this, android.R.layout.simple_dropdown_item_1line)
+        autoCompleteAdapter!!.setNotifyOnChange(false)
+
+        val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.where_text)
+
+        autoCompleteTextView.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val value = p0.toString()
+
+                if (value.isNotEmpty()) {
+                    Thread(Runnable {
+                        runOnUiThread {
+                            notifyResult(value)
+                        }
+                    }).start()
+
+                } else {
+                    autoCompleteAdapter?.clear()
+                }
+            }
+        })
+
+        autoCompleteTextView.threshold = 2
+        autoCompleteTextView.setAdapter(autoCompleteAdapter)
+    }
+
+   private fun notifyResult(value : String) {
+        if (value.isNotEmpty()) {
+            autoCompleteAdapter?.clear()
+
+            for (string in StringUtils.getAdressArrayFromName(this, value)) {
+                autoCompleteAdapter?.add(string)
+            }
+
+            for (address in suggestionsAddresses) {
+                autoCompleteAdapter?.add("${address.featureName} ${address.countryName} ${address.postalCode}")
+            }
+          
+            autoCompleteAdapter!!.notifyDataSetChanged()
+        }
+    }
+
+    private fun homeTextClicked() {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+    }
+
 
     private fun notificationsButtonClicked() {
         val displayMetrics = applicationContext.resources.displayMetrics
@@ -204,17 +193,11 @@ class CreateEventActivity : AppCompatActivity() {
         popupWindow!!.showAtLocation(coord, Gravity.TOP,0,300)
     }
 
-
-
-    private fun homeTextClicked() {
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
-    }
-
     private fun profileClicked() {
         val popupIntent = Intent(this, ProfileActivity::class.java)
         startActivity(popupIntent)
     }
+
     private fun onButtonDay() {
 
         val dpd = DatePickerDialog(this,DatePickerDialog.OnDateSetListener {
@@ -271,7 +254,7 @@ class CreateEventActivity : AppCompatActivity() {
             filePath = data.data
             try {
                 // Setting image on image view using Bitmap
-                var bitmap = MediaStore
+                val bitmap = MediaStore
                         .Images
                     .Media
                     .getBitmap(
@@ -295,19 +278,26 @@ class CreateEventActivity : AppCompatActivity() {
         if (filePath != null){
             val key = UUID.randomUUID().toString()
 
-            var reference = storageReference.child(
+            val reference = storageReference.child(
                 "images/events/$key"
             )
             reference.putFile(filePath!!)
                 .addOnSuccessListener {
-                    Toast.makeText(this, getString(R.string.event_image_uploaded), Toast.LENGTH_SHORT)
-                        .show()
-                    imageUploaded = true
-                    imageSelected = reference.downloadUrl.toString()
+                    getImageUrl(reference)
                 }
         }
 
     }
+
+    private fun getImageUrl(reference: StorageReference) {
+        reference.downloadUrl.addOnSuccessListener {
+            imageSelected = it.toString()
+            imageUploaded = true
+            Toast.makeText(this, getString(R.string.event_image_uploaded), Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
     private fun onCreateEventButtonClicked() {
 
         val titleEvent = findViewById<EditText>(R.id.title_text)
@@ -316,6 +306,9 @@ class CreateEventActivity : AppCompatActivity() {
 
         if (dateSelected and hourSelected and imageUploaded and titleEvent.text.toString().isNotEmpty()
         and whereEvent.text.toString().isNotEmpty() and descEvent.text.toString().isNotEmpty()) {
+
+            val location = StringUtils.getLocationFromName(this, whereEvent.text.toString())
+
 
             val event = Event(
                 "",
@@ -328,18 +321,24 @@ class CreateEventActivity : AppCompatActivity() {
                 false,
                 mutableListOf(),
                 mutableListOf(),
-                GeoPoint(latitude, longitude)
+                GeoPoint(location?.latitude!!, location?.longitude!!)
             )
+
             databaseHelper.getEventsCollection().add(event)
                 .addOnSuccessListener {
-                    it.update("id", it.id)
+                    val eventId = it.id
+                    it.update("id", eventId)
                     Toast.makeText(applicationContext, getString(R.string.event_created), Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, EventActivity::class.java)
-                    intent.putExtra("eventId", it.id)
-                    startActivity(intent)
+                    goToEventActivity(eventId)
                 }
         }
 
+    }
+
+    private fun goToEventActivity(eventId: String) {
+        val intent = Intent(this, EventActivity::class.java)
+        intent.putExtra("eventId", eventId)
+        startActivity(intent)
     }
 
 
