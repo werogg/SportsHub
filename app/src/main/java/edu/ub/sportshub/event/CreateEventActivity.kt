@@ -6,8 +6,6 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.location.Address
-import android.location.Geocoder
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,6 +13,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.Timestamp
 import de.hdodenhof.circleimageview.CircleImageView
@@ -23,7 +22,6 @@ import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.utils.StringUtils
 import kotlinx.android.synthetic.main.activity_create_event.*
-import java.io.IOException
 import java.util.*
 
 class CreateEventActivity : AppCompatActivity() {
