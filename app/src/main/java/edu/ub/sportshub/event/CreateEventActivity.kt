@@ -36,7 +36,7 @@ class CreateEventActivity : AppCompatActivity() {
     private val hour = c.get(Calendar.HOUR_OF_DAY)
     private val minute = c.get(Calendar.MINUTE)
     private var suggestionsAddresses = mutableListOf<Address>()
-    private var autoCompleteAdapter : ArrayAdapter<String>? = null
+    private var autoCompleteAdapter : ArrayAdapterNoFilter? = null
     private var latitude = 0.0
     private var longitude = 0.0
 
@@ -91,7 +91,7 @@ class CreateEventActivity : AppCompatActivity() {
     private fun setupAddressAutocomplete() {
         setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
 
-        autoCompleteAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line)
+        autoCompleteAdapter = ArrayAdapterNoFilter(this, android.R.layout.simple_dropdown_item_1line)
         autoCompleteAdapter!!.setNotifyOnChange(false)
 
         val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.where_text)
@@ -108,7 +108,9 @@ class CreateEventActivity : AppCompatActivity() {
 
                 if (value.isNotEmpty()) {
                     Thread(Runnable {
-                        notifyResult(value)
+                        runOnUiThread {
+                            notifyResult(value)
+                        }
                     }).start()
 
                 } else {
