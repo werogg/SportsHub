@@ -1,5 +1,7 @@
 package edu.ub.sportshub.event
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -18,15 +20,24 @@ import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.profile.ProfileActivity
+import kotlinx.android.synthetic.main.activity_create_event.*
+import java.util.*
 
 class EditEventActivity : AppCompatActivity() {
 
     private var popupWindow : PopupWindow? = null
+    private val calendar = Calendar.getInstance()
+    private var year = calendar.get(Calendar.YEAR)
+    private var month = calendar.get(Calendar.MONTH)
+    private var day = calendar.get(Calendar.DAY_OF_MONTH)
+    private var hour = calendar.get(Calendar.HOUR_OF_DAY)
+    private var minute = calendar.get(Calendar.MINUTE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_event)
         setupActivityFunctionalities()
+        //Cargar cuando se crea el layout los datos del evento
     }
 
     private fun setupActivityFunctionalities() {
@@ -55,16 +66,35 @@ class EditEventActivity : AppCompatActivity() {
             homeTextClicked()
         }
 
-        val editEventButton = findViewById<Button>(R.id.edit_event_activity_edit_event_button)
-
-        editEventButton.setOnClickListener {
-            onEditEventButtonClicked()
-        }
 
         val notificationsButton = findViewById<ImageView>(R.id.toolbar_secondary_notifications)
 
         notificationsButton.setOnClickListener {
             notificationsButtonClicked()
+        }
+
+        val buttonDay = findViewById<Button>(R.id.button_day)
+
+        buttonDay.setOnClickListener {
+            onButtonDay()
+        }
+
+        val buttonHour = findViewById<Button>(R.id.button_hour)
+
+        buttonHour.setOnClickListener {
+            onButtonHour()
+        }
+
+        val buttonImage = findViewById<Button>(R.id.button_image)
+
+        buttonImage.setOnClickListener {
+            onButtonImageClicked()
+        }
+
+        val editEventButton = findViewById<Button>(R.id.edit_event_activity_edit_event_button)
+
+        editEventButton.setOnClickListener {
+            onEditEventButtonClicked()
         }
 
     }
@@ -92,7 +122,34 @@ class EditEventActivity : AppCompatActivity() {
         startActivity(popupIntent)
     }
 
+    private fun onButtonDay() {
+        
+        val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener {
+                _, year, month, day ->
+            this.year = year
+            this.month = month
+            this.day = day
+            viewTextCreate.text = "$day/$month/$year"
+        }, year, month, day)
+
+        dpd.show()
+    }
+
+    private fun onButtonHour() {
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+            this.hour = hour
+            this.minute = minute
+            viewTextCreate.text = "$hour:$minute"
+        }
+        TimePickerDialog(this, timeSetListener, hour, minute, true).show()
+    }
+
+    private fun onButtonImageClicked() {
+        TODO("Not yet implemented")
+    }
+
     private fun onEditEventButtonClicked() {
+
         val intent = Intent(this, EventActivity::class.java)
         startActivity(intent)
     }
