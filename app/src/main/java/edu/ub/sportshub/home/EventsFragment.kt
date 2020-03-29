@@ -77,6 +77,7 @@ class EventsFragment : Fragment() {
 
             // Get his followed users and for every user go to second step
             val followingUsers = currentUser?.getFollowingUsers()
+            followingUsers?.add(currentUser.getUid())
             if (followingUsers != null) {
                 for (followedUserUid in followingUsers) {
                     showFollowingUsersEventsSecondStep(followedUserUid)
