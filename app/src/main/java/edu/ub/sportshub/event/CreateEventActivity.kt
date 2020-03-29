@@ -18,6 +18,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -308,11 +309,12 @@ class CreateEventActivity : AppCompatActivity() {
         and whereEvent.text.toString().isNotEmpty() and descEvent.text.toString().isNotEmpty()) {
 
             val location = StringUtils.getLocationFromName(this, whereEvent.text.toString())
+            val currentUserUid = authDatabaseHelper.getCurrentUser()?.uid!!
 
 
             val event = Event(
                 "",
-                authDatabaseHelper.getCurrentUser()?.uid!!,
+                currentUserUid,
                 titleEvent.text.toString(),
                 descEvent.text.toString(),
                 imageSelected!!,
@@ -328,11 +330,20 @@ class CreateEventActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     val eventId = it.id
                     it.update("id", eventId)
-                    Toast.makeText(applicationContext, getString(R.string.event_created), Toast.LENGTH_SHORT).show()
-                    goToEventActivity(eventId)
+                    addEventToUser(currentUserUid, eventId)
                 }
         }
 
+    }
+
+    private fun addEventToUser(userId: String, eventId: String) {
+        databaseHelper.retrieveUserRef(userId).update(
+            "eventsOwned",
+            FieldValue.arrayUnion(eventId)
+        ).addOnSuccessListener {
+            Toast.makeText(applicationContext, getString(R.string.event_created), Toast.LENGTH_SHORT).show()
+            goToEventActivity(eventId)
+        }
     }
 
     private fun goToEventActivity(eventId: String) {
