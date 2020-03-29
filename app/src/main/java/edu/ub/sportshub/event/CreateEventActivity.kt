@@ -19,12 +19,17 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
+import edu.ub.sportshub.helpers.AuthDatabaseHelper
+import edu.ub.sportshub.helpers.DatabaseHelper
+import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
+import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.utils.StringUtils
 import kotlinx.android.synthetic.main.activity_create_event.*
@@ -35,12 +40,12 @@ import java.util.*
 class CreateEventActivity : AppCompatActivity() {
 
     private var popupWindow : PopupWindow? = null
-    private val c = Calendar.getInstance()
-    private val year = c.get(Calendar.YEAR)
-    private val month = c.get(Calendar.MONTH)
-    private val day = c.get(Calendar.DAY_OF_MONTH)
-    private val hour = c.get(Calendar.HOUR_OF_DAY)
-    private val minute = c.get(Calendar.MINUTE)
+    private val calendar = Calendar.getInstance()
+    private var year = calendar.get(Calendar.YEAR)
+    private var month = calendar.get(Calendar.MONTH)
+    private var day = calendar.get(Calendar.DAY_OF_MONTH)
+    private var hour = calendar.get(Calendar.HOUR_OF_DAY)
+    private var minute = calendar.get(Calendar.MINUTE)
     private var suggestionsAddresses = mutableListOf<Address>()
     private var autoCompleteAdapter : ArrayAdapterNoFilter? = null
     private var latitude = 0.0
@@ -49,6 +54,12 @@ class CreateEventActivity : AppCompatActivity() {
     private var filePath : Uri? = null
     private var firebaseStorage = FirebaseStorage.getInstance()
     private var storageReference = firebaseStorage.reference
+    private var dateSelected = false
+    private var hourSelected = false
+    private var imageUploaded = false
+    private var databaseHelper = StoreDatabaseHelper()
+    private var authDatabaseHelper = AuthDatabaseHelper()
+    private var imageSelected : String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,12 +204,7 @@ class CreateEventActivity : AppCompatActivity() {
         popupWindow!!.showAtLocation(coord, Gravity.TOP,0,300)
     }
 
-    private fun onCreateEventButtonClicked() {
 
-
-        val intent = Intent(this, EventActivity::class.java)
-        startActivity(intent)
-    }
 
     private fun homeTextClicked() {
         val intent = Intent(this, HomeActivity::class.java)
@@ -212,29 +218,26 @@ class CreateEventActivity : AppCompatActivity() {
     private fun onButtonDay() {
 
         val dpd = DatePickerDialog(this,DatePickerDialog.OnDateSetListener {
-                view, year, month, day ->
-
-            viewTextCreate.text = " $day  $month  $year"
+                _, year, month, day ->
+            this.year = year
+            this.month = month
+            this.day = day
+            dateSelected = true
+            viewTextCreate.text = "$day/$month/$year"
         }, year, month, day)
 
         dpd.show()
-
-        //dateStamp = Timestamp(Date(year,month,day))
-
     }
 
     private fun onButtonHour() {
 
-        val c = Calendar.getInstance()
-
-        val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
-
-            viewTextCreate.text = "$hour $minute"
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+            this.hour = hour
+            this.minute = minute
+            hourSelected = true
+            viewTextCreate.text = "$hour:$minute"
         }
-
         TimePickerDialog(this, timeSetListener, hour, minute, true).show()
-
-
     }
 
     private fun onButtonImageClicked() {
@@ -299,26 +302,46 @@ class CreateEventActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     Toast.makeText(this, getString(R.string.event_image_uploaded), Toast.LENGTH_SHORT)
                         .show()
+                    imageUploaded = true
+                    imageSelected = reference.downloadUrl.toString()
+                }
+        }
+
+    }
+    private fun onCreateEventButtonClicked() {
+
+        val titleEvent = findViewById<EditText>(R.id.title_text)
+        val whereEvent = findViewById<AutoCompleteTextView>(R.id.where_text)  //Geocoder
+        val descEvent = findViewById<EditText>(R.id.description_text)
+
+        if (dateSelected and hourSelected and imageUploaded and titleEvent.text.toString().isNotEmpty()
+        and whereEvent.text.toString().isNotEmpty() and descEvent.text.toString().isNotEmpty()) {
+
+            val event = Event(
+                "",
+                authDatabaseHelper.getCurrentUser()?.uid!!,
+                titleEvent.text.toString(),
+                descEvent.text.toString(),
+                imageSelected!!,
+                Timestamp(Date(year, month, day, hour, minute)),
+                Timestamp.now(),
+                false,
+                mutableListOf(),
+                mutableListOf(),
+                GeoPoint(latitude, longitude)
+            )
+            databaseHelper.getEventsCollection().add(event)
+                .addOnSuccessListener {
+                    it.update("id", it.id)
+                    Toast.makeText(applicationContext, getString(R.string.event_created), Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, EventActivity::class.java)
+                    intent.putExtra("eventId", it.id)
+                    startActivity(intent)
                 }
         }
 
     }
 
-
-    private fun onButtonNewEvent() {
-        val titeEvent = findViewById<EditText>(R.id.title_text)
-        val whereEvent = findViewById<AutoCompleteTextView>(R.id.where_text)  //Geocoder
-        val descEvent = findViewById<EditText>(R.id.description_text)
-
-        var dateStamp : Timestamp? = null
-
-        // Obtener lat y long de address
-        val locLat = StringUtils.getLocationFromName(applicationContext, whereEvent.text.toString())?.latitude
-        val locLong = StringUtils.getLocationFromName(applicationContext, whereEvent.text.toString())?.longitude
-        val toast = Toast.makeText(applicationContext, "Latitude: $locLat\nLongitude: $locLong", Toast.LENGTH_LONG)
-        toast.show()
-
-    }
 
 
 }

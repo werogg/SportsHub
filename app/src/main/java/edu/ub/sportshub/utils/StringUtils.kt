@@ -45,8 +45,12 @@ object StringUtils {
     fun getAddressFromLocation(context: Context, latitude: Double, longitude: Double) : String {
         val geocoder = Geocoder(context)
         val location = geocoder.getFromLocation(latitude, longitude, 1)
-        val address = location[0]
-        return address.getAddressLine(0)
+        return if (location.size > 0) {
+            val address = location[0]
+            address.getAddressLine(0)
+        } else {
+            ""
+        }
     }
 
     fun getAdressArrayFromName(context: Context, string: String): MutableList<String> {

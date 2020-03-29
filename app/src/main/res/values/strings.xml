@@ -83,6 +83,7 @@
     <string name="usersFragment">Users</string>
     <string name="mapFragment">Map</string>
     <string name="event_image_uploaded">Image Uploaded!</string>
+    <string name="event_created">The Event has been created!</string>
     <!-- End -->
 
 </resources>
