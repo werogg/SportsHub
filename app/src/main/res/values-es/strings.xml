@@ -59,4 +59,5 @@
     <string name="eventsFragment">Eventos</string>
     <string name="usersFragment">Usuarios</string>
     <string name="mapFragment">Mapa</string>
+    <string name="event_image_uploaded">Imagen Subida!</string>
 </resources>

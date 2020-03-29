@@ -2,11 +2,14 @@ package edu.ub.sportshub.event
 
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.location.Address
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -16,12 +19,17 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.Timestamp
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.utils.StringUtils
 import kotlinx.android.synthetic.main.activity_create_event.*
+import kotlinx.android.synthetic.main.activity_event.*
+import java.io.IOException
 import java.util.*
 
 class CreateEventActivity : AppCompatActivity() {
@@ -37,30 +45,16 @@ class CreateEventActivity : AppCompatActivity() {
     private var autoCompleteAdapter : ArrayAdapterNoFilter? = null
     private var latitude = 0.0
     private var longitude = 0.0
+    private val PICK_IMAGE_REQUEST = 22
+    private var filePath : Uri? = null
+    private var firebaseStorage = FirebaseStorage.getInstance()
+    private var storageReference = firebaseStorage.reference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_event)
         setupActivityFunctionalities()
-
-        val buttonDay = findViewById<Button>(R.id.button_day)
-        val buttonHour = findViewById<Button>(R.id.button_hour)
-        val buttonNewEvent = findViewById<Button>(R.id.button_add_event)
-
-
-        buttonDay.setOnClickListener(){
-            onButtonDay()
-        }
-
-        buttonHour.setOnClickListener(){
-            onButtonHour()
-        }
-
-        buttonNewEvent.setOnClickListener(){
-            onButtonNewEvent()
-        }
-
 
     }
 
@@ -134,7 +128,7 @@ class CreateEventActivity : AppCompatActivity() {
     private fun setupListeners() {
         val textProfile = findViewById<TextView>(R.id.toolbar_secondary_txt_my_profile)
 
-        textProfile.setOnClickListener(){
+        textProfile.setOnClickListener {
             profileClicked()
         }
 
@@ -150,18 +144,41 @@ class CreateEventActivity : AppCompatActivity() {
             homeTextClicked()
         }
 
-        val createEventButton = findViewById<Button>(R.id.button_add_event)
 
-        createEventButton.setOnClickListener {
-            onCreateEventButtonClicked()
-        }
 
         val notificationsButton = findViewById<ImageView>(R.id.toolbar_secondary_notifications)
 
         notificationsButton.setOnClickListener {
             notificationsButtonClicked()
         }
+
+        val buttonDay = findViewById<Button>(R.id.button_day)
+
+        buttonDay.setOnClickListener {
+            onButtonDay()
+        }
+
+
+
+        val buttonHour = findViewById<Button>(R.id.button_hour)
+
+        buttonHour.setOnClickListener {
+            onButtonHour()
+        }
+
+        val buttonImage = findViewById<Button>(R.id.button_image)
+
+        buttonImage.setOnClickListener {
+            onButtonImageClicked()
+        }
+
+        val createEventButton = findViewById<Button>(R.id.button_add_event)
+
+        createEventButton.setOnClickListener {
+            onCreateEventButtonClicked()
+        }
     }
+
 
     private fun notificationsButtonClicked() {
         val displayMetrics = applicationContext.resources.displayMetrics
@@ -177,6 +194,8 @@ class CreateEventActivity : AppCompatActivity() {
     }
 
     private fun onCreateEventButtonClicked() {
+
+
         val intent = Intent(this, EventActivity::class.java)
         startActivity(intent)
     }
@@ -217,6 +236,74 @@ class CreateEventActivity : AppCompatActivity() {
 
 
     }
+
+    private fun onButtonImageClicked() {
+        selectImage()
+
+    }
+
+    private fun selectImage() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(
+            Intent.createChooser(
+                intent,
+                "Select Image from here..."),
+            PICK_IMAGE_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        var success = false
+
+        if (requestCode == PICK_IMAGE_REQUEST
+            && resultCode == RESULT_OK
+            && data != null
+            && data.data != null) {
+
+            val imageSelector = findViewById<ImageView>(R.id.image_selector)
+            // Get the Uri of data
+            filePath = data.data
+            try {
+                // Setting image on image view using Bitmap
+                var bitmap = MediaStore
+                        .Images
+                    .Media
+                    .getBitmap(
+                        contentResolver,
+                        filePath)
+                imageSelector.setImageBitmap(bitmap)
+                success = true
+            }
+            catch (e : IOException) {
+                // Log the exception
+                e.printStackTrace()
+            }
+            finally {
+                if (success) uploadImage()
+            }
+        }
+    }
+
+    private fun uploadImage() {
+
+        if (filePath != null){
+            val key = UUID.randomUUID().toString()
+
+            var reference = storageReference.child(
+                "images/events/$key"
+            )
+            reference.putFile(filePath!!)
+                .addOnSuccessListener {
+                    Toast.makeText(this, getString(R.string.event_image_uploaded), Toast.LENGTH_SHORT)
+                        .show()
+                }
+        }
+
+    }
+
 
     private fun onButtonNewEvent() {
         val titeEvent = findViewById<EditText>(R.id.title_text)
