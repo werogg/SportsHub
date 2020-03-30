@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.squareup.picasso.Picasso
@@ -50,7 +51,6 @@ class EventsFragment : Fragment() {
         refreshingLayout?.isRefreshing = true
 
         Thread(Runnable {
-
             showFollowingUsersEvents()
         }).start()
     }
@@ -59,10 +59,8 @@ class EventsFragment : Fragment() {
      * Setup listener to refresh events with swipe down
      */
     private fun setupRefreshListener() {
-
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainer)
-
         refreshingLayout?.setOnRefreshListener {
             eventsToShow.clear()
             eventContainer?.removeAllViews()
@@ -74,6 +72,8 @@ class EventsFragment : Fragment() {
      * First step to show events on the home page
      */
     private fun showFollowingUsersEvents() {
+        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
+        refreshingLayout?.isRefreshing = true
         if (maxEventsReached()) return
         val loggedUserUid = authDatabaseHelper.getCurrentUser()?.uid.toString()
         // Retrieve the current logged user
@@ -82,9 +82,11 @@ class EventsFragment : Fragment() {
 
             // Get his followed users and for every user go to second step
             val followingUsers = currentUser?.getFollowingUsers()
+            followingUsers?.add(currentUser.getUid())
             if (followingUsers != null) {
                 for (followedUserUid in followingUsers) {
-                    showFollowingUsersEventsSecondStep(followedUserUid)
+                    val lastCall = followingUsers[followingUsers.lastIndex] == followedUserUid
+                    showFollowingUsersEventsSecondStep(followedUserUid, lastCall)
                 }
             }
         }
@@ -93,32 +95,41 @@ class EventsFragment : Fragment() {
     /**
      * Second step to show events on the home page
      */
-    private fun showFollowingUsersEventsSecondStep(followedUserUid: String) {
+    private fun showFollowingUsersEventsSecondStep(followedUserUid: String, lastCall: Boolean) {
         if (maxEventsReached()) return
         // Retrieve the followed user and go to the Third step
         storeDatabaseHelper.retrieveUser(followedUserUid).addOnSuccessListener {
             val followedUser = it.toObject(User::class.java)
-            showFollowingUsersEventsThirdStep(followedUser)
+            showFollowingUsersEventsThirdStep(followedUser, lastCall)
         }
     }
 
     /**
      * Third step to show events on the home page
      */
-    private fun showFollowingUsersEventsThirdStep(followedUser: User?) {
+    private fun showFollowingUsersEventsThirdStep(
+        followedUser: User?,
+        lastCall: Boolean
+    ) {
+        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
         if (maxEventsReached()) return
         // Get user events ids
         val eventsOwnedIds = followedUser?.getEventsOwned()
         if (eventsOwnedIds != null) {
-            // Retrieve every event by his eventId
-            for (eventId in eventsOwnedIds) {
-                storeDatabaseHelper.retrieveEvent(eventId).addOnSuccessListener {
-                    val event = it.toObject(Event::class.java)
-                    // Just add it to the view if the event is not deleted
-                    if (event != null && !event.isDeleted()) {
-                        // Add it to events that will be shown and update the view
-                        eventsToShow.add(event)
-                        updateShowingEvents()
+
+            if (eventsOwnedIds.isEmpty() && lastCall) refreshingLayout?.isRefreshing = false
+            else {
+
+                // Retrieve every event by his eventId
+                for (eventId in eventsOwnedIds) {
+                    storeDatabaseHelper.retrieveEvent(eventId).addOnSuccessListener {
+                        val event = it.toObject(Event::class.java)
+                        // Just add it to the view if the event is not deleted
+                        if (event != null && !event.isDeleted()) {
+                            // Add it to events that will be shown and update the view
+                            eventsToShow.add(event)
+                            updateShowingEvents()
+                        }
                     }
                 }
             }
