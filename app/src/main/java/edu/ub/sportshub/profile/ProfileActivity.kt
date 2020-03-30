@@ -1,50 +1,76 @@
 package edu.ub.sportshub.profile
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.PopupWindow
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.auth.login.LoginActivity
+import edu.ub.sportshub.helpers.AuthDatabaseHelper
+import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
+import edu.ub.sportshub.models.User
+import kotlinx.android.synthetic.main.activity_profile.*
+
 
 class ProfileActivity : AppCompatActivity() {
-
     private var popupWindow : PopupWindow? = null
-
+    private val mFirebaseAuth = AuthDatabaseHelper()
+    private val mStoreDatabaseHelper = StoreDatabaseHelper()
+    private val storage = FirebaseStorage.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        val editProfileText = findViewById<Button>(R.id.btn_profile)
-        editProfileText.setOnClickListener(){
-            editProfileTextClicked()
-        }
+                val uid = mFirebaseAuth.getCurrentUser()!!.uid
+                mStoreDatabaseHelper.retrieveUser(uid)
+                .addOnSuccessListener {
+                    loadData(it)
+                }
 
-        val signout = findViewById<TextView>(R.id.toolbar_signout)
-        signout.setOnClickListener(){
-            textSignOutClicked()
-        }
+                val layoutfollowers = findViewById<LinearLayout>(R.id.layout_followers)
+                layoutfollowers.setOnClickListener(){
+                    followersclicked()
+                }
 
-        val home = findViewById<TextView>(R.id.toolbar_my_profile_home)
-        home.setOnClickListener(){
-            buttonHomeClicked()
-        }
+                val layoutfollowees = findViewById<LinearLayout>(R.id.layout_followees)
+                layoutfollowees.setOnClickListener(){
+                    followeesclicked()
+                }
 
-        val notificationsButton = findViewById<ImageView>(R.id.profile_toolbar_primary_notifications)
+                val editProfileText = findViewById<Button>(R.id.btn_profile)
+                editProfileText.setOnClickListener() {
+                    editProfileTextClicked()
+                }
 
-        notificationsButton.setOnClickListener {
-            notificationsButtonClicked()
-        }
+                val signout = findViewById<TextView>(R.id.toolbar_signout)
+                signout.setOnClickListener() {
+                    textSignOutClicked()
+                }
+
+                val home = findViewById<TextView>(R.id.toolbar_my_profile_home)
+                home.setOnClickListener() {
+                    buttonHomeClicked()
+                }
+
+                val notificationsButton =
+                    findViewById<ImageView>(R.id.profile_toolbar_primary_notifications)
+
+                notificationsButton.setOnClickListener {
+                    notificationsButtonClicked()
+                }
     }
 
     private fun notificationsButtonClicked() {
@@ -74,4 +100,66 @@ class ProfileActivity : AppCompatActivity() {
         val popupIntent = Intent(this, EditProfileActivity::class.java)
         startActivity(popupIntent)
     }
+
+    private fun followersclicked(){
+
+    }
+
+    private fun followeesclicked(){
+
+    }
+
+    private fun loadEvents(){
+        val myevents = findViewById<LinearLayout>(R.id.layout_myevents)
+        val myactivities = findViewById<LinearLayout>(R.id.layout_myevents)
+        //DatabaseHelper.getEventsAssist()
+        //DatabaseHelper.getEventsLiked()
+        //DatabaseHelper.getEventsOwned()
+    }
+
+    private fun updatePhoto(){
+        val uid = mFirebaseAuth.getCurrentUser()!!.uid
+        mStoreDatabaseHelper.retrieveUser(uid)
+            .addOnSuccessListener {
+                val data = hashMapOf("profilePicture" to R.mipmap.ic_usuari_foreground)
+                val uid = mFirebaseAuth.getCurrentUser()!!.uid
+                val proces = mStoreDatabaseHelper.getUsersCollection().document(uid).update(data as Map<String, Any>)
+            }
+    }
+
+    private fun loadData(it: DocumentSnapshot){
+
+        var textname = findViewById<TextView>(R.id.txt_nameprofile)
+        var imageprofile = findViewById<CircleImageView>(R.id.img_profile)
+        var description = findViewById<TextView>(R.id.txt_descrp)
+        var nfollowers = findViewById<TextView>(R.id.txt_nfollowers)
+        var nfollowing = findViewById<TextView>(R.id.txt_nfollowing)
+        textname.text = it.toObject(User::class.java)?.getUsername()
+        //Check Image
+        val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, this?.resources?.displayMetrics).toInt()
+        if (it.toObject(User::class.java)?.getProfilePicture().toString().equals("")){
+            updatePhoto()
+            Picasso.with(this)
+                .load(R.mipmap.ic_usuari_foreground)
+                .resize(dpSize, dpSize)
+                .into(imageprofile)
+        } else {
+            Picasso.with(this)
+                .load(it.toObject(User::class.java)?.getProfilePicture().toString())
+                .resize(dpSize, dpSize)
+                .into(imageprofile)
+        }
+
+        if (it.toObject(User::class.java)?.getBiography().equals("")){
+            description.text = "Hey there,\nI'm using SportsHub."
+        }else{
+            description.text = it.toObject(User::class.java)?.getBiography()
+        }
+        nfollowers.text = it.toObject(User::class.java)?.getFollowersUsers()?.size.toString()
+        nfollowing.text = it.toObject(User::class.java)?.getFollowingUsers()?.size.toString()
+    }
+
+
+
+
 }

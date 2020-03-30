@@ -61,6 +61,7 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
+                            android:id="@+id/layout_followers"
                             android:layout_width="101dp"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
@@ -91,6 +92,7 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/layout_followees"
                             android:layout_width="94dp"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
@@ -155,7 +157,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="122dp"
+                android:layout_height="100dp"
                 android:orientation="horizontal">
 
                 <Space
@@ -165,17 +167,22 @@
 
                 <TextView
                     android:id="@+id/txt_descrp"
-                    android:layout_width="334dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
                     android:fontFamily="serif-monospace"
-                    android:gravity="center|start"
+                    android:gravity="start"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <Space
-                    android:layout_width="match_parent"
+                    android:layout_width="11dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0" />
+                    android:layout_weight="1" />
             </LinearLayout>
 
             <View
@@ -183,10 +190,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
                 android:background="@drawable/layout_border" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
             <Space
                 android:layout_width="match_parent"
@@ -198,7 +201,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:fontFamily="serif-monospace"
-                android:text="@string/my_events"
+                android:text="My events"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -247,7 +250,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:fontFamily="serif-monospace"
-                    android:text="@string/my_activities"
+                    android:text="My Upcoming Activities"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -260,6 +263,37 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:background="@drawable/layout_border" />
+
+            <LinearLayout
+                android:id="@+id/lay_eventsliked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:fontFamily="serif-monospace"
+                    android:text="Events Liked"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
