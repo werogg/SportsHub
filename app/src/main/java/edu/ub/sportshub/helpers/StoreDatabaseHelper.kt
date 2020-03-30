@@ -35,4 +35,9 @@ class StoreDatabaseHelper : DatabaseHelper() {
     fun getUsersCollection(): CollectionReference {
         return mFirebaseFirestore.collection("users")
     }
+
+    fun getEventsCollection(): CollectionReference {
+        return mFirebaseFirestore.collection("events")
+    }
+
 }

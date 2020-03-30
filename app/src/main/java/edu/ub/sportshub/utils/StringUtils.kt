@@ -1,9 +1,11 @@
 package edu.ub.sportshub.utils
 
 import android.content.Context
+import android.location.Address
 import android.location.Geocoder
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
+import java.util.*
 
 object StringUtils {
 
@@ -41,9 +43,34 @@ object StringUtils {
      * Return the full address for a given latitude and longitude
      */
     fun getAddressFromLocation(context: Context, latitude: Double, longitude: Double) : String {
-        var geocoder = Geocoder(context)
-        var location = geocoder.getFromLocation(latitude, longitude, 1)
-        val address = location[0]
-        return address.getAddressLine(0)
+        val geocoder = Geocoder(context)
+        val location = geocoder.getFromLocation(latitude, longitude, 1)
+        return if (location.size > 0) {
+            val address = location[0]
+            address.getAddressLine(0)
+        } else {
+            ""
+        }
+    }
+
+    fun getAdressArrayFromName(context: Context, string: String): MutableList<String> {
+        // TODO Improve that method, not enough good results
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses = geocoder.getFromLocationName(string, 15)
+
+        val addressesStrings = mutableListOf<String>()
+
+        for (address in addresses) {
+            if (address.maxAddressLineIndex != -1) {
+                addressesStrings.add(address.getAddressLine(0))
+            }
+        }
+
+        return addressesStrings
+    }
+
+    fun getLocationFromName(context: Context, string: String): Address? {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        return geocoder.getFromLocationName(string, 7)[0]
     }
 }

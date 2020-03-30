@@ -41,12 +41,16 @@ class EventsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainer)
+        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
 
         setupRefreshListener()
 
+        eventsToShow.clear()
+        eventContainer?.removeAllViews()
+
+        refreshingLayout?.isRefreshing = true
+
         Thread(Runnable {
-            eventsToShow.clear()
-            eventContainer?.removeAllViews()
             showFollowingUsersEvents()
         }).start()
     }
