@@ -59,8 +59,10 @@ class EventsFragment : Fragment() {
      * Setup listener to refresh events with swipe down
      */
     private fun setupRefreshListener() {
+
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainer)
+
         refreshingLayout?.setOnRefreshListener {
             eventsToShow.clear()
             eventContainer?.removeAllViews()

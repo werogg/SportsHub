@@ -342,7 +342,6 @@ class CreateEventActivity : AppCompatActivity() {
             val location = StringUtils.getLocationFromName(this, whereEvent.text.toString())
             val currentUserUid = authDatabaseHelper.getCurrentUser()?.uid!!
 
-
             val event = Event(
                 "",
                 currentUserUid,

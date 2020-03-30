@@ -288,6 +288,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun onEditEventButtonClicked() {
         val goEdit = Intent(this, EditEventActivity::class.java)
+        goEdit.putExtra("eventId",eventId)
         startActivity(goEdit)
     }
 
