@@ -4,26 +4,35 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.provider.MediaStore
 import android.text.Editable
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
+import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.utils.StringUtils
 import kotlinx.android.synthetic.main.activity_create_event.*
+import java.io.IOException
 import java.util.*
 
 class EditEventActivity : AppCompatActivity() {
@@ -40,7 +49,14 @@ class EditEventActivity : AppCompatActivity() {
     private var mStoreDatabaseHelper = StoreDatabaseHelper()
     private var firebaseStorage = FirebaseStorage.getInstance()
     private var storageReference = firebaseStorage.reference
-
+    private val PICK_IMAGE_REQUEST = 22
+    private var imageSelected : String? = null
+    private var progressBar : ProgressBar? = null
+    private var addressHandler : Handler? = null
+    private var filePath : Uri? = null
+    private var imageUploaded = false
+    private var databaseHelper = StoreDatabaseHelper()
+    private var authDatabaseHelper = AuthDatabaseHelper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +81,7 @@ class EditEventActivity : AppCompatActivity() {
     private fun updateEventInfo() {
 
         val titleEvent = findViewById<EditText>(R.id.title_text)
-        val whereEvent = findViewById<AutoCompleteTextView>(R.id.where_text)  //Geocoder
+        val whereEvent = findViewById<EditText>(R.id.where_text)
         val descEvent = findViewById<EditText>(R.id.description_text)
         val viewImage = findViewById<ImageView>(R.id.image_selector)
 
@@ -191,12 +207,124 @@ class EditEventActivity : AppCompatActivity() {
     }
 
     private fun onButtonImageClicked() {
-        TODO("Not yet implemented")
+        selectImage()
+    }
+
+    private fun selectImage() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+
+        startActivityForResult(
+            Intent.createChooser(
+                intent,
+                "Select Image from here..."),
+            PICK_IMAGE_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        var success = false
+
+        if (requestCode == PICK_IMAGE_REQUEST
+            && resultCode == RESULT_OK
+            && data != null
+            && data.data != null) {
+
+            val imageSelector = findViewById<ImageView>(R.id.image_selector)
+            // Get the Uri of data
+            filePath = data.data
+            try {
+                // Setting image on image view using Bitmap
+                val bitmap = MediaStore
+                    .Images
+                    .Media
+                    .getBitmap(
+                        contentResolver,
+                        filePath)
+                imageSelector.setImageBitmap(bitmap)
+                success = true
+            }
+            catch (e : IOException) {
+                // Log the exception
+                e.printStackTrace()
+            }
+            finally {
+                if (success) uploadImage()
+            }
+        }
+    }
+    private fun uploadImage() {
+        val rootLayout = findViewById<ConstraintLayout>(R.id.edit_event_constraint_layout)
+        progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleLarge)
+        var params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        params.addRule(RelativeLayout.CENTER_VERTICAL)
+        params.addRule(RelativeLayout.CENTER_HORIZONTAL)
+        rootLayout.addView(progressBar, params)
+
+        if (filePath != null){
+            progressBar?.visibility = View.VISIBLE
+            val key = UUID.randomUUID().toString()
+
+            val reference = storageReference.child(
+                "images/events/$key"
+            )
+            reference.putFile(filePath!!)
+                .addOnSuccessListener {
+                    getImageUrl(reference)
+                }
+                .addOnFailureListener {
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.event_image_not_uploaded),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    progressBar?.visibility = View.GONE
+                }
+        }
+
+    }
+
+    private fun getImageUrl(reference: StorageReference) {
+        reference.downloadUrl.addOnSuccessListener {
+            imageSelected = it.toString()
+            imageUploaded = true
+            Toast.makeText(this, getString(R.string.event_image_uploaded), Toast.LENGTH_SHORT)
+                .show()
+            progressBar?.visibility = View.GONE
+        }
+            .addOnFailureListener {
+                progressBar?.visibility = View.GONE
+            }
     }
 
     private fun onEditEventButtonClicked() {
 
-        val intent = Intent(this, EventActivity::class.java)
-        startActivity(intent)
+        val titleEvent = findViewById<EditText>(R.id.title_text)
+        val whereEvent = findViewById<EditText>(R.id.where_text)  //Geocoder
+        val descEvent = findViewById<EditText>(R.id.description_text)
+
+        if (!imageUploaded) imageSelected = event?.getEventImage()
+
+        if (titleEvent.text.toString().isNotEmpty() and whereEvent.text.toString().isNotEmpty()
+            and descEvent.text.toString().isNotEmpty()) {
+
+            val location = StringUtils.getLocationFromName(this, whereEvent.text.toString())
+
+            databaseHelper.retrieveEventRef(eventId!!)
+                .update(mapOf(
+                    "title" to titleEvent.text.toString(),
+                    "position" to GeoPoint(location?.latitude!!, location?.longitude!!),
+                    "description" to whereEvent.text.toString(),
+                    "eventImage" to imageSelected!!
+                //faltaria el timeStamp
+            ))
+            val intent = Intent(this, EventActivity::class.java)
+            intent.putExtra("eventId", eventId)
+            startActivity(intent)
+
+        }
+
     }
 }
