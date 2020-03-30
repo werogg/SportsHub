@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home.Events">
 
-    <!-- TODO: Update blank fragment layout -->
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:gravity="center"
+        android:iconifiedByDefault="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/sv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="854dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/userCard"
@@ -32,18 +44,18 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
+                        android:layout_margin="40px"
                         android:layout_marginRight="10dp"
                         app:cardBackgroundColor="@color/pink"
-                        app:cardCornerRadius="360dp"
-                        android:layout_margin="40px">
+                        app:cardCornerRadius="360dp">
 
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_margin="40px">
+                        android:layout_margin="40px"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv1"
@@ -59,9 +71,9 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
-                            android:textSize="15sp"
                             android:text="Following"
-                            android:textColor="@color/green"/>
+                            android:textColor="@color/green"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -84,18 +96,18 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
+                        android:layout_margin="40px"
                         android:layout_marginRight="10dp"
                         app:cardBackgroundColor="@color/blue"
-                        app:cardCornerRadius="360dp"
-                        android:layout_margin="40px">
+                        app:cardCornerRadius="360dp">
 
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_margin="40px">
+                        android:layout_margin="40px"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv4"
@@ -111,9 +123,9 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
-                            android:textSize="15sp"
                             android:text="Following"
-                            android:textColor="@color/green"/>
+                            android:textColor="@color/green"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -135,18 +147,18 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
+                        android:layout_margin="40px"
                         android:layout_marginRight="10dp"
                         app:cardBackgroundColor="@color/yellow"
-                        app:cardCornerRadius="360dp"
-                        android:layout_margin="40px">
+                        app:cardCornerRadius="360dp">
 
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_margin="40px">
+                        android:layout_margin="40px"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv6"
@@ -162,8 +174,8 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
-                            android:textSize="15sp"
-                            android:text="Following" />
+                            android:text="Following"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -185,18 +197,18 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
+                        android:layout_margin="40px"
                         android:layout_marginRight="10dp"
                         app:cardBackgroundColor="@color/orange"
-                        app:cardCornerRadius="360dp"
-                        android:layout_margin="40px">
+                        app:cardCornerRadius="360dp">
 
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_margin="40px">
+                        android:layout_margin="40px"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv8"
@@ -212,8 +224,8 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
-                            android:textSize="15sp"
-                            android:text="Following" />
+                            android:text="Following"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -235,18 +247,18 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
+                        android:layout_margin="40px"
                         android:layout_marginRight="10dp"
                         app:cardBackgroundColor="@color/colorPrimary"
-                        app:cardCornerRadius="360dp"
-                        android:layout_margin="40px">
+                        app:cardCornerRadius="360dp">
 
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_margin="40px">
+                        android:layout_margin="40px"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv10"
@@ -262,8 +274,8 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
-                            android:textSize="15sp"
-                            android:text="Following" />
+                            android:text="Following"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -285,18 +297,18 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
+                        android:layout_margin="40px"
                         android:layout_marginRight="10dp"
                         app:cardBackgroundColor="@color/blue"
-                        app:cardCornerRadius="360dp"
-                        android:layout_margin="40px">
+                        app:cardCornerRadius="360dp">
 
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_margin="40px">
+                        android:layout_margin="40px"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv12"
@@ -312,8 +324,8 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
-                            android:textSize="15sp"
-                            android:text="Following" />
+                            android:text="Following"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -335,18 +347,18 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
+                        android:layout_margin="40px"
                         android:layout_marginRight="10dp"
                         app:cardBackgroundColor="@color/green"
-                        app:cardCornerRadius="360dp"
-                        android:layout_margin="40px">
+                        app:cardCornerRadius="360dp">
 
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_margin="40px">
+                        android:layout_margin="40px"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv14"
@@ -362,8 +374,8 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
-                            android:textSize="15sp"
-                            android:text="Following" />
+                            android:text="Following"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -385,18 +397,18 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
+                        android:layout_margin="40px"
                         android:layout_marginRight="10dp"
                         app:cardBackgroundColor="@color/purple"
-                        app:cardCornerRadius="360dp"
-                        android:layout_margin="40px">
+                        app:cardCornerRadius="360dp">
 
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_margin="40px">
+                        android:layout_margin="40px"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv16"
@@ -412,8 +424,8 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
-                            android:textSize="15sp"
-                            android:text="Following" />
+                            android:text="Following"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -435,18 +447,18 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
+                        android:layout_margin="40px"
                         android:layout_marginRight="10dp"
                         app:cardBackgroundColor="@color/pink"
-                        app:cardCornerRadius="360dp"
-                        android:layout_margin="40px">
+                        app:cardCornerRadius="360dp">
 
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_margin="40px">
+                        android:layout_margin="40px"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv18"
@@ -462,9 +474,9 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
                             android:layout_marginBottom="10dp"
-                            android:textSize="15sp"
                             android:text="Following"
-                            android:textColor="@color/green"/>
+                            android:textColor="@color/green"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -478,4 +490,4 @@
 
 
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
