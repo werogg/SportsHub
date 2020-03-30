@@ -316,7 +316,7 @@ class EditEventActivity : AppCompatActivity() {
                 .update(mapOf(
                     "title" to titleEvent.text.toString(),
                     "position" to GeoPoint(location?.latitude!!, location?.longitude!!),
-                    "description" to whereEvent.text.toString(),
+                    "description" to descEvent.text.toString(),
                     "eventImage" to imageSelected!!
                 //faltaria el timeStamp
             ))
