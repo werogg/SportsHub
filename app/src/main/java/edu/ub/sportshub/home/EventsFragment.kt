@@ -29,7 +29,7 @@ class EventsFragment : Fragment() {
 
     private var storeDatabaseHelper = StoreDatabaseHelper()
     private var authDatabaseHelper = AuthDatabaseHelper()
-    private var eventsToShow = mutableListOf<Event>()
+    private var eventsToShow = mutableListOf<Pair<Event, User>>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -128,8 +128,8 @@ class EventsFragment : Fragment() {
                         // Just add it to the view if the event is not deleted
                         if (event != null && !event.isDeleted()) {
                             // Add it to events that will be shown and update the view
-                            eventsToShow.add(event)
-                            updateShowingEvents(followedUser)
+                            eventsToShow.add(Pair(event, followedUser))
+                            updateShowingEvents()
                         }
                     }
                 }
@@ -140,23 +140,23 @@ class EventsFragment : Fragment() {
     /**
      * Update the view which contains the events
      */
-    private fun updateShowingEvents(followedUser: User) {
+    private fun updateShowingEvents() {
         // Get the refreshing layout to check his state
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
 
         // Sort the events by time
         eventsToShow.sortBy {
-            it.getCreationDate().seconds
+            it.first.getCreationDate().seconds
         }
 
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainer)
         eventContainer?.removeAllViews()
 
 
-        for (event in eventsToShow) {
+        for (pair in eventsToShow) {
             val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
-            val userImageDpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, context?.resources?.displayMetrics).toInt()
             val eventView = LayoutInflater.from(context).inflate(R.layout.event_view, null);
+            val eventUserTitle = eventView.findViewById<TextView>(R.id.eventUserTitle)
             val eventViewTitleView = eventView.findViewById<TextView>(R.id.title)
             val eventViewDescriptionView = eventView.findViewById<TextView>(R.id.description)
             val eventViewBannerImage = eventView.findViewById<ImageView>(R.id.eventImage)
@@ -165,39 +165,36 @@ class EventsFragment : Fragment() {
             val eventLikesTextView = eventView.findViewById<TextView>(R.id.eventLikesTextView)
             val eventUserProfileLayout = eventView.findViewById<LinearLayout>(R.id.eventUserProfileLayout)
             val eventEventLayout = eventView.findViewById<LinearLayout>(R.id.eventEventLayout)
-            val eventUserTitle = eventView.findViewById<TextView>(R.id.eventUserTitle)
 
             Picasso.with(context)
-                .load(event.getEventImage())
+                .load(pair.first.getEventImage())
                 .resize(dpSize, dpSize)
                 .into(eventViewBannerImage)
 
             Picasso.with(context)
-                .load(followedUser.getProfilePicture())
-                //.resize(userImageDpSize, userImageDpSize)
+                .load(pair.second.getProfilePicture())
                 .into(eventUserImageView)
 
-
-            eventAssistsTextView.text = StringUtils.compactNumberString(event.getAssists())
-            eventLikesTextView.text = StringUtils.compactNumberString(event.getLikes())
-            eventViewTitleView.text = event.getTitle()
-            eventViewDescriptionView.text = event.getDescription()
-            eventUserTitle.text = followedUser.getUsername()
+            eventUserTitle.text = pair.second.getUsername()
+            eventAssistsTextView.text = StringUtils.compactNumberString(pair.first.getAssists())
+            eventLikesTextView.text = StringUtils.compactNumberString(pair.first.getLikes())
+            eventViewTitleView.text = pair.first.getTitle()
+            eventViewDescriptionView.text = pair.first.getDescription()
 
 
             eventEventLayout.setOnClickListener {
                 val intent = Intent(context, EventActivity::class.java)
-                intent.putExtra("eventId", event.getId())
+                intent.putExtra("eventId", pair.first.getId())
                 startActivity(intent)
             }
 
             eventUserProfileLayout.setOnClickListener {
-                val intent = if (event.getCreatorUid() == authDatabaseHelper.getCurrentUser()?.uid) {
+                val intent = if (pair.first.getCreatorUid() == authDatabaseHelper.getCurrentUser()?.uid) {
                     Intent(context, ProfileActivity::class.java)
                 } else {
                     Intent(context, EventActivity::class.java)
                 }
-                intent.putExtra("userId", event.getCreatorUid())
+                intent.putExtra("userId", pair.first.getCreatorUid())
                 startActivity(intent)
             }
 
