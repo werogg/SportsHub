@@ -140,7 +140,7 @@ class SignupActivity : AppCompatActivity() {
             mutableListOf(),
             mutableListOf(),
             email.text.toString(),
-            "",
+            getString(R.string.default_profile_picture),
             authDatabaseHelper.getCurrentUser()!!.uid,
             false
         )

@@ -7,19 +7,20 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.event.EventActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
+import edu.ub.sportshub.profile.ProfileActivity
+import edu.ub.sportshub.profile.ProfileOtherActivity
+import edu.ub.sportshub.utils.StringUtils
 
 /**
  * A simple [Fragment] subclass.
@@ -128,7 +129,7 @@ class EventsFragment : Fragment() {
                         if (event != null && !event.isDeleted()) {
                             // Add it to events that will be shown and update the view
                             eventsToShow.add(event)
-                            updateShowingEvents()
+                            updateShowingEvents(followedUser)
                         }
                     }
                 }
@@ -139,7 +140,7 @@ class EventsFragment : Fragment() {
     /**
      * Update the view which contains the events
      */
-    private fun updateShowingEvents() {
+    private fun updateShowingEvents(followedUser: User) {
         // Get the refreshing layout to check his state
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
 
@@ -154,23 +155,49 @@ class EventsFragment : Fragment() {
 
         for (event in eventsToShow) {
             val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
+            val userImageDpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, context?.resources?.displayMetrics).toInt()
             val eventView = LayoutInflater.from(context).inflate(R.layout.event_view, null);
             val eventViewTitleView = eventView.findViewById<TextView>(R.id.title)
             val eventViewDescriptionView = eventView.findViewById<TextView>(R.id.description)
             val eventViewBannerImage = eventView.findViewById<ImageView>(R.id.eventImage)
+            val eventUserImageView = eventView.findViewById<CircleImageView>(R.id.eventUserImage)
+            val eventAssistsTextView = eventView.findViewById<TextView>(R.id.eventAssistsTextView)
+            val eventLikesTextView = eventView.findViewById<TextView>(R.id.eventLikesTextView)
+            val eventUserProfileLayout = eventView.findViewById<LinearLayout>(R.id.eventUserProfileLayout)
+            val eventEventLayout = eventView.findViewById<LinearLayout>(R.id.eventEventLayout)
+            val eventUserTitle = eventView.findViewById<TextView>(R.id.eventUserTitle)
 
             Picasso.with(context)
                 .load(event.getEventImage())
                 .resize(dpSize, dpSize)
                 .into(eventViewBannerImage)
 
+            Picasso.with(context)
+                .load(followedUser.getProfilePicture())
+                //.resize(userImageDpSize, userImageDpSize)
+                .into(eventUserImageView)
 
+
+            eventAssistsTextView.text = StringUtils.compactNumberString(event.getAssists())
+            eventLikesTextView.text = StringUtils.compactNumberString(event.getLikes())
             eventViewTitleView.text = event.getTitle()
             eventViewDescriptionView.text = event.getDescription()
+            eventUserTitle.text = followedUser.getUsername()
 
-            eventView.setOnClickListener {
+
+            eventEventLayout.setOnClickListener {
                 val intent = Intent(context, EventActivity::class.java)
                 intent.putExtra("eventId", event.getId())
+                startActivity(intent)
+            }
+
+            eventUserProfileLayout.setOnClickListener {
+                val intent = if (event.getCreatorUid() == authDatabaseHelper.getCurrentUser()?.uid) {
+                    Intent(context, ProfileActivity::class.java)
+                } else {
+                    Intent(context, EventActivity::class.java)
+                }
+                intent.putExtra("userId", event.getCreatorUid())
                 startActivity(intent)
             }
 
