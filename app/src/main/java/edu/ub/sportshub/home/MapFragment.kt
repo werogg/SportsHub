@@ -16,6 +16,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 import edu.ub.sportshub.R
+import edu.ub.sportshub.helpers.StoreDatabaseHelper
+import edu.ub.sportshub.models.Event
 
 /**
  * A simple [Fragment] subclass.
@@ -23,6 +25,7 @@ import edu.ub.sportshub.R
 class MapFragment : Fragment() , OnMapReadyCallback {
 
     private lateinit var mMapView : MapView
+    private var databaseHelper = StoreDatabaseHelper()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,18 +46,23 @@ class MapFragment : Fragment() , OnMapReadyCallback {
 
 
     override fun onMapReady(googleMap: GoogleMap?) {
-        val coords1 = LatLng(41.3857552,2.1640565)
-        val coords2 = LatLng(41.3875249,2.162479)
-        val coords3 = LatLng(41.3886544,2.1597137)
-        val coords4 = LatLng(41.3869079,2.1670084)
-        val coords5 = LatLng(41.3864364,2.1593399)
-        googleMap?.addMarker(MarkerOptions().position(coords1).title("Nike F.C"))?.showInfoWindow()
-        googleMap?.addMarker(MarkerOptions().position(coords2).title("Tennis Match, Sabadell"))
-        googleMap?.addMarker(MarkerOptions().position(coords3).title("Evento muestra 3"))
-        googleMap?.addMarker(MarkerOptions().position(coords4).title("Evento muestra 4"))
-        googleMap?.addMarker(MarkerOptions().position(coords5).title("Evento muestra 5"))
-        val location = CameraUpdateFactory.newLatLngZoom(coords1, 15F)
-        googleMap?.animateCamera(location)
+
+        databaseHelper.getEventsCollection().get()
+            .addOnSuccessListener {
+                for (event in it){
+                    val event = event.toObject(Event::class.java)
+
+                    val lat = event.getPosition().latitude
+                    val lng = event.getPosition().longitude
+                    val coord = LatLng(lat,lng)
+
+                    googleMap?.addMarker(MarkerOptions().position(coord).title(event.getTitle()))?.showInfoWindow()
+                }
+            }
+
+
+        //val location = CameraUpdateFactory.newLatLngZoom(coords1, 15F)
+        //googleMap?.animateCamera(location)
     }
 
     override fun onStart() {
