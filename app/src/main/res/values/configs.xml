@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Default profile picture if no image is set -->
+    <string name="default_profile_picture" translatable="false">https://firebasestorage.googleapis.com/v0/b/sportshubproject.appspot.com/o/images%2Fdefault%2Fdefault_profile.jpg?alt=media&amp;token=5c8344da-445b-4e4c-b641-bdbbf60e382c</string>
+
+    <!-- Size of the user profile image displayed in every event of the events feed -->
+    <dimen name="event_profile_size">40dp</dimen>
+
+</resources>

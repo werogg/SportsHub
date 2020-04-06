@@ -20,7 +20,7 @@ import edu.ub.sportshub.R
 /**
  * A simple [Fragment] subclass.
  */
-class Map : Fragment() , OnMapReadyCallback {
+class MapFragment : Fragment() , OnMapReadyCallback {
 
     private lateinit var mMapView : MapView
 
