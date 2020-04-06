@@ -40,8 +40,4 @@ class StoreDatabaseHelper : DatabaseHelper() {
         return mFirebaseFirestore.collection("events")
     }
 
-    fun getEvents() {
-        getEventsCollection()
-    }
-
 }
