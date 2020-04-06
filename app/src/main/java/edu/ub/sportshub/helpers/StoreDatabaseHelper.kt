@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import edu.ub.sportshub.models.User
+import java.lang.ref.Reference
 
 class StoreDatabaseHelper : DatabaseHelper() {
 
@@ -21,4 +22,5 @@ class StoreDatabaseHelper : DatabaseHelper() {
     fun getUsersCollection(): CollectionReference {
         return mFirebaseFirestore.collection("users")
     }
+
 }

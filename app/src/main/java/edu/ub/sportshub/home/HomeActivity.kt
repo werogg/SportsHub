@@ -16,14 +16,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.tabs.TabLayout
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.event.CreateEventActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.profile.ProfileActivity
 import kotlinx.android.synthetic.main.activity_home.*
-//import sun.jvm.hotspot.utilities.IntArray
 import kotlin.system.exitProcess
 
 
@@ -31,7 +29,6 @@ class HomeActivity : AppCompatActivity() {
 
     private val authDatabaseHelper = AuthDatabaseHelper()
     private var popupWindow : PopupWindow? = null
-    public var search : String? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,21 +117,4 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val searchView = menu!!.findItem(R.id.searchView).actionView as SearchView
-
-        val queryTextListener: SearchView.OnQueryTextListener =
-            object : SearchView.OnQueryTextListener {
-                override fun onQueryTextChange(newText: String): Boolean {
-                    return true
-                }
-
-                override fun onQueryTextSubmit(query: String): Boolean {
-                    search = query
-                    return false;
-                }
-            }
-        searchView.setOnQueryTextListener(queryTextListener)
-        return super.onCreateOptionsMenu(menu)
-    }
 }
