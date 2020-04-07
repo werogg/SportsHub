@@ -3,6 +3,7 @@ package edu.ub.sportshub.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -42,6 +43,9 @@ class Users : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
+        userContainer?.removeAllViews()
+
         val searchView = view.findViewById<SearchView>(R.id.searchView)
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
@@ -50,57 +54,55 @@ class Users : Fragment() {
             }
             override fun onQueryTextSubmit(query: String): Boolean {
                 if(!query.trim().isEmpty()){
+                    Log.i("Busqueda: ", query)
                     searchUsers(query);
                 }
                 return false
             }
         })
+
+
+
+
     }
 
     private fun searchUsers(query: String) {
-        var n = query.length
+
+        var n = false
+        var userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
+
         storeDatabaseHelper.getUsersCollection().whereGreaterThanOrEqualTo("username", query).get()
             .addOnSuccessListener { users ->
-                for (user in users) {
-                    addUser(user)
+                for (user in  users) {
+                    var uid = user.getData().get("uid").toString()
+                    var curr = authDatabaseHelper.getCurrentUser()!!.uid
+
+                    if(uid!=curr){
+                        val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
+                        val userView = LayoutInflater.from(context).inflate(R.layout.user_view, null);
+                        val userViewTitleView = userView.findViewById<TextView>(R.id.username)
+                        val userViewFollowView = userView.findViewById<TextView>(R.id.follow)
+                        val userViewBannerImage = userView.findViewById<CardView>(R.id.userImage)
+
+                        userViewTitleView.text = user.getData().get("username").toString()
+                        /*
+                            Picasso.with(context)
+                                .load(user.getData().get("profilePicture").toString())
+                                .resize(dpSize, dpSize)
+                                .into(userViewBannerImage)
+                         */
+                        n = true
+                        userContainer?.addView(userView)
+                    }
                 }
             }
 
-    }
-
-    private fun addUser(user: QueryDocumentSnapshot){
-
-        val userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
-        userContainer?.removeAllViews()
-
-        val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
-        val userView = LayoutInflater.from(context).inflate(R.layout.user_view, null);
-        val userViewTitleView = userView.findViewById<TextView>(R.id.username)
-        val userViewFollowView = userView.findViewById<TextView>(R.id.follow)
-        val userViewBannerImage = userView.findViewById<CardView>(R.id.userImage)
-
-        /*
-        Picasso.with(context)
-            .load(user.getData().get("profilePicture").toString())
-            .resize(dpSize, dpSize)
-            .into(userViewBannerImage)
-
-         */
-
-
-        userView.setOnClickListener {
-            val intent = Intent(activity, ProfileActivity::class.java)
-            startActivity(intent)
+        if(n==false){
+            val userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
+            userContainer?.removeAllViewsInLayout()
         }
 
-        userViewTitleView.text = user.getData().get("username").toString()
-
-        // Deal with following. Get current user and check
-
-        userContainer?.addView(userView)
-
     }
-
 
 
 }
