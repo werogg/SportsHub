@@ -28,6 +28,7 @@ import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.Event
+import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.utils.StringUtils
 
@@ -82,6 +83,8 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         val hourTextView = findViewById<TextView>(R.id.hourTextView)
         val addressTextView = findViewById<TextView>(R.id.addressTextView)
         val likeButton = findViewById<ExtendedFloatingActionButton>(R.id.like_floating_button)
+        val creatorText = findViewById<TextView>(R.id.creatorText)
+        val creatorImage = findViewById<ImageView>(R.id.creatorImage)
 
         // Update them with event info
         eventDescriptionTextView.text = event?.getDescription()
@@ -99,9 +102,19 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+        mStoreDatabaseHelper.retrieveUser(event?.getCreatorUid().toString()).addOnSuccessListener {
+            val creatorUser = it.toObject(User::class.java)
+            Picasso.with(applicationContext)
+                .load(creatorUser?.getProfilePicture())
+                .into(creatorImage)
+
+            creatorText.text = creatorUser?.getUsername()
+        }
+
         Picasso.with(applicationContext)
             .load(event?.getEventImage())
             .into(eventBannerImageView)
+
         dateTextView.text = StringUtils.getFormatedDateFromTimestamp(event?.getStartEventDate()!!)
         hourTextView.text = StringUtils.getFormatedHourFromTimestamp(event?.getStartEventDate()!!)
         addressTextView.text = StringUtils.getAddressFromLocation(applicationContext,
@@ -180,6 +193,16 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback {
         assistButton.setOnClickListener {
             onAssistButtonClicked()
         }
+
+        val creatorButton = findViewById<ConstraintLayout>(R.id.creatorButton)
+
+        creatorButton.setOnClickListener {
+            onCreatorButtonClicked()
+        }
+    }
+
+    private fun onCreatorButtonClicked() {
+        // go to profile
     }
 
     private fun onAssistButtonClicked() {

@@ -85,7 +85,7 @@
     <string name="event_image_uploaded">Image Uploaded!</string>
     <string name="event_created">The Event has been created!</string>
     <string name="event_image_not_uploaded">Error: Image not uploaded! Try again!</string>
-
+    <string name="event_created_by">Created by</string>
     <string name="title_activity_home" translatable="false">Home</string>
     <string name="title_activity_event" translatable="false">Event</string>
     <string name="title_activity_edit_event" translatable="false">Edit Event</string>
