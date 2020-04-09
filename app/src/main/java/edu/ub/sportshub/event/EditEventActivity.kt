@@ -9,16 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
-import android.text.Editable
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -110,26 +106,26 @@ class EditEventActivity : AppCompatActivity() {
      * Setup all listeners in the activity
      */
     private fun setupListeners() {
-        val textProfile = findViewById<TextView>(R.id.toolbar_secondary_txt_my_profile)
+        val textProfile = findViewById<TextView>(R.id.toolbar_txt_my_profile)
 
         textProfile.setOnClickListener(){
             profileClicked()
         }
 
-        val imageProfile = findViewById<CircleImageView>(R.id.toolbar_secondary_image_my_profile)
+        val imageProfile = findViewById<CircleImageView>(R.id.toolbar_image_my_profile)
 
         imageProfile.setOnClickListener {
             profileClicked()
         }
 
-        val homeText = findViewById<TextView>(R.id.toolbar_secondary_home)
+        val homeText = findViewById<TextView>(R.id.toolbar_home)
 
         homeText.setOnClickListener {
             homeTextClicked()
         }
 
 
-        val notificationsButton = findViewById<ImageView>(R.id.toolbar_secondary_notifications)
+        val notificationsButton = findViewById<ImageView>(R.id.toolbar_notifications)
 
         notificationsButton.setOnClickListener {
             notificationsButtonClicked()

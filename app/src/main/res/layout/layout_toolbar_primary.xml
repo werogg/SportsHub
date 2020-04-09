@@ -15,7 +15,7 @@
 
 
         <ImageView
-            android:id="@+id/toolbar_primary_notifications"
+            android:id="@+id/toolbar_notifications"
             android:layout_width="37dp"
             android:layout_height="38dp"
             android:tint="@color/colorPrimaryDark"
@@ -27,7 +27,7 @@
             app:tintMode="src_in" />
 
         <TextView
-            android:id="@+id/toolbar_primary_home"
+            android:id="@+id/toolbar_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/toolbar_primary_image_my_profile"
+            android:id="@+id/toolbar_image_my_profile"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="5dp"
@@ -55,7 +55,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/toolbar_primary_txt_my_profile"
+            android:id="@+id/toolbar_txt_my_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
@@ -63,11 +63,12 @@
             android:text="Manolo Lama"
             android:textColor="@android:color/black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/toolbar_primary_image_my_profile"
+            app:layout_constraintEnd_toStartOf="@+id/toolbar_image_my_profile"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.512" />
 
         <TextView
+            android:id="@+id/notificationsNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|end"
@@ -77,9 +78,9 @@
             android:text="1"
             android:textColor="@android:color/holo_red_dark"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbar_primary_notifications"
-            app:layout_constraintStart_toStartOf="@+id/toolbar_primary_notifications"
-            app:layout_constraintTop_toTopOf="@+id/toolbar_primary_notifications"
+            app:layout_constraintBottom_toBottomOf="@+id/toolbar_notifications"
+            app:layout_constraintStart_toStartOf="@+id/toolbar_notifications"
+            app:layout_constraintTop_toTopOf="@+id/toolbar_notifications"
             app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.appcompat.widget.Toolbar>

@@ -1,6 +1,5 @@
 package edu.ub.sportshub.profile
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,14 +7,12 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
-import edu.ub.sportshub.auth.login.LoginActivity
 import edu.ub.sportshub.home.HomeActivity
 
 class ProfileOtherActivity : AppCompatActivity() {
@@ -30,25 +27,25 @@ class ProfileOtherActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        val home = findViewById<TextView>(R.id.toolbar_primary_home)
+        val home = findViewById<TextView>(R.id.toolbar_home)
 
         home.setOnClickListener(){
             buttonHomeClicked()
         }
 
-        val notificationsButton = findViewById<ImageView>(R.id.toolbar_primary_notifications)
+        val notificationsButton = findViewById<ImageView>(R.id.toolbar_notifications)
 
         notificationsButton.setOnClickListener {
             notificationsButtonClicked()
         }
 
-        val profileText = findViewById<TextView>(R.id.toolbar_primary_txt_my_profile)
+        val profileText = findViewById<TextView>(R.id.toolbar_txt_my_profile)
 
         profileText.setOnClickListener {
             onProfileClick()
         }
 
-        val profileImage = findViewById<CircleImageView>(R.id.toolbar_primary_image_my_profile)
+        val profileImage = findViewById<CircleImageView>(R.id.toolbar_image_my_profile)
 
         profileImage.setOnClickListener {
             onProfileClick()
