@@ -40,6 +40,7 @@ class LoginForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun onButtonSendRecoveryEmail(email : String) {
+        if (email.isEmpty()) return
         val authDatabaseHelper = AuthDatabaseHelper()
         authDatabaseHelper.sendPasswordResetEmail(email)
         Toast.makeText(applicationContext, getString(R.string.password_recovery_email_sent) + email, Toast.LENGTH_LONG).show()
