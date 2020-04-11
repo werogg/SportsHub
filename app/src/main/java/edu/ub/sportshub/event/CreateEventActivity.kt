@@ -77,19 +77,19 @@ class CreateEventActivity : AppCompatActivity() {
      * Setup all listeners in the activity
      */
     private fun setupListeners() {
-        val textProfile = findViewById<TextView>(R.id.toolbar_secondary_txt_my_profile)
+        val textProfile = findViewById<TextView>(R.id.toolbar_txt_my_profile)
 
         textProfile.setOnClickListener {
             profileClicked()
         }
 
-        val imageProfile = findViewById<CircleImageView>(R.id.toolbar_secondary_image_my_profile)
+        val imageProfile = findViewById<CircleImageView>(R.id.toolbar_image_my_profile)
 
         imageProfile.setOnClickListener {
             profileClicked()
         }
 
-        val homeText = findViewById<TextView>(R.id.toolbar_secondary_home)
+        val homeText = findViewById<TextView>(R.id.toolbar_home)
 
         homeText.setOnClickListener {
             homeTextClicked()
@@ -97,7 +97,7 @@ class CreateEventActivity : AppCompatActivity() {
 
 
 
-        val notificationsButton = findViewById<ImageView>(R.id.toolbar_secondary_notifications)
+        val notificationsButton = findViewById<ImageView>(R.id.toolbar_notifications)
 
         notificationsButton.setOnClickListener {
             notificationsButtonClicked()

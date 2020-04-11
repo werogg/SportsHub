@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.get
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
@@ -40,13 +39,13 @@ class HomeActivity : AppCompatActivity() {
      * Setup all listeners in the activity
      */
     private fun setupListeners() {
-        val textProfile = findViewById<TextView>(R.id.toolbar_secondary_txt_my_profile)
+        val textProfile = findViewById<TextView>(R.id.toolbar_txt_my_profile)
 
         textProfile.setOnClickListener(){
             profileClicked()
         }
 
-        val imageProfile = findViewById<CircleImageView>(R.id.toolbar_secondary_image_my_profile)
+        val imageProfile = findViewById<CircleImageView>(R.id.toolbar_image_my_profile)
 
         imageProfile.setOnClickListener {
             profileClicked()
@@ -58,7 +57,7 @@ class HomeActivity : AppCompatActivity() {
             createEventButtonClicked()
         }
 
-        val notificationsButton = findViewById<ImageView>(R.id.toolbar_secondary_notifications)
+        val notificationsButton = findViewById<ImageView>(R.id.toolbar_notifications)
 
         notificationsButton.setOnClickListener {
             notificationsButtonClicked()
