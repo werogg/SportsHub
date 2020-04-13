@@ -69,12 +69,12 @@ class Users : Fragment() {
 
         var n = false
         var userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
+        var curr = authDatabaseHelper.getCurrentUser()!!.uid
 
         storeDatabaseHelper.getUsersCollection().whereGreaterThanOrEqualTo("username", query).get()
             .addOnSuccessListener { users ->
                 for (user in  users) {
                     var uid = user.getData().get("uid").toString()
-                    var curr = authDatabaseHelper.getCurrentUser()!!.uid
                     if(uid!=curr){
                         val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
                         val userView = LayoutInflater.from(context).inflate(R.layout.user_view, null);
