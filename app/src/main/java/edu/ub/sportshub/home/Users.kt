@@ -54,7 +54,6 @@ class Users : Fragment() {
             }
             override fun onQueryTextSubmit(query: String): Boolean {
                 if(!query.trim().isEmpty()){
-                    Log.i("Busqueda: ", query)
                     searchUsers(query);
                 }
                 return false
@@ -76,21 +75,21 @@ class Users : Fragment() {
                 for (user in  users) {
                     var uid = user.getData().get("uid").toString()
                     var curr = authDatabaseHelper.getCurrentUser()!!.uid
-
                     if(uid!=curr){
                         val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
                         val userView = LayoutInflater.from(context).inflate(R.layout.user_view, null);
                         val userViewTitleView = userView.findViewById<TextView>(R.id.username)
                         val userViewFollowView = userView.findViewById<TextView>(R.id.follow)
-                        val userViewBannerImage = userView.findViewById<CardView>(R.id.userImage)
+                        val userViewBannerImage = userView.findViewById<ImageView>(R.id.profilePicture)
 
                         userViewTitleView.text = user.getData().get("username").toString()
-                        /*
-                            Picasso.with(context)
-                                .load(user.getData().get("profilePicture").toString())
-                                .resize(dpSize, dpSize)
-                                .into(userViewBannerImage)
-                         */
+
+
+                        Picasso.with(context)
+                            .load(user.getData().get("profilePicture").toString())
+                            .resize(dpSize, dpSize)
+                            .into(userViewBannerImage)
+
                         n = true
                         userContainer?.addView(userView)
                     }
