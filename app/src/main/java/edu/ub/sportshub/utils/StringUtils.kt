@@ -13,8 +13,7 @@ object StringUtils {
      * @param value number of likes
      * @return string with Xk if > 999 - Xm if > 999k
      */
-    fun compactNumberString(value : Int?) : String {
-        if (value == null) return "error"
+    fun compactNumberString(value : Int) : String {
         return when {
             value < 1000 -> {
                 return "$value"

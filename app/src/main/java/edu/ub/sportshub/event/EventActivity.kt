@@ -22,13 +22,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FieldValue
 import com.squareup.picasso.Picasso
 import edu.ub.sportshub.R
-import edu.ub.sportshub.data.DataAccessObjectFactory
-import edu.ub.sportshub.data.models.event.EventDao
-import edu.ub.sportshub.data.events.DataEvent
-import edu.ub.sportshub.data.events.database.EventLoadedEvent
-import edu.ub.sportshub.data.events.database.UserLoadedEvent
-import edu.ub.sportshub.data.listeners.DataChangeListener
-import edu.ub.sportshub.data.models.user.UserDao
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Event
@@ -36,39 +29,39 @@ import edu.ub.sportshub.models.User
 import edu.ub.sportshub.utils.StringUtils
 import edu.ub.sportshub.handlers.ToolbarHandler
 
-class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListener {
+class EventActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var mAuthDatabaseHelper = AuthDatabaseHelper()
     private var mStoreDatabaseHelper = StoreDatabaseHelper()
     private lateinit var mMapView : MapView
     private var popupWindowImage : PopupWindow? = null
     private var eventId : String? = null
+    private var event : Event? = null
     private var googleMap : GoogleMap? = null
     private var liked = false
     private var assist = false
     private val toolbarHandler = ToolbarHandler(this)
-    private lateinit var userDao : UserDao
-    private lateinit var eventDao : EventDao
-
-    private var loadedUser : User? = null
-    private var loadedEvent : Event? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        userDao = DataAccessObjectFactory.getUserDao()
-        eventDao = DataAccessObjectFactory.getEventDao()
-
-        userDao.registerListener(this)
-        eventDao.registerListener(this)
-
         setContentView(R.layout.activity_event)
 
         eventId = intent.getStringExtra("eventId")
         setupActivityFunctionalities(savedInstanceState)
 
         if (eventId != null) {
-            eventDao.fetchEvent(eventId!!)
+            mStoreDatabaseHelper.retrieveEvent(eventId!!).addOnSuccessListener {
+                event = it.toObject(Event::class.java)
+
+                if (event?.getCreatorUid()!! == mAuthDatabaseHelper.getCurrentUser()?.uid) {
+                    val editButton = findViewById<FloatingActionButton>(R.id.event_edit_event_floating_button)
+                    editButton.visibility = View.VISIBLE
+                }
+
+                updateEventInfo()
+            } .addOnFailureListener {
+                finish()
+            }
         }
 
         toolbarHandler.setupToolbarBasics()
@@ -87,39 +80,18 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         val dateTextView = findViewById<TextView>(R.id.dateTextView)
         val hourTextView = findViewById<TextView>(R.id.hourTextView)
         val addressTextView = findViewById<TextView>(R.id.addressTextView)
+        val likeButton = findViewById<ExtendedFloatingActionButton>(R.id.like_floating_button)
         val creatorText = findViewById<TextView>(R.id.creatorText)
         val creatorImage = findViewById<ImageView>(R.id.creatorImage)
 
         // Update them with event info
-        eventDescriptionTextView.text = loadedEvent?.getDescription()
-        eventTitleTextView.text = loadedEvent?.getTitle()
-        likesTextView.text = StringUtils.compactNumberString(loadedEvent?.getLikes())
-        assistsTextView.text = StringUtils.compactNumberString(loadedEvent?.getAssists())
-        creatorText.text = loadedUser?.getUsername()
-        dateTextView.text = StringUtils.getFormatedDateFromTimestamp(loadedEvent?.getStartEventDate()!!)
-        hourTextView.text = StringUtils.getFormatedHourFromTimestamp(loadedEvent?.getStartEventDate()!!)
-        addressTextView.text = StringUtils.getAddressFromLocation(applicationContext,
-            loadedEvent?.getPosition()?.latitude!!, loadedEvent?.getPosition()?.longitude!!)
+        eventDescriptionTextView.text = event?.getDescription()
+        eventTitleTextView.text = event?.getTitle()
 
-        Picasso.with(applicationContext)
-            .load(loadedUser?.getProfilePicture())
-            .into(creatorImage)
+        likesTextView.text = StringUtils.compactNumberString(event?.getLikes()!!)
+        assistsTextView.text = StringUtils.compactNumberString(event?.getAssists()!!)
 
-        Picasso.with(applicationContext)
-            .load(loadedEvent?.getEventImage())
-            .into(eventBannerImageView)
-
-        setupMap()
-        checkUserLikeAssist()
-
-    }
-
-    private fun checkUserLikeAssist() {
-        val likeButton = findViewById<ExtendedFloatingActionButton>(R.id.like_floating_button)
-        val assistButton = findViewById<ExtendedFloatingActionButton>(R.id.will_assist_floating_button)
-        val currentUserUid = mAuthDatabaseHelper.getCurrentUser()?.uid
-
-        if (loadedEvent?.getUsersLiked()!!.contains(currentUserUid)) {
+        if (event?.getUsersLiked()!!.contains(mAuthDatabaseHelper.getCurrentUser()?.uid)) {
             liked = true
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 likeButton.icon = getDrawable(R.drawable.baseline_thumb_up_alt_24)
@@ -128,21 +100,28 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
             }
         }
 
-        if (loadedEvent?.getUsersAssists()!!.contains(currentUserUid)) {
-            assist = true
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                assistButton.icon = getDrawable(R.drawable.baseline_star_24)
-            } else {
-                likeButton.icon = resources.getDrawable(R.drawable.baseline_star_24)
-            }
-        }
-    }
+        mStoreDatabaseHelper.retrieveUser(event?.getCreatorUid().toString()).addOnSuccessListener {
+            val creatorUser = it.toObject(User::class.java)
+            Picasso.with(applicationContext)
+                .load(creatorUser?.getProfilePicture())
+                .into(creatorImage)
 
-    private fun setupMap() {
+            creatorText.text = creatorUser?.getUsername()
+        }
+
+        Picasso.with(applicationContext)
+            .load(event?.getEventImage())
+            .into(eventBannerImageView)
+
+        dateTextView.text = StringUtils.getFormatedDateFromTimestamp(event?.getStartEventDate()!!)
+        hourTextView.text = StringUtils.getFormatedHourFromTimestamp(event?.getStartEventDate()!!)
+        addressTextView.text = StringUtils.getAddressFromLocation(applicationContext,
+            event?.getPosition()?.latitude!!, event?.getPosition()?.longitude!!)
+
         // Animate and focus google map
         if (googleMap != null) {
-            val coords = LatLng(loadedEvent!!.getPosition().latitude, loadedEvent!!.getPosition().longitude)
-            googleMap?.addMarker(MarkerOptions().position(coords).title(loadedEvent?.getTitle()))
+            val coords = LatLng(event!!.getPosition().latitude, event!!.getPosition().longitude)
+            googleMap?.addMarker(MarkerOptions().position(coords).title(event?.getTitle()))
             val location = CameraUpdateFactory.newLatLngZoom(coords, 15F)
             googleMap?.animateCamera(location)
         }
@@ -203,14 +182,23 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
     private fun onAssistButtonClicked() {
         // TODO notifications
 
-        val userId = mAuthDatabaseHelper.getCurrentUser()?.uid
+        if (eventId != null) {
 
-        if (loadedEvent != null && userId != null) {
             val assistButton = findViewById<ExtendedFloatingActionButton>(R.id.will_assist_floating_button)
-
-            eventDao.giveAssist(userId, loadedEvent!!.getId())
+            val userId = mAuthDatabaseHelper.getCurrentUser()?.uid
 
             if (assist) {
+                // Remove the user from event's user liked list
+                mStoreDatabaseHelper.retrieveEventRef(eventId!!)
+                    .update(
+                        "usersAssists",
+                        FieldValue.arrayRemove(userId)
+                    )
+                // Remove the event from the user's events liked list
+                mStoreDatabaseHelper.retrieveUserRef(userId!!)
+                    .update("eventsAssist",
+                        FieldValue.arrayRemove(eventId)
+                    )
                 assist = false
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -219,6 +207,19 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
                     assistButton.icon = resources.getDrawable(R.drawable.outline_star_border_24)
                 }
             } else {
+                // Add the user to event's user liked list
+                mStoreDatabaseHelper.retrieveEventRef(eventId!!)
+                    .update(
+                        "usersAssists",
+                        FieldValue.arrayUnion(mAuthDatabaseHelper.getCurrentUser()?.uid)
+                    )
+
+                // Add the event from to user's events liked list
+                mStoreDatabaseHelper.retrieveUserRef(userId!!)
+                    .update("eventsAssist",
+                        FieldValue.arrayUnion(eventId)
+                    )
+
                 assist = true
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -233,14 +234,22 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
     private fun onLikeButtonClicked() {
         // TODO notifications
 
-        val userId = mAuthDatabaseHelper.getCurrentUser()?.uid
-
-        if (loadedEvent != null && userId != null) {
+        if (eventId != null) {
             val likeButton = findViewById<ExtendedFloatingActionButton>(R.id.like_floating_button)
-
-            eventDao.giveLike(userId, loadedEvent!!.getId())
+            val userId = mAuthDatabaseHelper.getCurrentUser()?.uid
 
             if (liked) {
+                // Remove the user from event's user liked list
+                mStoreDatabaseHelper.retrieveEventRef(eventId!!)
+                    .update(
+                        "usersLiked",
+                        FieldValue.arrayRemove(userId)
+                    )
+                // Remove the event from the user's events liked list
+                mStoreDatabaseHelper.retrieveUserRef(userId!!)
+                    .update("eventsLiked",
+                        FieldValue.arrayRemove(eventId)
+                    )
                 liked = false
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -249,6 +258,19 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
                     likeButton.icon = resources.getDrawable(R.drawable.outline_thumb_up_alt_24)
                 }
             } else {
+                // Add the user to event's user liked list
+                mStoreDatabaseHelper.retrieveEventRef(eventId!!)
+                    .update(
+                        "usersLiked",
+                        FieldValue.arrayUnion(mAuthDatabaseHelper.getCurrentUser()?.uid)
+                    )
+
+                // Add the event from to user's events liked list
+                mStoreDatabaseHelper.retrieveUserRef(userId!!)
+                    .update("eventsLiked",
+                        FieldValue.arrayUnion(eventId)
+                    )
+
                 liked = true
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -258,6 +280,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
                 }
             }
         }
+
     }
 
     private fun onEditEventButtonClicked() {
@@ -266,15 +289,6 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         startActivity(goEdit)
     }
 
-    private fun onHomeClick() {
-        val goHome = Intent(this, HomeActivity::class.java)
-        startActivity(goHome)
-    }
-
-    private fun onProfileClick() {
-        val goProfile = Intent(this, ProfileActivity::class.java)
-        startActivity(goProfile)
-    }
 
     private fun onBannerImageClick() {
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -283,7 +297,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         popupWindowImage = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
         val image = customView.findViewById(R.id.fullImage) as ImageView
         Picasso.with(applicationContext)
-            .load(loadedEvent?.getEventImage())
+            .load(event?.getEventImage())
             .into(image)
         popupWindowImage!!.showAtLocation(coord, Gravity.CENTER,0,0)
 
@@ -332,32 +346,5 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
     override fun onLowMemory() {
         super.onLowMemory()
         mMapView.onLowMemory()
-    }
-
-    override fun onDataLoaded(event: DataEvent) {
-        if (event is UserLoadedEvent) {
-            loadedUser = event.user
-            onAllDataLoaded()
-        }
-        else if (event is EventLoadedEvent) {
-            loadedEvent = event.event
-            eventFetched()
-        }
-    }
-
-    private fun onAllDataLoaded() {
-        updateEventInfo()
-    }
-
-    private fun eventFetched() {
-        userDao.fetchUser(loadedEvent!!.getCreatorUid())
-        checkEditButton()
-    }
-
-    private fun checkEditButton() {
-        if (loadedEvent?.getCreatorUid() == mAuthDatabaseHelper.getCurrentUser()?.uid) {
-            val editButton = findViewById<FloatingActionButton>(R.id.event_edit_event_floating_button)
-            editButton.visibility = View.VISIBLE
-        }
     }
 }
