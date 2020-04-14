@@ -35,6 +35,8 @@ import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.utils.StringUtils
 import edu.ub.sportshub.handlers.ToolbarHandler
+import edu.ub.sportshub.home.HomeActivity
+import edu.ub.sportshub.profile.ProfileActivity
 
 class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListener {
 
@@ -264,16 +266,6 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         val goEdit = Intent(this, EditEventActivity::class.java)
         goEdit.putExtra("eventId",eventId)
         startActivity(goEdit)
-    }
-
-    private fun onHomeClick() {
-        val goHome = Intent(this, HomeActivity::class.java)
-        startActivity(goHome)
-    }
-
-    private fun onProfileClick() {
-        val goProfile = Intent(this, ProfileActivity::class.java)
-        startActivity(goProfile)
     }
 
     private fun onBannerImageClick() {
