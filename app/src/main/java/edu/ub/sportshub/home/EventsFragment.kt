@@ -13,6 +13,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
+import edu.ub.sportshub.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.events.DataEvent
+import edu.ub.sportshub.data.events.database.EventsLoadedEvent
+import edu.ub.sportshub.data.events.database.FollowingUsersEventsLoadedEvent
+import edu.ub.sportshub.data.listeners.DataChangeListener
+import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.event.EventActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
@@ -25,17 +31,23 @@ import edu.ub.sportshub.utils.StringUtils
 /**
  * A simple [Fragment] subclass.
  */
-class EventsFragment : Fragment() {
+class EventsFragment : Fragment(), DataChangeListener {
 
     private var storeDatabaseHelper = StoreDatabaseHelper()
     private var authDatabaseHelper = AuthDatabaseHelper()
     private var eventsToShow = mutableListOf<Pair<Event, User>>()
+    private lateinit var eventDao : EventDao
+    private var followingUsersEvents = mutableListOf<Pair<Event, User>>()
+    private var ownedEvents = mutableListOf<Pair<Event, User>>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
+        eventDao = DataAccessObjectFactory.getEventDao()
+        eventDao.registerListener(this)
         return inflater.inflate(R.layout.fragment_events, container, false)
     }
 
@@ -69,78 +81,21 @@ class EventsFragment : Fragment() {
         }
     }
 
-    /**
-     * First step to show events on the home page
-     */
     private fun showFollowingUsersEvents() {
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
         refreshingLayout?.isRefreshing = true
-        if (maxEventsReached()) return
         val loggedUserUid = authDatabaseHelper.getCurrentUser()?.uid.toString()
-        // Retrieve the current logged user
-        storeDatabaseHelper.retrieveUser(loggedUserUid).addOnSuccessListener { loggedUser ->
-            val currentUser = loggedUser.toObject(User::class.java)
-
-            // Get his followed users and for every user go to second step
-            val followingUsers = currentUser?.getFollowingUsers()
-            followingUsers?.add(currentUser.getUid())
-            if (followingUsers != null) {
-                for (followedUserUid in followingUsers) {
-                    val lastCall = followingUsers[followingUsers.lastIndex] == followedUserUid
-                    showFollowingUsersEventsSecondStep(followedUserUid, lastCall)
-                }
-            }
-        }
-    }
-
-    /**
-     * Second step to show events on the home page
-     */
-    private fun showFollowingUsersEventsSecondStep(followedUserUid: String, lastCall: Boolean) {
-        if (maxEventsReached()) return
-        // Retrieve the followed user and go to the Third step
-        storeDatabaseHelper.retrieveUser(followedUserUid).addOnSuccessListener {
-            val followedUser = it.toObject(User::class.java)
-            showFollowingUsersEventsThirdStep(followedUser, lastCall)
-        }
-    }
-
-    /**
-     * Third step to show events on the home page
-     */
-    private fun showFollowingUsersEventsThirdStep(
-        followedUser: User?,
-        lastCall: Boolean
-    ) {
-        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
-        if (maxEventsReached()) return
-        // Get user events ids
-        val eventsOwnedIds = followedUser?.getEventsOwned()
-        if (eventsOwnedIds != null) {
-
-            if (eventsOwnedIds.isEmpty() && lastCall) refreshingLayout?.isRefreshing = false
-            else {
-
-                // Retrieve every event by his eventId
-                for (eventId in eventsOwnedIds) {
-                    storeDatabaseHelper.retrieveEvent(eventId).addOnSuccessListener {
-                        val event = it.toObject(Event::class.java)
-                        // Just add it to the view if the event is not deleted
-                        if (event != null && !event.isDeleted()) {
-                            // Add it to events that will be shown and update the view
-                            eventsToShow.add(Pair(event, followedUser))
-                            updateShowingEvents()
-                        }
-                    }
-                }
-            }
-        }
+        eventDao.fetchFollowingUsersEvents(loggedUserUid)
     }
 
     /**
      * Update the view which contains the events
      */
     private fun updateShowingEvents() {
+        eventsToShow = mutableListOf()
+        eventsToShow.addAll(followingUsersEvents)
+        eventsToShow.addAll(ownedEvents)
+
         // Get the refreshing layout to check his state
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
 
@@ -203,7 +158,24 @@ class EventsFragment : Fragment() {
         refreshingLayout?.isRefreshing = false
     }
 
-    private fun maxEventsReached() : Boolean {
-        return eventsToShow.size == 30
+    override fun onDataLoaded(event: DataEvent) {
+        if (event is FollowingUsersEventsLoadedEvent) {
+            followingUsersEvents = event.eventList
+            eventDao.fetchUserEvents(authDatabaseHelper.getCurrentUser()?.uid.toString())
+        } else if (event is EventsLoadedEvent) {
+            val ownedEvents = mutableListOf<Pair<Event, User>>()
+            for (loadedEvent in event.eventList) {
+                ownedEvents.add(Pair(loadedEvent, event.owner))
+            }
+            this.ownedEvents = ownedEvents
+            updateShowingEvents()
+            val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
+            refreshingLayout?.isRefreshing = false
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showFollowingUsersEvents()
     }
 }
