@@ -3,7 +3,6 @@ package edu.ub.sportshub.event
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -11,37 +10,37 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.firestore.FieldValue
 import com.squareup.picasso.Picasso
 import edu.ub.sportshub.R
 import edu.ub.sportshub.data.DataAccessObjectFactory
-import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.data.events.DataEvent
 import edu.ub.sportshub.data.events.database.EventLoadedEvent
 import edu.ub.sportshub.data.events.database.UserLoadedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
+import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.data.models.user.UserDao
+import edu.ub.sportshub.handlers.ToolbarHandler
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.utils.StringUtils
-import edu.ub.sportshub.handlers.ToolbarHandler
-import edu.ub.sportshub.home.HomeActivity
-import edu.ub.sportshub.profile.ProfileActivity
 
 class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListener {
 
     private var mAuthDatabaseHelper = AuthDatabaseHelper()
-    private var mStoreDatabaseHelper = StoreDatabaseHelper()
     private lateinit var mMapView : MapView
     private var popupWindowImage : PopupWindow? = null
     private var eventId : String? = null
