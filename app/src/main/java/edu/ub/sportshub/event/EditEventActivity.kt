@@ -21,6 +21,11 @@ import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
+import edu.ub.sportshub.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.events.DataEvent
+import edu.ub.sportshub.data.events.database.EventLoadedEvent
+import edu.ub.sportshub.data.listeners.DataChangeListener
+import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
@@ -31,7 +36,7 @@ import kotlinx.android.synthetic.main.activity_create_event.*
 import java.io.IOException
 import java.util.*
 
-class EditEventActivity : AppCompatActivity() {
+class EditEventActivity : AppCompatActivity(), DataChangeListener {
 
     private var popupWindow : PopupWindow? = null
     private val calendar = Calendar.getInstance()
@@ -41,7 +46,6 @@ class EditEventActivity : AppCompatActivity() {
     private var hour = calendar.get(Calendar.HOUR_OF_DAY)
     private var minute = calendar.get(Calendar.MINUTE)
     private var eventId : String? = null
-    private var event : Event? = null
     private var mStoreDatabaseHelper = StoreDatabaseHelper()
     private var firebaseStorage = FirebaseStorage.getInstance()
     private var storageReference = firebaseStorage.reference
@@ -51,25 +55,24 @@ class EditEventActivity : AppCompatActivity() {
     private var addressHandler : Handler? = null
     private var filePath : Uri? = null
     private var imageUploaded = false
-    private var databaseHelper = StoreDatabaseHelper()
-    private var authDatabaseHelper = AuthDatabaseHelper()
+    private lateinit var eventDao : EventDao
+    private lateinit var event : Event
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_event)
-
+        eventDao = DataAccessObjectFactory.getEventDao()
+        eventDao.registerListener(this)
         eventId = intent.getStringExtra("eventId")
 
-        if (eventId != null) {
-            mStoreDatabaseHelper.retrieveEvent(eventId!!).addOnSuccessListener {
-                event = it.toObject(Event::class.java)
-                updateEventInfo()
-                setupActivityFunctionalities()
-            }.addOnFailureListener{
-                finish()
-            }
+        setupActivityFunctionalities()
 
-            //Cargar cuando se crea el layout los datos del evento
+        if (eventId != null) {
+            Thread {
+                kotlin.run {
+                    eventDao.fetchEvent(eventId!!)
+                }
+            }.start()
         }
 
     }
@@ -81,18 +84,18 @@ class EditEventActivity : AppCompatActivity() {
         val descEvent = findViewById<EditText>(R.id.description_text)
         val viewImage = findViewById<ImageView>(R.id.image_selector)
 
-        val title = event?.getTitle()
+        val title = event.getTitle()
         titleEvent.setText(title)
 
-        val desc = event?.getDescription()
+        val desc = event.getDescription()
         descEvent.setText(desc)
 
-        val place = StringUtils.getAddressFromLocation(this,event?.getPosition()!!.latitude
-            , event?.getPosition()!!.longitude) //event?.getPosition()
+        val place = StringUtils.getAddressFromLocation(this,event.getPosition().latitude
+            , event.getPosition().longitude) //event?.getPosition()
         whereEvent.setText(place)
 
         Picasso.with(this)
-            .load(event?.getEventImage()!!)
+            .load(event.getEventImage())
             .resize(viewImage.width, viewImage.height)
             .into(viewImage)
 
@@ -297,30 +300,30 @@ class EditEventActivity : AppCompatActivity() {
 
     private fun onEditEventButtonClicked() {
 
-        val titleEvent = findViewById<EditText>(R.id.title_text)
-        val whereEvent = findViewById<EditText>(R.id.where_text)  //Geocoder
-        val descEvent = findViewById<EditText>(R.id.description_text)
+        val titleEvent = findViewById<EditText>(R.id.title_text).text.toString()
+        val whereEvent = findViewById<EditText>(R.id.where_text).text.toString()
+        val descEvent = findViewById<EditText>(R.id.description_text).text.toString()
 
-        if (!imageUploaded) imageSelected = event?.getEventImage()
+        if (!imageUploaded) imageSelected = event.getEventImage()
 
-        if (titleEvent.text.toString().isNotEmpty() and whereEvent.text.toString().isNotEmpty()
-            and descEvent.text.toString().isNotEmpty()) {
+        if (titleEvent.isNotEmpty() && whereEvent.isNotEmpty()
+            && descEvent.isNotEmpty() && eventId != null) {
+            val location = StringUtils.getLocationFromName(this, whereEvent)
 
-            val location = StringUtils.getLocationFromName(this, whereEvent.text.toString())
-
-            databaseHelper.retrieveEventRef(eventId!!)
-                .update(mapOf(
-                    "title" to titleEvent.text.toString(),
-                    "position" to GeoPoint(location?.latitude!!, location?.longitude!!),
-                    "description" to descEvent.text.toString(),
-                    "eventImage" to imageSelected!!
-                //faltaria el timeStamp
-            ))
-            val intent = Intent(this, EventActivity::class.java)
-            intent.putExtra("eventId", eventId)
-            startActivity(intent)
-
+            if (location != null) {
+                eventDao.editEvent(eventId!!, titleEvent, GeoPoint(location.latitude, location.longitude), descEvent, imageSelected!!)
+                val intent = Intent(this, EventActivity::class.java)
+                intent.putExtra("eventId", eventId)
+                startActivity(intent)
+            }
         }
 
+    }
+
+    override fun onDataLoaded(event: DataEvent) {
+        if (event is EventLoadedEvent) {
+            this.event = event.event
+            updateEventInfo()
+        }
     }
 }
