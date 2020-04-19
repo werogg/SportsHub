@@ -1,5 +1,6 @@
 package edu.ub.sportshub.data.models.event
 
+import com.google.firebase.firestore.GeoPoint
 import edu.ub.sportshub.models.Event
 
 interface IEventDao {
@@ -8,4 +9,6 @@ interface IEventDao {
     fun fetchFollowingUsersEvents(uid: String)
     fun giveLike(uid: String, eid: String)
     fun giveAssist(uid: String, eid: String)
+    fun editEvent(eid: String, title: String, loc: GeoPoint, description: String, image: String)
+    fun createEvent(event: Event)
 }

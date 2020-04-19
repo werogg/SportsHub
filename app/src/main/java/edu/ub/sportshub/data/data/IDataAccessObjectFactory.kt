@@ -1,4 +1,4 @@
-package edu.ub.sportshub.data
+package edu.ub.sportshub.data.data
 
 import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.data.models.user.UserDao

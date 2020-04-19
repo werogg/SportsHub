@@ -13,19 +13,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
-import edu.ub.sportshub.data.DataAccessObjectFactory
-import edu.ub.sportshub.data.events.DataEvent
+import edu.ub.sportshub.data.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.events.database.DataEvent
 import edu.ub.sportshub.data.events.database.EventsLoadedEvent
 import edu.ub.sportshub.data.events.database.FollowingUsersEventsLoadedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
 import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.event.EventActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
-import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.ProfileActivity
-import edu.ub.sportshub.profile.ProfileOtherActivity
 import edu.ub.sportshub.utils.StringUtils
 
 /**
@@ -33,7 +31,6 @@ import edu.ub.sportshub.utils.StringUtils
  */
 class EventsFragment : Fragment(), DataChangeListener {
 
-    private var storeDatabaseHelper = StoreDatabaseHelper()
     private var authDatabaseHelper = AuthDatabaseHelper()
     private var eventsToShow = mutableListOf<Pair<Event, User>>()
     private lateinit var eventDao : EventDao
@@ -53,8 +50,8 @@ class EventsFragment : Fragment(), DataChangeListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainer)
-        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
+        val eventContainer = view.findViewById<LinearLayout>(R.id.eventsContainer)
+        val refreshingLayout = view.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
 
         setupRefreshListener()
 
@@ -85,7 +82,12 @@ class EventsFragment : Fragment(), DataChangeListener {
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
         refreshingLayout?.isRefreshing = true
         val loggedUserUid = authDatabaseHelper.getCurrentUser()?.uid.toString()
-        eventDao.fetchFollowingUsersEvents(loggedUserUid)
+
+        Thread {
+            kotlin.run {
+                eventDao.fetchFollowingUsersEvents(loggedUserUid)
+            }
+        }.start()
     }
 
     /**
@@ -161,7 +163,13 @@ class EventsFragment : Fragment(), DataChangeListener {
     override fun onDataLoaded(event: DataEvent) {
         if (event is FollowingUsersEventsLoadedEvent) {
             followingUsersEvents = event.eventList
-            eventDao.fetchUserEvents(authDatabaseHelper.getCurrentUser()?.uid.toString())
+
+            Thread {
+                kotlin.run {
+                    eventDao.fetchUserEvents(authDatabaseHelper.getCurrentUser()?.uid.toString())
+                }
+            }.start()
+
         } else if (event is EventsLoadedEvent) {
             val ownedEvents = mutableListOf<Pair<Event, User>>()
             for (loadedEvent in event.eventList) {

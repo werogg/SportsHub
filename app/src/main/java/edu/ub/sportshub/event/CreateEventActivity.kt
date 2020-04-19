@@ -289,7 +289,7 @@ class CreateEventActivity : AppCompatActivity() {
     private fun uploadImage() {
         val rootLayout = findViewById<ConstraintLayout>(R.id.create_event_constraint_layout)
         progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleLarge)
-        var params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
         params.addRule(RelativeLayout.CENTER_VERTICAL)
         params.addRule(RelativeLayout.CENTER_HORIZONTAL)
         rootLayout.addView(progressBar, params)

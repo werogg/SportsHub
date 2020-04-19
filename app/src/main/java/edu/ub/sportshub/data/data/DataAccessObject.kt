@@ -1,10 +1,7 @@
-package edu.ub.sportshub.data
+package edu.ub.sportshub.data.data
 
-import edu.ub.sportshub.data.enums.DataType
-import edu.ub.sportshub.data.events.DataEvent
+import edu.ub.sportshub.data.events.database.DataEvent
 import edu.ub.sportshub.data.listeners.*
-import edu.ub.sportshub.models.Event
-import edu.ub.sportshub.models.User
 
 abstract class DataAccessObject : IDataAccessObject {
     var mListeners = mutableListOf<DataChangeListener>()

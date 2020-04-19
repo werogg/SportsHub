@@ -21,12 +21,11 @@ import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
-import edu.ub.sportshub.data.DataAccessObjectFactory
-import edu.ub.sportshub.data.events.DataEvent
+import edu.ub.sportshub.data.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.events.database.DataEvent
 import edu.ub.sportshub.data.events.database.EventLoadedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
 import edu.ub.sportshub.data.models.event.EventDao
-import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.Event

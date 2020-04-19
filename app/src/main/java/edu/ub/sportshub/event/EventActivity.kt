@@ -24,8 +24,8 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 import edu.ub.sportshub.R
-import edu.ub.sportshub.data.DataAccessObjectFactory
-import edu.ub.sportshub.data.events.DataEvent
+import edu.ub.sportshub.data.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.events.database.DataEvent
 import edu.ub.sportshub.data.events.database.EventLoadedEvent
 import edu.ub.sportshub.data.events.database.UserLoadedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
@@ -33,7 +33,6 @@ import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.data.models.user.UserDao
 import edu.ub.sportshub.handlers.ToolbarHandler
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
-import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.utils.StringUtils

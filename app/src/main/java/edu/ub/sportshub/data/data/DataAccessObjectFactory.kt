@@ -1,12 +1,11 @@
-package edu.ub.sportshub.data
+package edu.ub.sportshub.data.data
 
-import android.R
-import android.content.res.Resources
 import edu.ub.sportshub.data.enums.DatabaseType
 import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.data.models.user.UserDao
 
-object DataAccessObjectFactory : IDataAccessObjectFactory {
+object DataAccessObjectFactory :
+    IDataAccessObjectFactory {
     var databaseType = DatabaseType.FIRESTORE
 
     override fun getUserDao() : UserDao {
