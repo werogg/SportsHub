@@ -34,8 +34,9 @@ class EventsFragment : Fragment(), DataChangeListener {
     private var authDatabaseHelper = AuthDatabaseHelper()
     private var eventsToShow = mutableListOf<Pair<Event, User>>()
     private lateinit var eventDao : EventDao
-    private var followingUsersEvents = mutableListOf<Pair<Event, User>>()
-    private var ownedEvents = mutableListOf<Pair<Event, User>>()
+    private var followingUsersEvents : MutableList<Pair<Event, User>>? = null
+    private var ownedEvents : MutableList<Pair<Event, User>>? = null
+    private var eventsMergedList = mutableListOf<Pair<Event, User>>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,6 +87,7 @@ class EventsFragment : Fragment(), DataChangeListener {
         Thread {
             kotlin.run {
                 eventDao.fetchFollowingUsersEvents(loggedUserUid)
+                eventDao.fetchUserEvents(loggedUserUid)
             }
         }.start()
     }
@@ -94,12 +96,16 @@ class EventsFragment : Fragment(), DataChangeListener {
      * Update the view which contains the events
      */
     private fun updateShowingEvents() {
-        eventsToShow = mutableListOf()
-        eventsToShow.addAll(followingUsersEvents)
-        eventsToShow.addAll(ownedEvents)
-
         // Get the refreshing layout to check his state
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
+
+        if (!isEventsLoaded()) {
+            refreshingLayout?.isRefreshing = false
+            return
+        }
+
+        eventsToShow = mutableListOf()
+        eventsToShow.addAll(eventsMergedList)
 
         // Sort the events by time
         eventsToShow.sortBy {
@@ -160,26 +166,32 @@ class EventsFragment : Fragment(), DataChangeListener {
         refreshingLayout?.isRefreshing = false
     }
 
+    private fun isEventsLoaded(): Boolean {
+        return ownedEvents != null && followingUsersEvents != null
+    }
+
+    private fun mergeEventsIntoShowListAndShow() {
+        val mergedList = mutableListOf<Pair<Event, User>>()
+        if (isEventsLoaded()) {
+            mergedList.addAll(ownedEvents!!)
+            mergedList.addAll(followingUsersEvents!!)
+            eventsMergedList = mergedList
+            updateShowingEvents()
+        }
+    }
+
     override fun onDataLoaded(event: DataEvent) {
         if (event is FollowingUsersEventsLoadedEvent) {
             followingUsersEvents = event.eventList
-
-            Thread {
-                kotlin.run {
-                    eventDao.fetchUserEvents(authDatabaseHelper.getCurrentUser()?.uid.toString())
-                }
-            }.start()
-
         } else if (event is EventsLoadedEvent) {
-            val ownedEvents = mutableListOf<Pair<Event, User>>()
-            for (loadedEvent in event.eventList) {
-                ownedEvents.add(Pair(loadedEvent, event.owner))
-            }
-            this.ownedEvents = ownedEvents
-            updateShowingEvents()
-            val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
-            refreshingLayout?.isRefreshing = false
+            val tempList = mutableListOf<Pair<Event, User>>()
+
+            for (loadedEvent in event.eventList)
+                tempList.add(Pair(loadedEvent, event.owner))
+
+            this.ownedEvents = tempList
         }
+        if (isEventsLoaded()) mergeEventsIntoShowListAndShow()
     }
 
     override fun onResume() {

@@ -71,8 +71,6 @@ class FireauthRegisterHandler : RegisterHandler() {
         storeDatabaseHelper.storeUser(newUser)
         if (authDatabaseHelper.getCurrentUser() != null)
             authDatabaseHelper.getCurrentUser()!!.sendEmailVerification()
-        authDatabaseHelper.signOut()
-
         executeListeners(RegisterPerformedEvent(RegisterResult.SUCCESS))
     }
 }
