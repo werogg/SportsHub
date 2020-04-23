@@ -9,20 +9,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.FirebaseAuthException
 import edu.ub.sportshub.MainActivity
 import edu.ub.sportshub.R
 import edu.ub.sportshub.auth.signup.SignupActivity
+import edu.ub.sportshub.data.auth.AuthHandlerFactory
+import edu.ub.sportshub.data.auth.FireauthLoginHandler
+import edu.ub.sportshub.data.auth.ILoginHandler
 import edu.ub.sportshub.data.auth.LoginHandler
 import edu.ub.sportshub.data.enums.LoginResult
 import edu.ub.sportshub.data.events.auth.AuthEvent
 import edu.ub.sportshub.data.events.auth.LoginPerformedEvent
 import edu.ub.sportshub.data.listeners.AuthPerformedListener
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
-import edu.ub.sportshub.helpers.StoreDatabaseHelper
-import edu.ub.sportshub.home.HomeActivity
-import edu.ub.sportshub.models.User
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlin.system.exitProcess
 
@@ -37,7 +35,7 @@ class LoginActivity : AppCompatActivity(), AuthPerformedListener {
         setContentView(R.layout.activity_login)
 
         authDatabaseHelper = AuthDatabaseHelper()
-        loginHandler = LoginHandler()
+        loginHandler = AuthHandlerFactory.getLoginHandler()
         loginHandler.registerListener(this)
 
         val buttonLogin = findViewById<Button>(R.id.btn_login)

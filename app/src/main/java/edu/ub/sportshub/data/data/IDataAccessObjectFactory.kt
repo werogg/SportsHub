@@ -1,9 +1,9 @@
 package edu.ub.sportshub.data.data
 
-import edu.ub.sportshub.data.models.event.EventDao
-import edu.ub.sportshub.data.models.user.UserDao
+import edu.ub.sportshub.data.models.event.IEventDao
+import edu.ub.sportshub.data.models.user.IUserDao
 
 interface IDataAccessObjectFactory {
-    fun getUserDao() : UserDao
-    fun getEventDao() : EventDao
+    fun getUserDao() : IUserDao
+    fun getEventDao() : IEventDao
 }
