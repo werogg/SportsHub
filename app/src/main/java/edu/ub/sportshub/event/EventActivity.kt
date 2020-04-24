@@ -3,53 +3,50 @@ package edu.ub.sportshub.event
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.firestore.FieldValue
 import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
-import edu.ub.sportshub.data.DataAccessObjectFactory
-import edu.ub.sportshub.data.models.event.EventDao
-import edu.ub.sportshub.data.events.DataEvent
+import edu.ub.sportshub.data.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.events.database.DataEvent
 import edu.ub.sportshub.data.events.database.EventLoadedEvent
 import edu.ub.sportshub.data.events.database.UserLoadedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
+import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.data.models.user.UserDao
+import edu.ub.sportshub.handlers.ToolbarHandler
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
-import edu.ub.sportshub.helpers.StoreDatabaseHelper
-import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
-import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.utils.StringUtils
 
 class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListener {
 
     private var mAuthDatabaseHelper = AuthDatabaseHelper()
-    private var mStoreDatabaseHelper = StoreDatabaseHelper()
     private lateinit var mMapView : MapView
     private var popupWindowImage : PopupWindow? = null
-    private var popupWindow : PopupWindow? = null
     private var eventId : String? = null
     private var googleMap : GoogleMap? = null
     private var liked = false
     private var assist = false
+    private val toolbarHandler = ToolbarHandler(this)
     private lateinit var userDao : UserDao
     private lateinit var eventDao : EventDao
 
@@ -73,6 +70,8 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         if (eventId != null) {
             eventDao.fetchEvent(eventId!!)
         }
+
+        toolbarHandler.setupToolbarBasics()
     }
 
     /**
@@ -172,34 +171,10 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
             onBannerImageClick()
         }
 
-        val profileText = findViewById<TextView>(R.id.toolbar_secondary_txt_my_profile)
-
-        profileText.setOnClickListener {
-            onProfileClick()
-        }
-
-        val profileImage = findViewById<CircleImageView>(R.id.toolbar_secondary_image_my_profile)
-
-        profileImage.setOnClickListener {
-            onProfileClick()
-        }
-
-        val homeText = findViewById<TextView>(R.id.toolbar_secondary_home)
-
-        homeText.setOnClickListener {
-            onHomeClick()
-        }
-
         val editButton = findViewById<FloatingActionButton>(R.id.event_edit_event_floating_button)
 
         editButton.setOnClickListener {
             onEditEventButtonClicked()
-        }
-
-        val notificationsButton = findViewById<ImageView>(R.id.toolbar_secondary_notifications)
-
-        notificationsButton.setOnClickListener {
-            notificationsButtonClicked()
         }
 
         val likeButton = findViewById<ExtendedFloatingActionButton>(R.id.like_floating_button)
@@ -291,16 +266,6 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         startActivity(goEdit)
     }
 
-    private fun onHomeClick() {
-        val goHome = Intent(this, HomeActivity::class.java)
-        startActivity(goHome)
-    }
-
-    private fun onProfileClick() {
-        val goProfile = Intent(this, ProfileActivity::class.java)
-        startActivity(goProfile)
-    }
-
     private fun onBannerImageClick() {
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val customView = inflater.inflate(R.layout.full_image, null)
@@ -317,29 +282,12 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
             popupWindowImage!!.dismiss()
             popupWindowImage = null
         }
-
-    }
-
-    private fun notificationsButtonClicked() {
-        val displayMetrics = applicationContext.resources.displayMetrics
-        val dpValue1 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 350f, displayMetrics)
-        val dpValue2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480f, displayMetrics)
-        val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val customView = inflater.inflate(R.layout.fragment_notifications_secondary, null)
-        val coord = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
-        popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
-        popupWindow!!.width = dpValue1.toInt()
-        popupWindow!!.height = dpValue2.toInt()
-        popupWindow!!.showAtLocation(coord, Gravity.TOP,0,220)
     }
 
     override fun onBackPressed() {
-        if (popupWindowImage != null) {
-            popupWindowImage!!.dismiss()
-            popupWindowImage = null
-        } else {
-            super.onBackPressed()
-        }
+        if (toolbarHandler.isNotificationsPopupVisible()) toolbarHandler.setNotificationsPopupVisibility(ToolbarHandler.NotificationsVisibility.GONE)
+        else if (popupWindowImage != null && popupWindowImage!!.isShowing) popupWindowImage!!.dismiss()
+        else super.onBackPressed()
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {

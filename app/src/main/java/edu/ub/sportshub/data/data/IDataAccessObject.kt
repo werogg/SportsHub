@@ -1,7 +1,6 @@
-package edu.ub.sportshub.data
+package edu.ub.sportshub.data.data
 
-import edu.ub.sportshub.data.enums.DataType
-import edu.ub.sportshub.data.events.DataEvent
+import edu.ub.sportshub.data.events.database.DataEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
 
 interface IDataAccessObject {

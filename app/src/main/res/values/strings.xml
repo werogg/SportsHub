@@ -91,6 +91,7 @@
     <string name="title_activity_edit_event" translatable="false">Edit Event</string>
     <string name="title_activity_create_event" translatable="false">Create Event</string>
     <string name="title_activity_profile_other" translatable="false">Profile Other</string>
+    <string name="event_creation_error">An error has occurred.</string>
     <!-- End -->
 
 </resources>

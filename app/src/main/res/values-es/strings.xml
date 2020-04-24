@@ -63,4 +63,5 @@
     <string name="event_created">El Evento ha sido creado!</string>
     <string name="event_image_not_uploaded">Error: Imagen no subida! Intentalo de nuevo!</string>
     <string name="event_created_by">Creado por</string>
+    <string name="event_creation_error">Ha ocurrido un error.</string>
 </resources>

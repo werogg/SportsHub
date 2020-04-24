@@ -1,11 +1,13 @@
 package edu.ub.sportshub.data.models.event
 
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
-import edu.ub.sportshub.data.events.database.EventLoadedEvent
-import edu.ub.sportshub.data.events.database.EventsLoadedEvent
-import edu.ub.sportshub.data.events.database.FollowingUsersEventsLoadedEvent
+import com.google.firebase.firestore.GeoPoint
+import edu.ub.sportshub.R
+import edu.ub.sportshub.data.enums.CreateEventResult
+import edu.ub.sportshub.data.events.database.*
 import edu.ub.sportshub.data.listeners.DataChangeListener
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Event
@@ -89,34 +91,49 @@ class EventDaoFirestoreImplementation : EventDao() {
 
     override fun giveLike(uid: String, eid: String) {
         val storeDatabaseHelper = StoreDatabaseHelper()
-        storeDatabaseHelper.retrieveEvent(eid)
-            .addOnSuccessListener {
-                val event = it.toObject(Event::class.java)
-                if (event!!.getUsersLiked().contains(uid)) {
-                    // Remove the user from event's user liked list
-                    mStoreDatabaseHelper.retrieveEventRef(eid)
-                        .update(
-                            "usersLiked",
-                            FieldValue.arrayRemove(uid)
-                        )
-                    // Remove the event from the user's events liked list
-                    mStoreDatabaseHelper.retrieveUserRef(uid)
-                        .update("eventsLiked",
-                            FieldValue.arrayRemove(eid)
-                        )
-                } else {
-                    mStoreDatabaseHelper.retrieveEventRef(eid)
-                        .update(
-                            "usersLiked",
-                            FieldValue.arrayUnion(uid)
-                        )
+        storeDatabaseHelper.retrieveUser(uid)
+            .addOnSuccessListener {retUser ->
+                val user = retUser.toObject(User::class.java)
 
-                    // Add the event from to user's events liked list
-                    mStoreDatabaseHelper.retrieveUserRef(uid!!)
-                        .update("eventsLiked",
-                            FieldValue.arrayUnion(eid)
-                        )
-                }
+                storeDatabaseHelper.retrieveEvent(eid)
+                    .addOnSuccessListener {
+                        val event = it.toObject(Event::class.java)
+                        if (event!!.getUsersLiked().contains(uid)) {
+                            // Remove the user from event's user liked list
+                            mStoreDatabaseHelper.retrieveEventRef(eid)
+                                .update(
+                                    "usersLiked",
+                                    FieldValue.arrayRemove(uid)
+                                )
+                                .addOnSuccessListener {
+                                    // Remove the event from the user's events liked list
+                                    mStoreDatabaseHelper.retrieveUserRef(uid)
+                                        .update("eventsLiked",
+                                            FieldValue.arrayRemove(eid)
+                                        )
+                                        .addOnSuccessListener {
+                                            executeListeners(EventLikedEvent(event, user!!, EventLikedEvent.Type.REMOVED_LIKE))
+                                        }
+                                }
+                        } else {
+                            mStoreDatabaseHelper.retrieveEventRef(eid)
+                                .update(
+                                    "usersLiked",
+                                    FieldValue.arrayUnion(uid)
+                                )
+                                .addOnSuccessListener {
+                                    // Add the event from to user's events liked list
+                                    mStoreDatabaseHelper.retrieveUserRef(uid!!)
+                                        .update("eventsLiked",
+                                            FieldValue.arrayUnion(eid)
+                                        )
+                                        .addOnSuccessListener {
+                                            executeListeners(EventLikedEvent(event, user!!, EventLikedEvent.Type.LIKED))
+                                        }
+                                }
+                        }
+
+                    }
             }
     }
 
@@ -154,5 +171,49 @@ class EventDaoFirestoreImplementation : EventDao() {
             }
     }
 
+    override fun editEvent(eid: String, title: String, loc: GeoPoint, description: String, image: String) {
+        val storeDatabaseHelper = StoreDatabaseHelper()
+        storeDatabaseHelper.retrieveEventRef(eid)
+            .update(
+                mapOf(
+                "title" to title,
+                "position" to loc,
+                "description" to description,
+                "eventImage" to image)
+            )
+    }
 
+    override fun createEvent(uid: String, title: String, eventDate: Timestamp, creationDate: Timestamp, loc: GeoPoint, description: String, image: String) {
+        val storeDatabaseHelper = StoreDatabaseHelper()
+
+        val event = Event(
+            "",
+            uid,
+            title,
+            description,
+            image,
+            eventDate,
+            creationDate,
+            false,
+            mutableListOf(),
+            mutableListOf(),
+            loc
+        )
+
+        storeDatabaseHelper.getEventsCollection().add(event)
+            .addOnSuccessListener {
+                val eventId = it.id
+                it.update("id", eventId)
+                storeDatabaseHelper.retrieveUserRef(uid).update(
+                    "eventsOwned",
+                    FieldValue.arrayUnion(eventId)
+                ).addOnSuccessListener {
+                    executeListeners(EventCreatedEvent(CreateEventResult.SUCCESS, eventId))
+                }.addOnFailureListener {
+                    executeListeners(EventCreatedEvent(CreateEventResult.EXCEPTION, null))
+                }
+            }.addOnFailureListener {
+                executeListeners(EventCreatedEvent(CreateEventResult.EXCEPTION, null))
+            }
+    }
 }
