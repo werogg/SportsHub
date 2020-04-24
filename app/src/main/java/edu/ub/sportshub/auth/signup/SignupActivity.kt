@@ -9,19 +9,35 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import edu.ub.sportshub.R
 import edu.ub.sportshub.auth.login.LoginActivity
+import edu.ub.sportshub.data.auth.AuthHandlerFactory
+import edu.ub.sportshub.data.auth.LoginHandler
+import edu.ub.sportshub.data.auth.RegisterHandler
+import edu.ub.sportshub.data.enums.RegisterResult
+import edu.ub.sportshub.data.events.auth.AuthEvent
+import edu.ub.sportshub.data.events.auth.RegisterPerformedEvent
+import edu.ub.sportshub.data.listeners.AuthPerformedListener
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.User
 import java.util.*
 
-class SignupActivity : AppCompatActivity() {
+class SignupActivity : AppCompatActivity(), AuthPerformedListener {
 
-    private val authDatabaseHelper = AuthDatabaseHelper()
-    private val storeDatabaseHelper = StoreDatabaseHelper()
+    lateinit var registerHandler: RegisterHandler
+    lateinit var checkBox : CheckBox
+    lateinit var username : EditText
+    lateinit var fullname : EditText
+    lateinit var email : EditText
+    lateinit var pass : EditText
+    lateinit var repeat_pass : EditText
+    lateinit var buttonSignup : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        registerHandler = AuthHandlerFactory.getRegisterHandler()
+        registerHandler.registerListener(this)
 
         val buttonLogin = findViewById<TextView>(R.id.btn_login)
         val buttonSignup = findViewById<Button>(R.id.btn_signup)
@@ -55,100 +71,53 @@ class SignupActivity : AppCompatActivity() {
      * First, check if user +18 and username is not registered
      */
     private fun onSignupButton(){
-        val checkBox = findViewById<CheckBox>(R.id.checkBox)
-        val username = findViewById<EditText>(R.id.txt_username_signup)
-        val fullname = findViewById<EditText>(R.id.txt_fullname_signup)
-        val email = findViewById<EditText>(R.id.txt_email_signup)
-        val pass = findViewById<EditText>(R.id.txt_pass_signup)
-        val buttonSignup = findViewById<Button>(R.id.btn_signup)
+        checkBox = findViewById<CheckBox>(R.id.checkBox)
+        username = findViewById<EditText>(R.id.txt_username_signup)
+        fullname = findViewById<EditText>(R.id.txt_fullname_signup)
+        email = findViewById<EditText>(R.id.txt_email_signup)
+        pass = findViewById<EditText>(R.id.txt_pass_signup)
+        repeat_pass = findViewById<EditText>(R.id.txt_rep_pass)
+        buttonSignup = findViewById<Button>(R.id.btn_signup)
         buttonSignup.isEnabled = false
 
-        // Check if user is over aged
-        if (checkBox.isChecked){
-
-            // Search if given username is available
-            storeDatabaseHelper.getUsersCollection().whereEqualTo("username", username.text.toString()).get()
-                .addOnCompleteListener { it ->
-                    if (it.isSuccessful) {
-                        // If no users registered with the given username continue with signup flow
-                        if (it.result?.isEmpty!!) {
-                            onSignupContinue(username, fullname, email, pass)
-                        } else {
-                            username.error = getString(R.string.error_username_already_in_use)
-                            username.requestFocus()
-                        }
-                        buttonSignup.isEnabled = true
-                    }
-                }
-        }
-        // Underage
-        else{
+        if (pass.text.toString() != repeat_pass.text.toString()) {
+            repeat_pass.requestFocus()
+            repeat_pass.error = getString(R.string.error_age_not_permitted)
+        } else if (!checkBox.isChecked) {
             checkBox.requestFocus()
             checkBox.error = getString(R.string.error_age_not_permitted)
-            buttonSignup.isEnabled = true
+
+        } else {
+            registerHandler.performRegister(username.text.toString(), fullname.text.toString(), email.text.toString(), pass.text.toString(), getString(R.string.default_profile_picture))
         }
+        buttonSignup.isEnabled = true
     }
 
-    /**
-     * Check if mail is not registered and password is not weak
-     */
-    private fun onSignupContinue(
-        username: EditText,
-        fullname: EditText,
-        email: EditText,
-        pass: EditText
-    ) {
-        // Try to create the account
-        authDatabaseHelper.createAccount(email.text.toString(), pass.text.toString())
-            .addOnCompleteListener {
-                // If signup is succes continue with the flow
-                if (it.isSuccessful) {
-                    signupLastFlow(username, fullname, email)
-                }
-            }
-                // If failed check the reason
-            .addOnFailureListener {
-                if (it is FirebaseAuthWeakPasswordException) {
+    override fun onActionPerformed(event: AuthEvent) {
+        if (event is RegisterPerformedEvent) {
+            when (event.registerResult) {
+                RegisterResult.WEAK_PASSWORD -> {
                     pass.error = getString(R.string.error_weak_password)
                     username.requestFocus()
-                } else if (it is FirebaseAuthUserCollisionException) {
+                }
+
+                RegisterResult.MAIL_ALREADY_EXISTS -> {
                     email.error = getString(R.string.error_email_already_exists)
                     username.requestFocus()
                 }
+
+                RegisterResult.USERNAME_ALREADY_EXISTS -> {
+                    username.error = getString(R.string.error_username_already_in_use)
+                    username.requestFocus()
+                }
+
+                RegisterResult.SUCCESS -> {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                }
             }
-    }
-
-    /**
-     * All is good, register and store the user.
-     * Send the verification mail.
-     */
-    private fun signupLastFlow(
-        username: EditText,
-        fullname: EditText,
-        email: EditText
-    ) {
-
-        // Instance the user object and store it
-        val newUser = User(
-            username.text.toString(),
-            fullname.text.toString(),
-            "",
-            Timestamp.now(),
-            mutableListOf(),
-            mutableListOf(),
-            mutableListOf(),
-            mutableListOf(),
-            mutableListOf(),
-            email.text.toString(),
-            "",
-            authDatabaseHelper.getCurrentUser()!!.uid,
-            false
-        )
-
-        storeDatabaseHelper.storeUser(newUser)
-        authDatabaseHelper.getCurrentUser()!!.sendEmailVerification()
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
+            buttonSignup.isEnabled = true
+        }
     }
 
 }

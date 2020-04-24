@@ -1,25 +1,23 @@
 package edu.ub.sportshub.home
 
-import android.content.res.Resources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import edu.ub.sportshub.R
 
 class ViewPagerAdapter(fm:FragmentManager) : FragmentPagerAdapter(fm){
 
     override fun getItem(position: Int): Fragment {
         return when (position){
             0-> {
-                Events()
+                EventsFragment()
             }
             1 -> {
-                Users()
+                UsersFragment()
             }
             2-> {
-                Map()
+                MapFragment()
             }
-            else -> Events()
+            else -> EventsFragment()
 
         }
     }

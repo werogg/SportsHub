@@ -11,31 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".event.EditEventActivity" />
-        <activity android:name=".event.CreateEventActivity" />
-        <activity android:name=".event.EventActivity"/>
-        <activity android:name=".profile.ProfileOtherActivity"/>
-        <activity
-            android:name=".profile.ProfileActivity"
-            android:label="Profile"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".home.HomeActivity"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
-        <activity
-            android:name=".auth.signup.SignupActivity"
-            android:label="@string/title_activity_register"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".auth.login.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:noHistory="true"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".auth.login.LoginForgotPasswordActivity"
-            android:label="@string/title_activity_login_popup"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".MainActivity"
             android:noHistory="true">
@@ -44,6 +20,48 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".auth.login.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:noHistory="true" />
+
+        <activity
+            android:name=".auth.signup.SignupActivity"
+            android:label="@string/title_activity_register"
+            android:noHistory="true" />
+
+        <activity
+            android:name=".auth.login.LoginForgotPasswordActivity"
+            android:label="@string/title_activity_login_popup"
+            android:noHistory="true" />
+
+        <activity
+            android:name=".home.HomeActivity"
+            android:label="@string/title_activity_home"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".event.EventActivity"
+            android:label="@string/title_activity_event" />
+
+        <activity
+            android:name=".event.EditEventActivity"
+            android:label="@string/title_activity_edit_event"
+            android:noHistory="true"/>
+
+        <activity
+            android:name=".event.CreateEventActivity"
+            android:label="@string/title_activity_create_event" />
+
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:label="@string/title_activity_profile" />
+
+        <activity
+            android:name=".profile.ProfileOtherActivity"
+            android:label="@string/title_activity_profile_other" />
+
         <activity
             android:name=".profile.EditProfileActivity"
             android:label="@string/title_activity_edit_profile"

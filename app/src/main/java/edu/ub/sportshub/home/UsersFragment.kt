@@ -27,7 +27,7 @@ import edu.ub.sportshub.profile.ProfileOtherActivity
 /**
  * A simple [Fragment] subclass.
  */
-class Users : Fragment() {
+class UsersFragment : Fragment() {
 
     private val authDatabaseHelper = AuthDatabaseHelper()
     private val storeDatabaseHelper = StoreDatabaseHelper()
