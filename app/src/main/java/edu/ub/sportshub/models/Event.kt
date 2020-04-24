@@ -1,6 +1,7 @@
 package edu.ub.sportshub.models
 
-import java.util.*
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.GeoPoint
 
 /**
  *  An event post.
@@ -9,20 +10,25 @@ import java.util.*
  *  @property creatorUid the creator uid of this event.
  *  @property title the title of this event.
  *  @property description the description of this event.
- *  @property eventImages an array of all the event images urls.
+ *  @property eventImage an array of all the event images urls.
  *  @property startEventDate the date of celebration of this event.
  *  @property creationDate the date of the creation of this event.
  *  @property deleted indicates if the event is visible (non-public visible).
+ *  @property usersLiked indicates the users who liked this event.
+ *  @property usersAssists indicates the users who will assist this event.
  *  @constructor Creates a full set up event.
  */
 class Event(
     creatorUid: String,
     title: String,
     description: String,
-    eventImages: MutableList<String>,
-    startEventDate: Date,
-    creationDate: Date,
-    deleted: Boolean
+    eventImage: String,
+    startEventDate: Timestamp,
+    creationDate: Timestamp,
+    deleted: Boolean,
+    usersLiked: MutableList<String>,
+    usersAssists: MutableList<String>,
+    position: GeoPoint // Use android.Geocoder object
             ) {
 
     private var creatorUid : String = creatorUid
@@ -42,19 +48,19 @@ class Event(
             field = value
         }
 
-    private var eventImages : MutableList<String> = eventImages
+    private var eventImage : String = eventImage
         get() = field
         set(value) {
             field = value
         }
 
-    private var startEventDate : Date = startEventDate
+    private var startEventDate : Timestamp = startEventDate
         get() = field
         set(value) {
             field = value
         }
 
-    private var creationDate : Date = creationDate
+    private var creationDate : Timestamp = creationDate
         get() = field
         set(value) {
             field = value
@@ -71,6 +77,32 @@ class Event(
      * @return true if completed
      */
     fun isCompleted() : Boolean {
-        return startEventDate.after(Calendar.getInstance().time)
+        return startEventDate.toDate().after(Timestamp.now().toDate())
+    }
+
+    private var usersLiked : MutableList<String> = usersLiked
+        get() = field
+        set(value) {
+            field = value
+        }
+
+    private var usersAssists : MutableList<String> = usersAssists
+        get() = field
+        set(value) {
+            field = value
+        }
+
+    private var position : GeoPoint = position
+        get() = field
+        set(value) {
+            field = value
+        }
+
+    fun getLikes() : Int {
+        return usersLiked.size
+    }
+
+    fun getAssists() : Int {
+        return usersAssists.size
     }
 }

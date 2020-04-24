@@ -66,7 +66,7 @@ class ProfileOtherActivity : AppCompatActivity() {
         val dpValue2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480f, displayMetrics)
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val customView = inflater.inflate(R.layout.fragment_notifications_primary, null)
-        val coord = findViewById<ConstraintLayout>(R.id.profile_other_constraint_layout)
+        val coord = findViewById<ConstraintLayout>(R.id.profile_constraint_layout)
         popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
         popupWindow!!.width = dpValue1.toInt()
         popupWindow!!.height = dpValue2.toInt()
