@@ -5,6 +5,7 @@ import com.google.firebase.firestore.GeoPoint
 import edu.ub.sportshub.models.Event
 
 interface IEventDao {
+    fun fetchUserAssistEvents(uid: String)
     fun fetchUserEvents(uid: String)
     fun fetchEvent(eid : String)
     fun fetchFollowingUsersEvents(uid: String)
