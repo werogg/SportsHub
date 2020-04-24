@@ -26,6 +26,12 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
+import edu.ub.sportshub.data.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.enums.CreateEventResult
+import edu.ub.sportshub.data.events.database.DataEvent
+import edu.ub.sportshub.data.events.database.EventCreatedEvent
+import edu.ub.sportshub.data.listeners.DataChangeListener
+import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
@@ -36,7 +42,7 @@ import kotlinx.android.synthetic.main.activity_create_event.*
 import java.io.IOException
 import java.util.*
 
-class CreateEventActivity : AppCompatActivity() {
+class CreateEventActivity : AppCompatActivity(), DataChangeListener {
 
     private var popupWindow : PopupWindow? = null
     private val calendar = Calendar.getInstance()
@@ -59,12 +65,16 @@ class CreateEventActivity : AppCompatActivity() {
     private var imageSelected : String? = null
     private var progressBar : ProgressBar? = null
     private var addressHandler : Handler? = null
+    private lateinit var eventDao : EventDao
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_event)
         setupActivityFunctionalities()
+
+        eventDao = DataAccessObjectFactory.getEventDao()
+        eventDao.registerListener(this)
 
     }
 
@@ -342,38 +352,20 @@ class CreateEventActivity : AppCompatActivity() {
             val location = StringUtils.getLocationFromName(this, whereEvent.text.toString())
             val currentUserUid = authDatabaseHelper.getCurrentUser()?.uid!!
 
-            val event = Event(
-                "",
+            if (location == null ||imageSelected == null) return
+
+            eventDao.createEvent(
                 currentUserUid,
                 titleEvent.text.toString(),
-                descEvent.text.toString(),
-                imageSelected!!,
                 Timestamp(Date(year, month, day, hour, minute)),
                 Timestamp.now(),
-                false,
-                mutableListOf(),
-                mutableListOf(),
-                GeoPoint(location?.latitude!!, location?.longitude!!)
+                GeoPoint(location.latitude, location.longitude),
+                descEvent.text.toString(),
+                imageSelected!!
             )
 
-            databaseHelper.getEventsCollection().add(event)
-                .addOnSuccessListener {
-                    val eventId = it.id
-                    it.update("id", eventId)
-                    addEventToUser(currentUserUid, eventId)
-                }
         }
 
-    }
-
-    private fun addEventToUser(userId: String, eventId: String) {
-        databaseHelper.retrieveUserRef(userId).update(
-            "eventsOwned",
-            FieldValue.arrayUnion(eventId)
-        ).addOnSuccessListener {
-            Toast.makeText(applicationContext, getString(R.string.event_created), Toast.LENGTH_SHORT).show()
-            goToEventActivity(eventId)
-        }
     }
 
     private fun goToEventActivity(eventId: String) {
@@ -382,6 +374,22 @@ class CreateEventActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    override fun onDataLoaded(event: DataEvent) {
+        if (event is EventCreatedEvent) {
+            when (event.result) {
+                CreateEventResult.SUCCESS -> {
+                    Toast.makeText(applicationContext, getString(R.string.event_created), Toast.LENGTH_SHORT).show()
+                    if (event.getEventId() != null) {
+                        goToEventActivity(event.getEventId()!!)
+                    }
+                }
+
+                CreateEventResult.EXCEPTION -> {
+                    Toast.makeText(applicationContext, getString(R.string.event_creation_error), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
 
 }

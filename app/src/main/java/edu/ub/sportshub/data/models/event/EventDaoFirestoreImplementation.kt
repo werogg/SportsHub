@@ -1,16 +1,18 @@
 package edu.ub.sportshub.data.models.event
 
 import android.util.Log
+import android.widget.Toast
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.GeoPoint
-import edu.ub.sportshub.data.events.database.EventLikedEvent
-import edu.ub.sportshub.data.events.database.EventLoadedEvent
-import edu.ub.sportshub.data.events.database.EventsLoadedEvent
-import edu.ub.sportshub.data.events.database.FollowingUsersEventsLoadedEvent
+import edu.ub.sportshub.R
+import edu.ub.sportshub.data.enums.CreateEventResult
+import edu.ub.sportshub.data.events.database.*
 import edu.ub.sportshub.data.listeners.DataChangeListener
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
+import java.util.*
 
 class EventDaoFirestoreImplementation : EventDao() {
 
@@ -181,13 +183,37 @@ class EventDaoFirestoreImplementation : EventDao() {
             )
     }
 
-    override fun createEvent(event: Event) {
+    override fun createEvent(uid: String, title: String, eventDate: Timestamp, creationDate: Timestamp, loc: GeoPoint, description: String, image: String) {
         val storeDatabaseHelper = StoreDatabaseHelper()
+
+        val event = Event(
+            "",
+            uid,
+            title,
+            description,
+            image,
+            eventDate,
+            creationDate,
+            false,
+            mutableListOf(),
+            mutableListOf(),
+            loc
+        )
+
         storeDatabaseHelper.getEventsCollection().add(event)
             .addOnSuccessListener {
-
+                val eventId = it.id
+                it.update("id", eventId)
+                storeDatabaseHelper.retrieveUserRef(uid).update(
+                    "eventsOwned",
+                    FieldValue.arrayUnion(eventId)
+                ).addOnSuccessListener {
+                    executeListeners(EventCreatedEvent(CreateEventResult.SUCCESS, eventId))
+                }.addOnFailureListener {
+                    executeListeners(EventCreatedEvent(CreateEventResult.EXCEPTION, null))
+                }
+            }.addOnFailureListener {
+                executeListeners(EventCreatedEvent(CreateEventResult.EXCEPTION, null))
             }
     }
-
-
 }
