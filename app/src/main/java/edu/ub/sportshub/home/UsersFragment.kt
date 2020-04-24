@@ -3,9 +3,7 @@ package edu.ub.sportshub.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +11,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import com.google.firebase.firestore.QueryDocumentSnapshot
-
+import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
 import edu.ub.sportshub.R
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.User
-import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.profile.ProfileOtherActivity
 
 /**
@@ -43,7 +38,7 @@ class UsersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
+        val userContainer = view.findViewById<LinearLayout>(R.id.userContainer)
         userContainer?.removeAllViews()
 
         val searchView = view.findViewById<SearchView>(R.id.searchView)
@@ -53,7 +48,7 @@ class UsersFragment : Fragment() {
                 return false
             }
             override fun onQueryTextSubmit(query: String): Boolean {
-                if(!query.trim().isEmpty()){
+                if(query.trim().isNotEmpty()){
                     searchUsers(query);
                 }
                 return false
@@ -69,12 +64,12 @@ class UsersFragment : Fragment() {
 
         var n = false
         var userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
-        var curr = authDatabaseHelper.getCurrentUser()!!.uid
+        val curr = authDatabaseHelper.getCurrentUser()!!.uid
 
         storeDatabaseHelper.getUsersCollection().whereGreaterThanOrEqualTo("username", query).get()
             .addOnSuccessListener { users ->
                 for (user in  users) {
-                    var uid = user.getData().get("uid").toString()
+                    val uid = user.data["uid"].toString()
                     if(uid!=curr){
                         val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
                         val userView = LayoutInflater.from(context).inflate(R.layout.user_view, null);
@@ -86,24 +81,34 @@ class UsersFragment : Fragment() {
 
 
                         Picasso.with(context)
-                            .load(user.getData().get("profilePicture").toString())
+                            .load(user.data["profilePicture"].toString())
                             .resize(dpSize, dpSize)
                             .into(userViewBannerImage)
 
                         n = true
+
+                        userView.setOnClickListener {
+                            userClicked(uid)
+                        }
+
                         userContainer?.addView(userView)
                     }
                 }
             }
 
-        if(n==false){
-            val userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
+        if(!n){
+            userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
             userContainer?.removeAllViewsInLayout()
         }
 
     }
 
+    private fun userClicked(userId: String) {
+
+        val intent = Intent(context, ProfileOtherActivity::class.java)
+        intent.putExtra("userId", userId)
+        startActivity(intent)
+    }
+
 
 }
-
-
