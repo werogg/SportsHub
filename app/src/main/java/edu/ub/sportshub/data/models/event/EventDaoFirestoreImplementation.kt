@@ -5,7 +5,6 @@ import android.widget.Toast
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.GeoPoint
-import edu.ub.sportshub.R
 import edu.ub.sportshub.data.enums.CreateEventResult
 import edu.ub.sportshub.data.events.database.*
 import edu.ub.sportshub.data.listeners.DataChangeListener
@@ -36,6 +35,29 @@ class EventDaoFirestoreImplementation : EventDao() {
                     executeListeners(EventsLoadedEvent(events, user))
                 }
             }
+        }
+    }
+
+    override fun fetchUserAssistEvents(uid: String) {
+        var eventsToShow = mutableListOf<Pair<Event,User>>()
+        val storeDatabaseHelper = StoreDatabaseHelper()
+        storeDatabaseHelper.retrieveUser(uid).addOnSuccessListener {
+            val user = it.toObject(User::class.java)
+            val lista = user?.getEventsAssist()
+            if (lista!=null) {
+                for (eid in lista) {
+                    storeDatabaseHelper.retrieveEvent(eid).addOnSuccessListener { ev ->
+                        val event = ev.toObject(Event::class.java)
+                        val userevent = event?.getCreatorUid()
+                        storeDatabaseHelper.retrieveUser(userevent!!).addOnSuccessListener {
+                            val lastuser = it.toObject(User::class.java)
+                            eventsToShow.add(Pair(event, lastuser!!))
+                            executeListeners(EventsAssistEvent(eventsToShow))
+                        }
+                    }
+                }
+            }
+
         }
     }
 
