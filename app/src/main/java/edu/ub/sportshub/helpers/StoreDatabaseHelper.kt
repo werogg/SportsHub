@@ -5,6 +5,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import edu.ub.sportshub.models.User
+import java.lang.ref.Reference
 
 class StoreDatabaseHelper : DatabaseHelper() {
 
@@ -39,5 +40,4 @@ class StoreDatabaseHelper : DatabaseHelper() {
     fun getEventsCollection(): CollectionReference {
         return mFirebaseFirestore.collection("events")
     }
-
 }

@@ -1,13 +1,19 @@
 package edu.ub.sportshub.home
 
+//import sun.jvm.hotspot.utilities.IntArray
+
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.PopupWindow
+import android.widget.SearchView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
@@ -17,6 +23,7 @@ import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.profile.ProfileActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlin.system.exitProcess
+
 
 class HomeActivity : AppCompatActivity() {
 
@@ -62,6 +69,7 @@ class HomeActivity : AppCompatActivity() {
         notificationsButton.setOnClickListener {
             notificationsButtonClicked()
         }
+
     }
 
     private fun notificationsButtonClicked() {
@@ -108,4 +116,5 @@ class HomeActivity : AppCompatActivity() {
             exitProcess(0)
         }
     }
+
 }
