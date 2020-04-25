@@ -116,9 +116,12 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     }
 
     private fun followProfileTextClicked() {
-        val dd = mStoreDatabaseHelper.getUsersCollection().document(userfollow.getUid())
-        dd.update("followingUsers", FieldValue.arrayUnion(uid)).addOnSuccessListener(){
+        val uid = mFirebaseAuth.getCurrentUser()?.uid
+        val dd = mStoreDatabaseHelper.getUsersCollection().document(uid!!)
+        dd.update("followingUsers", FieldValue.arrayUnion(userfollow.getUid())).addOnSuccessListener(){
             Toast.makeText(this,"Followed",Toast.LENGTH_LONG).show()
+        }.addOnFailureListener(){
+            Toast.makeText(this,"Ups, we've got an error here",Toast.LENGTH_LONG).show()
         }
     }
 

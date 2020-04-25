@@ -39,6 +39,7 @@ import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.User
 import kotlinx.android.synthetic.main.activity_edit_event.*
 import kotlinx.android.synthetic.main.activity_editprofile.*
+import kotlinx.android.synthetic.main.activity_editprofile.img_profile
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import java.io.IOException
@@ -408,9 +409,3 @@ class EditProfileActivity : AppCompatActivity() {
             }
     }
 }
-
-
-
-
-
-
