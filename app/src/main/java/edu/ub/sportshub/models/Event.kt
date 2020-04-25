@@ -2,6 +2,7 @@ package edu.ub.sportshub.models
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.firestore.IgnoreExtraProperties
 
 /**
  *  An event post.
@@ -18,6 +19,7 @@ import com.google.firebase.firestore.GeoPoint
  *  @property usersAssists indicates the users who will assist this event.
  *  @constructor Creates a full set up event.
  */
+@IgnoreExtraProperties
 class Event(
     private var id: String,
     private var creatorUid: String,
