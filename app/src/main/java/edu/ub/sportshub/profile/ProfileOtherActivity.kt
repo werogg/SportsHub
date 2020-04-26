@@ -78,13 +78,13 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                     textSignOutClicked()
                 }
 
-                val home = findViewById<TextView>(R.id.toolbar_my_profile_home)
+                val home = findViewById<TextView>(R.id.toolbar_home)
                 home.setOnClickListener() {
                     buttonHomeClicked()
                 }
 
                 val notificationsButton =
-                    findViewById<ImageView>(R.id.profile_toolbar_primary_notifications)
+                    findViewById<ImageView>(R.id.toolbar_notifications)
 
                 notificationsButton.setOnClickListener {
                     notificationsButtonClicked()

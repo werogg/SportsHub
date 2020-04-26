@@ -3,7 +3,6 @@ package edu.ub.sportshub.profile
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -11,21 +10,17 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
 import android.util.TypedValue
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
 import edu.ub.sportshub.R
-import edu.ub.sportshub.auth.login.LoginActivity
+import edu.ub.sportshub.handlers.ToolbarHandler
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
-import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.User
 import java.io.IOException
 import java.util.*
@@ -40,6 +35,7 @@ class EditProfileActivity : AppCompatActivity() {
     private var filepath: Uri? = null
     private lateinit var newemail: String
     private lateinit var password: String
+    private val toolbarHandler = ToolbarHandler(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,18 +55,10 @@ class EditProfileActivity : AppCompatActivity() {
                     .into(imageProfileView)
             }
         setupListeners()
+        toolbarHandler.setupToolbarBasics()
     }
 
     private fun setupListeners() {
-        val homeView = findViewById<TextView>(R.id.toolbar_my_profile_home)
-        homeView.setOnClickListener() {
-            buttonHomeClicked()
-        }
-
-        val profileImageView = findViewById<ImageView>(R.id.img_profile)
-        profileImageView.setOnClickListener() {
-            changeImage()
-        }
 
         val newPasswordButton = findViewById<Button>(R.id.btn_changepassword)
         newPasswordButton.setOnClickListener() {
@@ -86,43 +74,6 @@ class EditProfileActivity : AppCompatActivity() {
         validateButton.setOnClickListener() {
             buttonSaveClicked()
         }
-
-
-        val signOutButton = findViewById<TextView>(R.id.toolbar_signout)
-        signOutButton.setOnClickListener() {
-            textSignOutClicked()
-        }
-
-        val notificationsButton =
-            findViewById<ImageView>(R.id.profile_toolbar_primary_notifications)
-
-        notificationsButton.setOnClickListener {
-            notificationsButtonClicked()
-        }
-    }
-
-    private fun notificationsButtonClicked() {
-        val displayMetrics = applicationContext.resources.displayMetrics
-        val dpValue1 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 350f, displayMetrics)
-        val dpValue2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480f, displayMetrics)
-        val inflater =
-            applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val customView = inflater.inflate(R.layout.fragment_notifications_primary, null)
-        val coordinates = findViewById<ConstraintLayout>(R.id.editprofile_constraint_layout)
-        popupWindow = PopupWindow(
-            customView,
-            ConstraintLayout.LayoutParams.MATCH_PARENT,
-            ConstraintLayout.LayoutParams.MATCH_PARENT,
-            true
-        )
-        popupWindow!!.width = dpValue1.toInt()
-        popupWindow!!.height = dpValue2.toInt()
-        popupWindow!!.showAtLocation(coordinates, Gravity.TOP, 0, 300)
-    }
-
-    private fun textSignOutClicked() {
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
     }
 
     private fun buttonSaveClicked() {
@@ -152,12 +103,6 @@ class EditProfileActivity : AppCompatActivity() {
         }
         val goProfile = Intent(this, ProfileActivity::class.java)
         startActivity(goProfile)
-    }
-
-    private fun buttonHomeClicked() {
-        val goHome = Intent(this, HomeActivity::class.java)
-        startActivity(goHome)
-
     }
 
     @SuppressLint("IntentReset")
@@ -392,5 +337,10 @@ class EditProfileActivity : AppCompatActivity() {
             ?.addOnFailureListener() {
                 Toast.makeText(this, it.message.toString(), Toast.LENGTH_LONG).show()
             }
+    }
+
+    override fun onBackPressed() {
+        if (toolbarHandler.isNotificationsPopupVisible()) toolbarHandler.setNotificationsPopupVisibility(ToolbarHandler.NotificationsVisibility.GONE)
+        else super.onBackPressed()
     }
 }

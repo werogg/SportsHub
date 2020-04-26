@@ -47,8 +47,7 @@
 
         <activity
             android:name=".event.EditEventActivity"
-            android:label="@string/title_activity_edit_event"
-            android:noHistory="true"/>
+            android:label="@string/title_activity_edit_event" />
 
         <activity
             android:name=".event.CreateEventActivity"

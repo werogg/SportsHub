@@ -6,6 +6,8 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -34,11 +36,7 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) {
     var popupWindow : PopupWindow? = null
 
     fun setupToolbarBasics() {
-        val profileImage = appCompatActivity.findViewById<CircleImageView>(R.id.toolbar_image_my_profile)
-
-        profileImage.setOnClickListener {
-            onProfileClick(appCompatActivity.applicationContext)
-        }
+        val name = appCompatActivity::class.java.simpleName
 
         val homeText = appCompatActivity.findViewById<TextView>(R.id.toolbar_home)
 
@@ -52,13 +50,26 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) {
             onNotificationsButtonClicked()
         }
 
-        val profileText = appCompatActivity.findViewById<TextView>(R.id.toolbar_txt_my_profile)
+        if (name == "ProfileActivity" || name == "EditProfileActivity") {
+            val signoutButton = appCompatActivity.findViewById<TextView>(R.id.toolbar_signout)
 
-        profileText.setOnClickListener {
-            onProfileClick(appCompatActivity.applicationContext)
+            signoutButton.setOnClickListener {
+                onSignOutButton()
+            }
+        } else {
+            val profileImage = appCompatActivity.findViewById<CircleImageView>(R.id.toolbar_image_my_profile)
+
+            profileImage.setOnClickListener {
+                onProfileClick(appCompatActivity.applicationContext)
+            }
+
+            val profileText = appCompatActivity.findViewById<TextView>(R.id.toolbar_txt_my_profile)
+
+            profileText.setOnClickListener {
+                onProfileClick(appCompatActivity.applicationContext)
+            }
+            setupUserInfo(profileImage, profileText)
         }
-
-        setupUserInfo(profileImage, profileText)
     }
 
     private fun onHomeClick(applicationContext: Context) {
@@ -96,8 +107,50 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) {
         val dpValue1 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 350f, displayMetrics)
         val dpValue2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480f, displayMetrics)
         val inflater = appCompatActivity.applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val customView = inflater.inflate(R.layout.fragment_notifications_secondary, null)
-        val coord = appCompatActivity.findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
+        var customView : View?
+        val className = appCompatActivity::class.java.simpleName
+        var coord: ViewGroup? = null
+
+        when (className) {
+            "HomeActivity" -> {
+                coord = appCompatActivity.findViewById<CoordinatorLayout>(R.id.constrLayout)
+                customView = inflater.inflate(R.layout.fragment_notifications_secondary, null)
+            }
+
+            "EventActivity" -> {
+                coord = appCompatActivity.findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
+                customView = inflater.inflate(R.layout.fragment_notifications_secondary, null)
+            }
+
+            "EditEventActivity" -> {
+                coord = appCompatActivity.findViewById<CoordinatorLayout>(R.id.edit_event_constraint_layout)
+                customView = inflater.inflate(R.layout.fragment_notifications_secondary, null)
+            }
+
+            "CreateEventActivity" -> {
+                coord = appCompatActivity.findViewById<CoordinatorLayout>(R.id.create_event_constraint_layout)
+                customView = inflater.inflate(R.layout.fragment_notifications_secondary, null)
+            }
+
+            "ProfileActivity" -> {
+                coord = appCompatActivity.findViewById<CoordinatorLayout>(R.id.profile_constraint_layout)
+                customView = inflater.inflate(R.layout.fragment_notifications_primary, null)
+            }
+
+            "ProfileOtherActivity" ->  {
+                coord = appCompatActivity.findViewById<CoordinatorLayout>(R.id.profile_constraint_layout)
+                customView = inflater.inflate(R.layout.fragment_notifications_primary, null)
+            }
+
+            "EditProfileActivity" ->  {
+                coord = appCompatActivity.findViewById<CoordinatorLayout>(R.id.editprofile_constraint_layout)
+                customView = inflater.inflate(R.layout.fragment_notifications_primary, null)
+            }
+            else -> {
+                throw Exception("Undefined class tried to use the toolbar.")
+            }
+        }
+
         popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
         popupWindow!!.width = dpValue1.toInt()
         popupWindow!!.height = dpValue2.toInt()
@@ -123,5 +176,9 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) {
                 usernameText.text = loggedUser.getUsername()
             }
         }
+    }
+
+    private fun onSignOutButton() {
+        mAuthDatabaseHelper.signOut(appCompatActivity)
     }
 }
