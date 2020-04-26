@@ -7,105 +7,89 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.text.InputType
-import android.util.Log
-import android.util.Patterns
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.gms.tasks.Task
-import com.google.api.Distribution
-import com.google.firebase.auth.EmailAuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.auth.login.LoginActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.User
-import kotlinx.android.synthetic.main.activity_edit_event.*
-import kotlinx.android.synthetic.main.activity_editprofile.*
-import kotlinx.android.synthetic.main.activity_editprofile.img_profile
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.activity_profile.*
 import java.io.IOException
-import java.security.AccessController.getContext
 import java.util.*
 
 
 class EditProfileActivity : AppCompatActivity() {
-    private val PICK_IMAGE_REQUEST: Int = 1
     private var popupWindow: PopupWindow? = null
     private val mFirebaseAuth = AuthDatabaseHelper()
     private val mStoreDatabaseHelper = StoreDatabaseHelper()
     private var firebaseStorage = FirebaseStorage.getInstance()
     private var storageReference = firebaseStorage.reference
-    private lateinit var filepath: Uri
+    private var filepath: Uri? = null
     private lateinit var newemail: String
     private lateinit var password: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editprofile)
+        val imageProfileView = findViewById<ImageView>(R.id.img_profile)
         val uid = mFirebaseAuth.getCurrentUser()!!.uid
         val dpSize = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             130f,
-            this?.resources?.displayMetrics
+            resources?.displayMetrics
         ).toInt()
         mStoreDatabaseHelper.retrieveUser(uid)
             .addOnSuccessListener {
                 Picasso.with(this)
                     .load(it.toObject(User::class.java)?.getProfilePicture().toString())
                     .resize(dpSize, dpSize)
-                    .into(img_profile)
+                    .into(imageProfileView)
             }
         setupListeners()
     }
 
     private fun setupListeners() {
-        val home = findViewById<TextView>(R.id.toolbar_my_profile_home)
-        home.setOnClickListener() {
+        val homeView = findViewById<TextView>(R.id.toolbar_my_profile_home)
+        homeView.setOnClickListener() {
             buttonHomeClicked()
         }
 
-        val image = findViewById<ImageView>(R.id.img_profile)
-        image.setOnClickListener() {
+        val profileImageView = findViewById<ImageView>(R.id.img_profile)
+        profileImageView.setOnClickListener() {
             changeImage()
         }
 
-        val newpaswd = findViewById<Button>(R.id.btn_changepassword)
-        newpaswd.setOnClickListener() {
+        val newPasswordButton = findViewById<Button>(R.id.btn_changepassword)
+        newPasswordButton.setOnClickListener() {
             changePassword()
         }
 
-        val newemail = findViewById<Button>(R.id.btn_changeemail)
-        newemail.setOnClickListener() {
+        val newEmailButton = findViewById<Button>(R.id.btn_changeemail)
+        newEmailButton.setOnClickListener() {
             changeEmail()
         }
 
-        val validate = findViewById<Button>(R.id.btn_validate2)
-        validate.setOnClickListener() {
+        val validateButton = findViewById<Button>(R.id.btn_validate2)
+        validateButton.setOnClickListener() {
             buttonSaveClicked()
         }
 
 
-        val signout = findViewById<TextView>(R.id.toolbar_signout)
-        signout.setOnClickListener() {
+        val signOutButton = findViewById<TextView>(R.id.toolbar_signout)
+        signOutButton.setOnClickListener() {
             textSignOutClicked()
         }
 
@@ -124,7 +108,7 @@ class EditProfileActivity : AppCompatActivity() {
         val inflater =
             applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val customView = inflater.inflate(R.layout.fragment_notifications_primary, null)
-        val coord = findViewById<ConstraintLayout>(R.id.editprofile_constraint_layout)
+        val coordinates = findViewById<ConstraintLayout>(R.id.editprofile_constraint_layout)
         popupWindow = PopupWindow(
             customView,
             ConstraintLayout.LayoutParams.MATCH_PARENT,
@@ -133,7 +117,7 @@ class EditProfileActivity : AppCompatActivity() {
         )
         popupWindow!!.width = dpValue1.toInt()
         popupWindow!!.height = dpValue2.toInt()
-        popupWindow!!.showAtLocation(coord, Gravity.TOP, 0, 300)
+        popupWindow!!.showAtLocation(coordinates, Gravity.TOP, 0, 300)
     }
 
     private fun textSignOutClicked() {
@@ -142,25 +126,25 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun buttonSaveClicked() {
-        val newname = findViewById<EditText>(R.id.etxt_newname)
-        val newdescrip = findViewById<EditText>(R.id.txt_newdescrip)
-        if (newname.text.toString() != ("")) {
-            val data = hashMapOf("username" to newname.text.toString())
+        val newName = findViewById<EditText>(R.id.etxt_newname)
+        val newDescription = findViewById<EditText>(R.id.txt_newdescrip)
+        if (newName.text.toString() != ("")) {
+            val data = hashMapOf("username" to newName.text.toString())
             val uid = mFirebaseAuth.getCurrentUser()!!.uid
-            val proces = mStoreDatabaseHelper.getUsersCollection().document(uid)
+            mStoreDatabaseHelper.getUsersCollection().document(uid)
                 .update(data as Map<String, Any>)
-            proces.addOnCompleteListener() {
+                .addOnCompleteListener() {
                 if (it.isCanceled) {
                     Toast.makeText(this, it.exception.toString(), Toast.LENGTH_LONG).show()
                 }
             }
-        };
-        if (newdescrip.text.toString() != ("")) {
-            val data2 = hashMapOf("biography" to newdescrip.text.toString())
+        }
+        if (newDescription.text.toString() != ("")) {
+            val data2 = hashMapOf("biography" to newDescription.text.toString())
             val uid = mFirebaseAuth.getCurrentUser()!!.uid
-            val proces2 = mStoreDatabaseHelper.getUsersCollection().document(uid)
+            mStoreDatabaseHelper.getUsersCollection().document(uid)
                 .update(data2 as Map<String, Any>)
-            proces2.addOnCompleteListener() {
+                .addOnCompleteListener() {
                 if (it.isCanceled) {
                     Toast.makeText(this, it.exception.toString(), Toast.LENGTH_LONG).show()
                 }
@@ -176,69 +160,71 @@ class EditProfileActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("IntentReset")
     private fun changeImage() {
         //Stuff in Dialog
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setTitle("Change new Image")
         alertDialog.setMessage("Change Image")
-        val inputnewurl = EditText(this)
-        inputnewurl.setHint("Enter your URL here")
-        val localimg = Button(this)
-        localimg.setText("LOCAL IMAGE")
+        val inputNewUrl = EditText(this)
+        inputNewUrl.hint = "Enter your URL here"
+        val localImage = Button(this)
+        localImage.text = "LOCAL IMAGE"
         //About Layout
-        val linearl = LinearLayout(this)
+        val linearLayout = LinearLayout(this)
         val lp = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
         lp.setMargins(30, 10, 30, 10);
         //Setting Stuff
-        inputnewurl.setLayoutParams(lp)
-        localimg.setLayoutParams(lp)
-        linearl.orientation = LinearLayout.VERTICAL
-        linearl.addView(inputnewurl)
-        linearl.addView(localimg)
+        inputNewUrl.layoutParams = lp
+        localImage.layoutParams = lp
+        linearLayout.orientation = LinearLayout.VERTICAL
+        linearLayout.addView(inputNewUrl)
+        linearLayout.addView(localImage)
 
-        alertDialog.setView(linearl)
-        localimg.setOnClickListener() {
-            val intentlocal =
-                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            intentlocal.setType("image/")
-            startActivityForResult(intentlocal, 10)
+        alertDialog.setView(linearLayout)
+        localImage.setOnClickListener() {
+            val localIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            localIntent.type = "image/"
+            startActivityForResult(localIntent, 10)
         }
 
         alertDialog.setPositiveButton(
-            "VALIDATE",
-            DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
-                if (inputnewurl.text.toString() != ("")) {
-                    val data2 = hashMapOf("profilePicture" to inputnewurl.text.toString())
-                    val uid = mFirebaseAuth.getCurrentUser()!!.uid
-                    val proces2 = mStoreDatabaseHelper.getUsersCollection().document(uid)
-                        .update(data2 as Map<String, Any>)
-                    proces2.addOnCompleteListener() {
+            "VALIDATE"
+        ) { _: DialogInterface, _: Int ->
+            if (inputNewUrl.text.toString() != ("")) {
+                val data2 = hashMapOf("profilePicture" to inputNewUrl.text.toString())
+                val uid = mFirebaseAuth.getCurrentUser()!!.uid
+                mStoreDatabaseHelper.getUsersCollection().document(uid)
+                    .update(data2 as Map<String, Any>)
+                    .addOnCompleteListener() {
                         if (it.isSuccessful) {
-                            val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, this?.resources?.displayMetrics).toInt()
+                            val imageProfileView = findViewById<ImageView>(R.id.img_profile)
+                            val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, resources?.displayMetrics).toInt()
                             Picasso.with(this)
-                                .load(inputnewurl.toString())
+                                .load(inputNewUrl.toString())
                                 .resize(dpSize, dpSize)
-                                .into(img_profile)
+                                .into(imageProfileView)
                         }
                     }
-                }
-            })
+            }
+        }
         alertDialog.show()
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            val path: Uri = data!!.data
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            val path: Uri? = data.data
             try {
                 val bitmap = MediaStore.Images.Media.getBitmap(
                     contentResolver, path
                 )
-                img_profile.setImageBitmap(bitmap)
+                val imageProfileView = findViewById<ImageView>(R.id.img_profile)
+                imageProfileView.setImageBitmap(bitmap)
                 filepath = path
                 uploadImage()
             } catch (e: IOException) {
@@ -253,25 +239,25 @@ class EditProfileActivity : AppCompatActivity() {
             val user = mFirebaseAuth.getCurrentUser()
             val reference = storageReference.child("images/users/$key")
             if (user?.photoUrl.toString()!=""){
-                val referenceborrar = storageReference.child("images/users/${user?.photoUrl.toString()}")
-                referenceborrar.delete()
+                val referenceDelete = storageReference.child("images/users/${user?.photoUrl.toString()}")
+                referenceDelete.delete()
             }
-            reference.putFile(filepath)
+            reference.putFile(filepath!!)
                 .addOnSuccessListener {
                     getImageUrl(reference)
                 }
                 .addOnFailureListener() {
-                    Toast.makeText(this, "Image not uploaded", Toast.LENGTH_SHORT)
+                    Toast.makeText(this, "Image not uploaded", Toast.LENGTH_SHORT).show()
                 }
         }
     }
 
     private fun getImageUrl(reference: StorageReference) {
         reference.downloadUrl.addOnSuccessListener {
-            val imagenselected = it.toString()
-            val data = hashMapOf("profilePicture" to imagenselected)
+            val imageSelected = it.toString()
+            val data = hashMapOf("profilePicture" to imageSelected)
             val uid = mFirebaseAuth.getCurrentUser()!!.uid
-            val proces2 = mStoreDatabaseHelper.getUsersCollection().document(uid)
+            mStoreDatabaseHelper.getUsersCollection().document(uid)
                 .update(data as Map<String, Any>)
         }
     }
@@ -281,46 +267,46 @@ class EditProfileActivity : AppCompatActivity() {
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setTitle("Setting new email")
         alertDialog.setMessage("Enter email")
-        val inputpassword = EditText(this)
-        inputpassword.setHint("Enter your password")
+        val inputPassword = EditText(this)
+        inputPassword.hint = "Enter your password"
         val input = EditText(this)
-        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
-        input.setHint("Enter your new email")
+        input.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        input.hint = "Enter your new email"
         val input2 = EditText(this)
-        input2.setHint("Confirm your new email")
-        input2.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
-        val linearl = LinearLayout(this)
+        input2.hint = "Confirm your new email"
+        input2.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        val linearLayout = LinearLayout(this)
         val lp = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
         lp.setMargins(30, 10, 30, 10);
-        input.setLayoutParams(lp)
-        input2.setLayoutParams(lp)
-        inputpassword.setLayoutParams(lp)
-        linearl.orientation = LinearLayout.VERTICAL
-        linearl.addView(input)
-        linearl.addView(input2)
-        linearl.addView(inputpassword)
-        alertDialog.setView(linearl)
+        input.layoutParams = lp
+        input2.layoutParams = lp
+        inputPassword.layoutParams = lp
+        linearLayout.orientation = LinearLayout.VERTICAL
+        linearLayout.addView(input)
+        linearLayout.addView(input2)
+        linearLayout.addView(inputPassword)
+        alertDialog.setView(linearLayout)
         //
-        alertDialog.setPositiveButton("VALIDATE",
-            DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
-                val email = input.getText().toString().trim()
-                val confirmemail = input2.getText().toString()
-                if (email.equals(confirmemail) && (!email.equals(""))) {
-                    newemail = email
-                    password = inputpassword.text.toString()
-                    Toast.makeText(this, "Emails matched", Toast.LENGTH_SHORT).show()
-                    changeEmailCredentials()
-                } else {
-                    Toast.makeText(this, "Emails didn't match", Toast.LENGTH_SHORT).show()
-                }
-            })
-        alertDialog.setNegativeButton("CANCEL",
-            DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
-                dialogInterface.cancel();
-            });
+        alertDialog.setPositiveButton("VALIDATE"
+        ) { _: DialogInterface, _: Int ->
+            val email = input.text.toString().trim()
+            val confirmEmail = input2.text.toString()
+            if (email == confirmEmail && (email != "")) {
+                newemail = email
+                password = inputPassword.text.toString()
+                Toast.makeText(this, "Emails matched", Toast.LENGTH_SHORT).show()
+                changeEmailCredentials()
+            } else {
+                Toast.makeText(this, "Emails didn't match", Toast.LENGTH_SHORT).show()
+            }
+        }
+        alertDialog.setNegativeButton("CANCEL"
+        ) { dialogInterface: DialogInterface, _: Int ->
+            dialogInterface.cancel();
+        }
         alertDialog.show()
     }
     private fun changeEmailCredentials() {
@@ -330,31 +316,30 @@ class EditProfileActivity : AppCompatActivity() {
             user?.reauthenticate(credential)
                 ?.addOnSuccessListener {
                     Toast.makeText(this, "Credentials OK", Toast.LENGTH_SHORT).show()
-                    changeEmailContiue()
+                    changeEmailContinue()
                 }
                 ?.addOnFailureListener() {
-                    Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT)
+                    Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
                 }
         }
     }
-    private fun changeEmailContiue() {
+    private fun changeEmailContinue() {
         val user = mFirebaseAuth.getCurrentUser()
         FirebaseAuth.getInstance().fetchSignInMethodsForEmail(newemail)
             .addOnSuccessListener {
-                val processupdate = user?.updateEmail(newemail)
-                Thread.sleep(200)
-                processupdate?.addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Toast.makeText(
-                            this,
-                            "Changes saved, we have send you a new email verification.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        user.sendEmailVerification()
-                    } else {
-                        Toast.makeText(this, it.exception!!.message, Toast.LENGTH_LONG).show()
+                user?.updateEmail(newemail)
+                    ?.addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            Toast.makeText(
+                                this,
+                                "Changes saved, we have send you a new email verification.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            user.sendEmailVerification()
+                        } else {
+                            Toast.makeText(this, it.exception!!.message, Toast.LENGTH_LONG).show()
+                        }
                     }
-                }
             }
             .addOnFailureListener() {
                 Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
@@ -367,36 +352,36 @@ class EditProfileActivity : AppCompatActivity() {
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setTitle("Setting new password")
         alertDialog.setMessage("Enter password")
-        val inputpassword = EditText(this)
-        inputpassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD)
-        inputpassword.setHint("Enter your new password")
+        val inputPassword = EditText(this)
+        inputPassword.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+        inputPassword.hint = "Enter your new password"
         val input2 = EditText(this)
-        input2.setHint("Confirm your new password")
-        input2.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
-        val linearl = LinearLayout(this)
+        input2.hint = "Confirm your new password"
+        input2.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        val linearLayout = LinearLayout(this)
         val lp = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
         lp.setMargins(30, 10, 30, 10);
-        input2.setLayoutParams(lp)
-        inputpassword.setLayoutParams(lp)
-        linearl.orientation = LinearLayout.VERTICAL
-        linearl.addView(input2)
-        linearl.addView(inputpassword)
-        alertDialog.setView(linearl)
-            .setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
-                if (inputpassword.text.toString().equals(input2.text.toString()) && (inputpassword.text.toString() != "")) {
-                    password = inputpassword.text.toString().trim()
+        input2.layoutParams = lp
+        inputPassword.layoutParams = lp
+        linearLayout.orientation = LinearLayout.VERTICAL
+        linearLayout.addView(input2)
+        linearLayout.addView(inputPassword)
+        alertDialog.setView(linearLayout)
+            .setPositiveButton("OK") { _: DialogInterface, _: Int ->
+                if (inputPassword.text.toString() == input2.text.toString() && (inputPassword.text.toString() != "")) {
+                    password = inputPassword.text.toString().trim()
                     Toast.makeText(this, "Passwords match", Toast.LENGTH_SHORT).show()
                     changePasswordContinue()
                 } else {
                     Toast.makeText(this, "Passwords don't match", Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton("CANCEL", { dialogInterface: DialogInterface, i: Int ->
+            .setNegativeButton("CANCEL") { dialogInterface: DialogInterface, _: Int ->
                 dialogInterface.dismiss()
-            })
+            }
         alertDialog.show()
     }
 
