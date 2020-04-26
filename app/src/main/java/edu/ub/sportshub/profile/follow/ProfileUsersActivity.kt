@@ -1,9 +1,11 @@
 package edu.ub.sportshub.profile.follow
 
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.viewpager.widget.ViewPager
 import edu.ub.sportshub.R
 import edu.ub.sportshub.profile.follow.ViewPagerAdapterProfileFollow
@@ -21,7 +23,7 @@ class ProfileUsersActivity : AppCompatActivity() {
                 supportFragmentManager
             )
         pager_follow.adapter = fragmentAdapter2
-        pager_follow.setCurrentItem(id)
+        pager_follow.currentItem = id
         addDots(id)
         pager_follow?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
@@ -42,8 +44,12 @@ class ProfileUsersActivity : AppCompatActivity() {
         mDots.clear()
         for (i in 0..1){
             val text = TextView(this)
-            text.setText(Html.fromHtml("&#8226"))
-            text.setTextSize(35F)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                text.text = Html.fromHtml("&#8226", HtmlCompat.FROM_HTML_MODE_LEGACY)
+            } else {
+                text.text = Html.fromHtml("&#8226")
+            }
+            text.textSize = 35F
             if (i == position){
                 text.setTextColor(resources.getColor(R.color.colorPrimaryDark))
             } else {
