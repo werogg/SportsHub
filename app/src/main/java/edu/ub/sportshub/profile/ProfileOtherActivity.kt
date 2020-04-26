@@ -2,6 +2,7 @@ package edu.ub.sportshub.profile
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.TypedValue
@@ -10,9 +11,9 @@ import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.HtmlCompat
 import androidx.viewpager.widget.ViewPager
 import com.google.firebase.firestore.FieldValue
-import com.google.firestore.v1.WriteResult
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
@@ -44,9 +45,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         setContentView(R.layout.activity_profile_other)
         val id = intent.getStringExtra("userId")
         uid = id
-        val fragmentAdapter2 =
-            ViewPagerAdapterProfile(
-                supportFragmentManager, id)
+        val fragmentAdapter2 = ViewPagerAdapterProfile(supportFragmentManager, id)
         pager_profile.adapter = fragmentAdapter2
         userDao = DataAccessObjectFactory.getUserDao()
         userDao.registerListener(this)
@@ -74,8 +73,8 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                     followProfileTextClicked()
                 }
 
-                val signout = findViewById<TextView>(R.id.toolbar_signout)
-                signout.setOnClickListener() {
+                val textSignOut = findViewById<TextView>(R.id.toolbar_signout)
+                textSignOut.setOnClickListener() {
                     textSignOutClicked()
                 }
 
@@ -98,11 +97,11 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         val dpValue2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480f, displayMetrics)
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val customView = inflater.inflate(R.layout.fragment_notifications_primary, null)
-        val coord = findViewById<ConstraintLayout>(R.id.profile_constraint_layout)
+        val coordinates = findViewById<ConstraintLayout>(R.id.profile_constraint_layout)
         popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
         popupWindow!!.width = dpValue1.toInt()
         popupWindow!!.height = dpValue2.toInt()
-        popupWindow!!.showAtLocation(coord, Gravity.TOP,0,220)
+        popupWindow!!.showAtLocation(coordinates, Gravity.TOP,0,220)
     }
 
     private fun buttonHomeClicked() {
@@ -130,8 +129,12 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         mDots.clear()
         for (i in 0..1){
             val text = TextView(this)
-            text.setText(Html.fromHtml("&#8226"))
-            text.setTextSize(35F)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                text.text = Html.fromHtml("&#8226", HtmlCompat.FROM_HTML_MODE_LEGACY)
+            } else {
+                text.text = Html.fromHtml("&#8226")
+            }
+            text.textSize = 35F
             if (i == position){
                 text.setTextColor(resources.getColor(R.color.colorPrimaryDark))
             } else {
@@ -144,33 +147,33 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
 
     private fun loadData(user:User){
         userfollow = user
-        var textname = findViewById<TextView>(R.id.txt_nameprofile)
-        var imageprofile = findViewById<CircleImageView>(R.id.img_profile)
-        var description = findViewById<TextView>(R.id.txt_descrp)
-        var nfollowers = findViewById<TextView>(R.id.txt_nfollowers)
-        var nfollowing = findViewById<TextView>(R.id.txt_nfollowing)
-        textname.text = user.getUsername()
+        val textName = findViewById<TextView>(R.id.txt_nameprofile)
+        val imageProfile = findViewById<CircleImageView>(R.id.img_profile)
+        val description = findViewById<TextView>(R.id.txt_descrp)
+        val textFollowers = findViewById<TextView>(R.id.txt_nfollowers)
+        val textFollowing = findViewById<TextView>(R.id.txt_nfollowing)
+        textName.text = user.getUsername()
         //Check Image
-        val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, this?.resources?.displayMetrics).toInt()
-        if (user.getProfilePicture().toString().equals("")){
+        val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, resources?.displayMetrics).toInt()
+        if (user.getProfilePicture() == ""){
             Picasso.with(this)
                 .load(R.mipmap.ic_usuari_foreground)
                 .resize(dpSize, dpSize)
-                .into(imageprofile)
+                .into(imageProfile)
         } else {
             Picasso.with(this)
                 .load(user.getProfilePicture().toString())
                 .resize(dpSize, dpSize)
-                .into(imageprofile)
+                .into(imageProfile)
         }
 
-        if (user.getBiography().equals("")){
+        if (user.getBiography() == ""){
             description.text = "Hey there,\nI'm using SportsHub."
         }else{
             description.text = user.getBiography()
         }
-        nfollowers.text = user.getFollowersUsers()?.size.toString()
-        nfollowing.text = user.getFollowingUsers()?.size.toString()
+        textFollowers.text = user.getFollowersUsers().size.toString()
+        textFollowing.text = user.getFollowingUsers().size.toString()
     }
 
     override fun onDataLoaded(event: DataEvent) {

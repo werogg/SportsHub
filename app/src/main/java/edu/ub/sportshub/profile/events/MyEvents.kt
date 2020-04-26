@@ -44,8 +44,8 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainerProfile)
-        val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
+        val eventContainer = view.findViewById<LinearLayout>(R.id.eventsContainerProfile)
+        val refreshingLayout = view.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
         setupRefreshListener()
         eventsToShow.clear()
         eventContainer?.removeAllViews()
@@ -58,17 +58,17 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
     private fun setupRefreshListener() {
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainerProfile)
-        val titulo = view?.findViewById<TextView>(R.id.txt_header)
+        val title = view?.findViewById<TextView>(R.id.txt_header)
         refreshingLayout?.setOnRefreshListener {
             eventsToShow.clear()
-            titulo?.text = ""
+            title?.text = ""
             eventContainer?.removeAllViews()
             showFollowingEvents()
 
         }
     }
 
-    fun showFollowingEvents(){
+    private fun showFollowingEvents(){
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
         refreshingLayout?.isRefreshing = true
         // Retrieve the current logged user
@@ -80,15 +80,15 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
 
     }
 
-    fun updateShowingEvents(){
+    private fun updateShowingEvents(){
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
         eventsToShow.sortBy {
             it.first.getCreationDate().seconds
         }
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainerProfile)
         eventContainer?.removeAllViews()
-        val titulo = view?.findViewById<TextView>(R.id.txt_header)
-        titulo?.text="MY EVENTS"
+        val title = view?.findViewById<TextView>(R.id.txt_header)
+        title?.text="MY EVENTS"
         for (pair in eventsToShow) {
             val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
             val eventView = LayoutInflater.from(context).inflate(R.layout.event_view, null);

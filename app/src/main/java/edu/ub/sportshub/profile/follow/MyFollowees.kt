@@ -52,18 +52,18 @@ class MyFollowees : Fragment(), DataChangeListener {
     private fun setupRefreshListener() {
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh_follow)
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainerProfileFollow)
-        val titulo = view?.findViewById<TextView>(R.id.txt_header_follow)
+        val title = view?.findViewById<TextView>(R.id.txt_header_follow)
         refreshingLayout?.setOnRefreshListener {
             usersToShow.clear()
-            titulo?.text = ""
+            title?.text = ""
             eventContainer?.removeAllViews()
             showFollowingUsers()
         }
     }
 
-    fun showFollowingUsers() {
-        val titulo = view?.findViewById<TextView>(R.id.txt_header_follow)
-        titulo?.text="MY FOLLOWEES"
+    private fun showFollowingUsers() {
+        val title = view?.findViewById<TextView>(R.id.txt_header_follow)
+        title?.text="MY FOLLOWEES"
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh_follow)
         refreshingLayout?.isRefreshing = true
         val loggedUserUid = authDatabaseHelper.getCurrentUser()?.uid.toString()
@@ -74,29 +74,29 @@ class MyFollowees : Fragment(), DataChangeListener {
         }.start()
     }
 
-    fun updateShowingUsers(){
+    private fun updateShowingUsers(){
         val refreshingLayout2 = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh_follow)
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainerProfileFollow)
         eventContainer?.removeAllViews()
-        val titulo = view?.findViewById<TextView>(R.id.txt_header)
-        titulo?.text="MY FOLLOWEES"
+        val title = view?.findViewById<TextView>(R.id.txt_header)
+        title?.text="MY FOLLOWEES"
         for (user in usersToShow) {
             val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
             val userView = LayoutInflater.from(context).inflate(R.layout.user_view, null);
             val userTitle = userView.findViewById<TextView>(R.id.username)
-            val imgprofilefollow = userView.findViewById<ImageView>(R.id.profilePicture)
+            val imageProfileFollow = userView.findViewById<ImageView>(R.id.profilePicture)
             val following = userView.findViewById<TextView>(R.id.follow)
             val layout = userView.findViewById<LinearLayout>(R.id.layout_to_user)
             if (user.getProfilePicture().equals("")){
                 Picasso.with(context)
                     .load(R.mipmap.ic_usuari_foreground)
                     .resize(dpSize, dpSize)
-                    .into(imgprofilefollow)
+                    .into(imageProfileFollow)
             } else {
                 Picasso.with(context)
                     .load(user.getProfilePicture())
                     .resize(dpSize, dpSize)
-                    .into(imgprofilefollow)
+                    .into(imageProfileFollow)
             }
             userTitle.text = user.getUsername()
             following.text = "following"
