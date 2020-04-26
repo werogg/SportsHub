@@ -1,9 +1,10 @@
 package edu.ub.sportshub.helpers
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 
-open class DatabaseHelper {
+open class DatabaseHelper() {
 
     private var mFirebaseAuth = FirebaseAuth.getInstance()
     private var mFirebaseStore = FirebaseFirestore.getInstance()

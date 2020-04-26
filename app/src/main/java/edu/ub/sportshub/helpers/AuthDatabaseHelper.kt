@@ -6,8 +6,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import edu.ub.sportshub.MainActivity
-import edu.ub.sportshub.models.User
-import java.util.*
 
 class AuthDatabaseHelper : DatabaseHelper() {
 
