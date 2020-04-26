@@ -74,6 +74,11 @@ class EditProfileActivity : AppCompatActivity() {
         validateButton.setOnClickListener() {
             buttonSaveClicked()
         }
+
+        val profileImageView = findViewById<ImageView>(R.id.img_profile)
+        profileImageView.setOnClickListener() {
+            changeImage()
+        }
     }
 
     private fun buttonSaveClicked() {
