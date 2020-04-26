@@ -63,6 +63,10 @@
             android:label="@string/title_activity_profile_other" />
 
         <activity
+            android:name=".profile.follow.ProfileUsersActivity"
+            android:label="followers and followees" />
+
+        <activity
             android:name=".profile.EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
             android:theme="@style/AppTheme.NoActionBar" />
