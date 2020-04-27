@@ -35,6 +35,7 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
     private val mStoreDatabaseHelper = StoreDatabaseHelper()
     private var mDots = arrayListOf<TextView>()
     private lateinit var userDao : UserDao
+    private lateinit var user : User
     private val toolbarHandler = ToolbarHandler(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,12 +99,14 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
     private fun followersClicked(){
         val popupIntent = Intent(this, ProfileUsersActivity::class.java)
         popupIntent.putExtra("select",0)
+        popupIntent.putExtra("id",user.getUid())
         startActivity(popupIntent)
     }
 
     private fun followeesClicked(){
         val popupIntent = Intent(this, ProfileUsersActivity::class.java)
         popupIntent.putExtra("select",1)
+        popupIntent.putExtra("id",user.getUid())
         startActivity(popupIntent)
     }
 
@@ -158,23 +161,24 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
                 .into(imageProfile)
         } else {
             Picasso.with(this)
-                .load(user.getProfilePicture().toString())
+                .load(user.getProfilePicture())
                 .resize(dpSize, dpSize)
                 .into(imageProfile)
         }
 
         if (user.getBiography() == ""){
-            textDescription.text = "Hey there,\nI'm using SportsHub."
+            textDescription.text = resources.getText(R.string.default_description)
         }else{
             textDescription.text = user.getBiography()
         }
-        textFollowers.text = user.getFollowersUsers()?.size.toString()
-        textFollowing.text = user.getFollowingUsers()?.size.toString()
+        textFollowers.text = user.getFollowersUsers().size.toString()
+        textFollowing.text = user.getFollowingUsers().size.toString()
     }
 
     override fun onDataLoaded(event: DataEvent) {
         if(event is UserLoadedEvent){
             loadData(event.user)
+            user = event.user
         }
     }
 

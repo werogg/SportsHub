@@ -67,6 +67,12 @@
     <string name="two_clicks_left_logout">2 clicks left to logout</string>
     <string name="one_click_left_logout">1 click left to logout</string>
     <string name="followers">Followers</string>
+    <string name="default_description" translatable="false">"Hey there,\nI'm using SportsHub."</string>
+    <string name="followees2" translatable="false">FOLLOWEES</string>
+    <string name="followed" translatable="false">followed</string>
+    <string name="followers2" translatable="false">FOLLOWERS</string>
+    <string name="following" translatable="false">following</string>
+    <string name="other_events" translatable="false">Other Events</string>
     <string name="followees">Followees</string>
     <string name="preferences">Preferences</string>
     <string name="activities">Activities</string>

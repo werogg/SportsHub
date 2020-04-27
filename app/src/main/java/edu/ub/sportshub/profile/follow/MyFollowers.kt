@@ -22,16 +22,17 @@ import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.ProfileOtherActivity
 
-class MyFollowers : Fragment(), DataChangeListener{
+class MyFollowers(id:String) : Fragment(), DataChangeListener{
     private lateinit var userDao : UserDao
     private var authDatabaseHelper = AuthDatabaseHelper()
     private var usersToShow = mutableListOf<User>()
-
+    private var uid = id
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
         userDao = DataAccessObjectFactory.getUserDao()
         userDao.registerListener(this)
         return inflater.inflate(R.layout.fragment_users_profile, container, false)
@@ -64,14 +65,13 @@ class MyFollowers : Fragment(), DataChangeListener{
 
     private fun showFollowingUsers() {
         val title = view?.findViewById<TextView>(R.id.txt_header_follow)
-        title?.text="MY FOLLOWERS"
+        title?.text= resources.getText(R.string.followers2)
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh_follow)
         refreshingLayout?.isRefreshing = true
-        val loggedUserUid = authDatabaseHelper.getCurrentUser()?.uid.toString()
         // Retrieve the current logged user
         Thread {
             kotlin.run {
-                userDao.fetchFollowers(loggedUserUid)
+                userDao.fetchFollowers(uid)
             }
         }.start()
 
@@ -82,7 +82,7 @@ class MyFollowers : Fragment(), DataChangeListener{
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainerProfileFollow)
         eventContainer?.removeAllViews()
         val title = view?.findViewById<TextView>(R.id.txt_header)
-        title?.text="MY FOLLOWERS"
+        title?.text= resources.getText(R.string.followers2)
         for (user in usersToShow) {
             val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
             val userView = LayoutInflater.from(context).inflate(R.layout.user_view, null);
@@ -102,7 +102,7 @@ class MyFollowers : Fragment(), DataChangeListener{
                     .into(imageProfileFollow)
             }
             userTitle.text = user.getUsername()
-            following.text = "following"
+            following.text = resources.getText(R.string.following)
             layout.setOnClickListener(){
                 val intent = Intent(context, ProfileOtherActivity::class.java)
                 intent.putExtra("userId", user.getUid())

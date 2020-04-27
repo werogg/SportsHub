@@ -22,10 +22,11 @@ import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.ProfileOtherActivity
 
-class MyFollowees : Fragment(), DataChangeListener {
+class MyFollowees(id: String) : Fragment(), DataChangeListener {
     private var authDatabaseHelper = AuthDatabaseHelper()
     private lateinit var userDao : UserDao
     private var usersToShow = mutableListOf<User>()
+    private var uid = id
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,13 +64,12 @@ class MyFollowees : Fragment(), DataChangeListener {
 
     private fun showFollowingUsers() {
         val title = view?.findViewById<TextView>(R.id.txt_header_follow)
-        title?.text="MY FOLLOWEES"
+        title?.text= resources.getText(R.string.followees2)
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh_follow)
         refreshingLayout?.isRefreshing = true
-        val loggedUserUid = authDatabaseHelper.getCurrentUser()?.uid.toString()
         Thread {
             kotlin.run {
-                userDao.fetchFollowees(loggedUserUid)
+                userDao.fetchFollowees(uid)
             }
         }.start()
     }
@@ -79,7 +79,7 @@ class MyFollowees : Fragment(), DataChangeListener {
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainerProfileFollow)
         eventContainer?.removeAllViews()
         val title = view?.findViewById<TextView>(R.id.txt_header)
-        title?.text="MY FOLLOWEES"
+        title?.text= resources.getText(R.string.followees2)
         for (user in usersToShow) {
             val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
             val userView = LayoutInflater.from(context).inflate(R.layout.user_view, null);
@@ -99,7 +99,7 @@ class MyFollowees : Fragment(), DataChangeListener {
                     .into(imageProfileFollow)
             }
             userTitle.text = user.getUsername()
-            following.text = "following"
+            following.text = resources.getText(R.string.following)
 
             layout.setOnClickListener(){
                 val intent = Intent(context, ProfileOtherActivity::class.java)

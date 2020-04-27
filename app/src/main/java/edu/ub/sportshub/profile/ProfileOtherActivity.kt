@@ -28,6 +28,7 @@ import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.events.ViewPagerAdapterProfile
+import edu.ub.sportshub.profile.follow.ProfileUsersActivity
 import kotlinx.android.synthetic.main.activity_profile.*
 
 
@@ -89,6 +90,32 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                 notificationsButton.setOnClickListener {
                     notificationsButtonClicked()
                 }
+
+                val layoutFollowers = findViewById<LinearLayout>(R.id.layout_followers)
+
+                layoutFollowers.setOnClickListener(){
+                    followersClicked()
+                }
+
+                val layoutFollowees = findViewById<LinearLayout>(R.id.layout_followees)
+
+                layoutFollowees.setOnClickListener(){
+                    followeesClicked()
+                }
+    }
+
+    private fun followeesClicked(){
+        val popupIntent = Intent(this, ProfileUsersActivity::class.java)
+        popupIntent.putExtra("select",1)
+        popupIntent.putExtra("id",uid)
+        startActivity(popupIntent)
+    }
+
+    private fun followersClicked(){
+        val popupIntent = Intent(this, ProfileUsersActivity::class.java)
+        popupIntent.putExtra("select",0)
+        popupIntent.putExtra("id",uid)
+        startActivity(popupIntent)
     }
 
     private fun notificationsButtonClicked() {
@@ -118,9 +145,9 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         val uid = mFirebaseAuth.getCurrentUser()?.uid
         val dd = mStoreDatabaseHelper.getUsersCollection().document(uid!!)
         dd.update("followingUsers", FieldValue.arrayUnion(userfollow.getUid())).addOnSuccessListener(){
-            Toast.makeText(this,"Followed",Toast.LENGTH_LONG).show()
+            Toast.makeText(this,resources.getText(R.string.followed),Toast.LENGTH_LONG).show()
         }.addOnFailureListener(){
-            Toast.makeText(this,"Ups, we've got an error here",Toast.LENGTH_LONG).show()
+            Toast.makeText(this,resources.getText(R.string.event_creation_error),Toast.LENGTH_LONG).show()
         }
     }
 
@@ -168,7 +195,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         }
 
         if (user.getBiography() == ""){
-            description.text = "Hey there,\nI'm using SportsHub."
+            description.text = resources.getText(R.string.default_description)
         }else{
             description.text = user.getBiography()
         }
