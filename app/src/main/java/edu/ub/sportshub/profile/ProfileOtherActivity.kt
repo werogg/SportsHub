@@ -107,14 +107,14 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     private fun followeesClicked(){
         val popupIntent = Intent(this, ProfileUsersActivity::class.java)
         popupIntent.putExtra("select",1)
-        popupIntent.putExtra("id",uid)
+        popupIntent.putExtra("id", uid)
         startActivity(popupIntent)
     }
 
     private fun followersClicked(){
         val popupIntent = Intent(this, ProfileUsersActivity::class.java)
-        popupIntent.putExtra("select",0)
-        popupIntent.putExtra("id",uid)
+        popupIntent.putExtra("select", 0)
+        popupIntent.putExtra("id", uid)
         startActivity(popupIntent)
     }
 
@@ -145,9 +145,9 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         val uid = mFirebaseAuth.getCurrentUser()?.uid
         val dd = mStoreDatabaseHelper.getUsersCollection().document(uid!!)
         dd.update("followingUsers", FieldValue.arrayUnion(userfollow.getUid())).addOnSuccessListener(){
-            Toast.makeText(this,resources.getText(R.string.followed),Toast.LENGTH_LONG).show()
+            Toast.makeText(this,resources.getText(R.string.followed), Toast.LENGTH_LONG).show()
         }.addOnFailureListener(){
-            Toast.makeText(this,resources.getText(R.string.event_creation_error),Toast.LENGTH_LONG).show()
+            Toast.makeText(this,resources.getText(R.string.event_creation_error), Toast.LENGTH_LONG).show()
         }
     }
 

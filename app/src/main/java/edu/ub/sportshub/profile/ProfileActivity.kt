@@ -99,14 +99,14 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
     private fun followersClicked(){
         val popupIntent = Intent(this, ProfileUsersActivity::class.java)
         popupIntent.putExtra("select",0)
-        popupIntent.putExtra("id",user.getUid())
+        popupIntent.putExtra("id", user.getUid())
         startActivity(popupIntent)
     }
 
     private fun followeesClicked(){
         val popupIntent = Intent(this, ProfileUsersActivity::class.java)
         popupIntent.putExtra("select",1)
-        popupIntent.putExtra("id",user.getUid())
+        popupIntent.putExtra("id", user.getUid())
         startActivity(popupIntent)
     }
 
