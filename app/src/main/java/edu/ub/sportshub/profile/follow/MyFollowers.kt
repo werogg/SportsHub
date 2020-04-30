@@ -22,17 +22,15 @@ import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.ProfileOtherActivity
 
-class MyFollowers(id:String) : Fragment(), DataChangeListener{
+class MyFollowers(val id:String) : Fragment(), DataChangeListener{
     private lateinit var userDao : UserDao
     private var authDatabaseHelper = AuthDatabaseHelper()
     private var usersToShow = mutableListOf<User>()
-    private var uid = id
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
         userDao = DataAccessObjectFactory.getUserDao()
         userDao.registerListener(this)
         return inflater.inflate(R.layout.fragment_users_profile, container, false)
@@ -71,7 +69,7 @@ class MyFollowers(id:String) : Fragment(), DataChangeListener{
         // Retrieve the current logged user
         Thread {
             kotlin.run {
-                userDao.fetchFollowers(uid)
+                userDao.fetchFollowers(id)
             }
         }.start()
 

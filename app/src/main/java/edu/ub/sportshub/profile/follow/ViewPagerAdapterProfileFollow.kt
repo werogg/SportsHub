@@ -6,17 +6,16 @@ import androidx.fragment.app.FragmentPagerAdapter
 import edu.ub.sportshub.profile.follow.MyFollowees
 import edu.ub.sportshub.profile.follow.MyFollowers
 
-class ViewPagerAdapterProfileFollow(fm: FragmentManager,s: String) : FragmentPagerAdapter(fm){
-    private val ind = s
+class ViewPagerAdapterProfileFollow(fm: FragmentManager,val user_id: String) : FragmentPagerAdapter(fm){
     override fun getItem(position: Int): Fragment {
         return when (position){
             0-> {
-                MyFollowers(ind)
+                MyFollowers(user_id)
             }
             1-> {
-                MyFollowees(ind)
+                MyFollowees(user_id)
             }
-            else -> MyFollowers(ind)
+            else -> MyFollowers(user_id)
         }
     }
 

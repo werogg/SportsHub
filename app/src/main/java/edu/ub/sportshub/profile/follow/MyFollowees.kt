@@ -22,11 +22,10 @@ import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.ProfileOtherActivity
 
-class MyFollowees(id: String) : Fragment(), DataChangeListener {
+class MyFollowees(val id: String) : Fragment(), DataChangeListener {
     private var authDatabaseHelper = AuthDatabaseHelper()
     private lateinit var userDao : UserDao
     private var usersToShow = mutableListOf<User>()
-    private var uid = id
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +68,7 @@ class MyFollowees(id: String) : Fragment(), DataChangeListener {
         refreshingLayout?.isRefreshing = true
         Thread {
             kotlin.run {
-                userDao.fetchFollowees(uid)
+                userDao.fetchFollowees(id)
             }
         }.start()
     }
