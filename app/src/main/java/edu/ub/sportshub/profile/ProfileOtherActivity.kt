@@ -147,7 +147,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         dd.update("followingUsers", FieldValue.arrayUnion(userfollow.getUid())).addOnSuccessListener(){
             Toast.makeText(this,resources.getText(R.string.followed),Toast.LENGTH_LONG).show()
         }.addOnFailureListener(){
-            Toast.makeText(this,resources.getText(R.string.event_creation_error),Toast.LENGTH_LONG).show()
+            Toast.makeText(this,resources.getText(R.string.event_creation_error), Toast.LENGTH_LONG).show()
         }
     }
 
