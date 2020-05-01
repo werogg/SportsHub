@@ -225,7 +225,7 @@ class CreateEventActivity : AppCompatActivity(), DataChangeListener {
 
         val dpd = DatePickerDialog(this,DatePickerDialog.OnDateSetListener {
                 _, year, month, day ->
-            this.year = year
+            this.year = year - 1900
             this.month = month
             this.day = day
             dateSelected = true
