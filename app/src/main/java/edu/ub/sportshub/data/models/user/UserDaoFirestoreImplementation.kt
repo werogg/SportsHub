@@ -1,9 +1,9 @@
 package edu.ub.sportshub.data.models.user
 
 import android.util.Log
-import edu.ub.sportshub.data.events.database.UserLoadedEvent
-import edu.ub.sportshub.data.events.database.UsersFolloweesEvent
-import edu.ub.sportshub.data.events.database.UsersFollowersEvent
+import edu.ub.sportshub.data.users.database.UserLoadedUser
+import edu.ub.sportshub.data.users.database.UsersFolloweesUser
+import edu.ub.sportshub.data.users.database.UsersFollowersUser
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.User
 
@@ -17,7 +17,7 @@ class UserDaoFirestoreImplementation : UserDao() {
         storeDatabaseHelper.retrieveUser(uid)
             .addOnSuccessListener {
             val user = it.toObject(User::class.java)
-            executeListeners(UserLoadedEvent(user!!))
+            executeListeners(UserLoadedUser(user!!))
         }
             .addOnFailureListener {
                 Log.e(TAG, it.message)
@@ -37,7 +37,7 @@ class UserDaoFirestoreImplementation : UserDao() {
                             .addOnSuccessListener { follow ->
                                 val followees = follow.toObject(User::class.java)
                                 listausers.add(followees!!)
-                                executeListeners(UsersFolloweesEvent(listausers))
+                                executeListeners(UsersFolloweesUser(listausers))
                             }
                     }
                 }
@@ -58,7 +58,7 @@ class UserDaoFirestoreImplementation : UserDao() {
                             .addOnSuccessListener { follow ->
                                 val followees = follow.toObject(User::class.java)
                                 listausers.add(followees!!)
-                                executeListeners(UsersFollowersEvent(listausers))
+                                executeListeners(UsersFollowersUser(listausers))
                             }
                     }
                 }

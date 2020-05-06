@@ -32,6 +32,7 @@ import edu.ub.sportshub.data.events.database.DataEvent
 import edu.ub.sportshub.data.events.database.EventCreatedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
 import edu.ub.sportshub.data.models.event.EventDao
+import edu.ub.sportshub.data.users.database.DataUser
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity

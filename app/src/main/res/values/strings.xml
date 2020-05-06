@@ -100,4 +100,9 @@
     <string name="event_creation_error">An error has occurred.</string>
     <!-- End -->
 
+    <!-- Home-UsersFragment -->
+    <string name="following_status">Following</string>
+    <string name="not_following_status">Not Following</string>
+    <!-- End -->
+
 </resources>

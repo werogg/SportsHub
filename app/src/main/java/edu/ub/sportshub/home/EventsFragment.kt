@@ -19,6 +19,7 @@ import edu.ub.sportshub.data.events.database.EventsLoadedEvent
 import edu.ub.sportshub.data.events.database.FollowingUsersEventsLoadedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
 import edu.ub.sportshub.data.models.event.EventDao
+import edu.ub.sportshub.data.users.database.DataUser
 import edu.ub.sportshub.event.EventActivity
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.models.Event
@@ -193,6 +194,7 @@ class EventsFragment : Fragment(), DataChangeListener {
         }
         if (isEventsLoaded()) mergeEventsIntoShowListAndShow()
     }
+
 
     override fun onResume() {
         super.onResume()

@@ -1,7 +1,9 @@
 package edu.ub.sportshub.home
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -14,24 +16,32 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
 import edu.ub.sportshub.R
+import edu.ub.sportshub.data.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.listeners.UserDataChangeListener
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
-import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.ProfileOtherActivity
+import edu.ub.sportshub.data.models.user.UserDao
+import edu.ub.sportshub.data.users.database.DataUser
+import edu.ub.sportshub.data.users.database.UsersFolloweesUser
+import edu.ub.sportshub.models.User
 
 /**
  * A simple [Fragment] subclass.
  */
-class UsersFragment : Fragment() {
+class UsersFragment : Fragment(), UserDataChangeListener {
 
     private val authDatabaseHelper = AuthDatabaseHelper()
     private val storeDatabaseHelper = StoreDatabaseHelper()
-    private var usersToShow = mutableListOf<User>()
+    private var followingUsers = mutableListOf<User>()
+    private lateinit var userDao : UserDao
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View? {
 
         // Inflate the layout for this fragment
+        userDao = DataAccessObjectFactory.getUserDao()
+        userDao.registerListener(this)
         return inflater.inflate(R.layout.fragment_users, container, false)
     }
 
@@ -55,21 +65,24 @@ class UsersFragment : Fragment() {
             }
         })
 
-
-
-
     }
 
+
+    @SuppressLint("SetTextI18n")
     private fun searchUsers(query: String) {
 
         var n = false
         var userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
         val curr = authDatabaseHelper.getCurrentUser()!!.uid
+        userDao.fetchFollowees(curr)
 
         storeDatabaseHelper.getUsersCollection().whereGreaterThanOrEqualTo("username", query).get()
             .addOnSuccessListener { users ->
                 for (user in  users) {
+
                     val uid = user.data["uid"].toString()
+                    val followee = followingUsers.filter { it.getUid() == uid }
+
                     if(uid!=curr){
                         val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
                         val userView = LayoutInflater.from(context).inflate(R.layout.user_view, null);
@@ -79,6 +92,14 @@ class UsersFragment : Fragment() {
 
                         userViewTitleView.text = user.getData().get("username").toString()
 
+                        if(!followee.isEmpty()){
+                            userViewFollowView.text = "@string/not_following_status"
+                            userViewFollowView.setTextColor(Color.parseColor("#fc030b"))
+                        }
+                        else{
+                            userViewFollowView.text = "@string/following_status"
+                            userViewFollowView.setTextColor(Color.parseColor("#03fc31"))
+                        }
 
                         Picasso.with(context)
                             .load(user.data["profilePicture"].toString())
@@ -93,6 +114,7 @@ class UsersFragment : Fragment() {
 
                         userContainer?.addView(userView)
                     }
+
                 }
             }
 
@@ -102,6 +124,13 @@ class UsersFragment : Fragment() {
         }
 
     }
+
+    override fun onDataLoaded(user: DataUser){
+        if(user is UsersFolloweesUser){
+            followingUsers = user.followersUsers;
+        }
+    }
+
 
     private fun userClicked(userId: String) {
 
