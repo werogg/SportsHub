@@ -1,5 +1,7 @@
 package edu.ub.sportshub.profile
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -8,6 +10,8 @@ import android.text.Html
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -40,7 +44,9 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     private lateinit var userDao : UserDao
     private lateinit var userfollow: User
     private lateinit var uid: String
+    private lateinit var dialog: Dialog
 
+    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_other)
@@ -50,6 +56,8 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         pager_profile.adapter = fragmentAdapter2
         userDao = DataAccessObjectFactory.getUserDao()
         userDao.registerListener(this)
+
+        dialogshow()
 
         Thread {
             kotlin.run {
@@ -102,6 +110,18 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                 layoutFollowees.setOnClickListener(){
                     followeesClicked()
                 }
+    }
+
+    private fun dialogshow(){
+        //Dialog creation for loading data.
+        val dialog = Dialog(this,R.style.Theme_Design_Light)
+        val view: View = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
+        val params: WindowManager.LayoutParams = dialog.getWindow()!!.getAttributes()
+        params.width = WindowManager.LayoutParams.MATCH_PARENT
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT
+        dialog.setContentView(view)
+        this.dialog = dialog
+        this.dialog.show()
     }
 
     private fun followeesClicked(){
@@ -207,6 +227,8 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         if(event is UserLoadedEvent){
             loadData(event.user)
         }
+        dialog.dismiss()
+
     }
 
 

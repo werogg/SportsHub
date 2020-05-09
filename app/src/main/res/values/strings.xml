@@ -98,6 +98,7 @@
     <string name="title_activity_create_event" translatable="false">Create Event</string>
     <string name="title_activity_profile_other">Profile Other</string>
     <string name="event_creation_error">An error has occurred.</string>
+    <string name="sportshub_description">An app developed by SportsTech</string>
     <!-- End -->
-
+    <string name="loading">Please, wait...</string>
 </resources>

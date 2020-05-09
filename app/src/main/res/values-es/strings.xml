@@ -73,6 +73,8 @@
     <string name="title_activity_profile_other">Perfiles Externos</string>
     <string name="title_activity_profile">Perfil</string>
     <string name="title_activity_edit_profile">Editar perfil</string>
-
+    <string name="sportshub_description">Una aplicación de SportsTech</string>
+    <!-- End -->
+    <string name="loading">Porfavor, espere...</string>
 
 </resources>
