@@ -71,6 +71,8 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
     private fun showFollowingEvents(){
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
         refreshingLayout?.isRefreshing = true
+        val title = view?.findViewById<TextView>(R.id.txt_header)
+        title?.text= resources.getText(R.string.my_events)
         // Retrieve the current logged user
         Thread {
             kotlin.run {
