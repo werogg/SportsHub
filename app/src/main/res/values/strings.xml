@@ -102,4 +102,6 @@
     <string name="sportshub_description">An app developed by SportsTech</string>
     <!-- End -->
     <string name="loading">Please, wait...</string>
+    <string name="unfollow" translatable="false">Unfollow</string>
+
 </resources>

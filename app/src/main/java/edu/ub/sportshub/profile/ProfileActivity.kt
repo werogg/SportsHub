@@ -193,6 +193,7 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
         }
         textFollowers.text = user.getFollowersUsers().size.toString()
         textFollowing.text = user.getFollowingUsers().size.toString()
+
     }
 
     override fun onDataLoaded(event: DataEvent) {
