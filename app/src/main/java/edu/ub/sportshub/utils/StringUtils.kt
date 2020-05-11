@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import com.google.firebase.Timestamp
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -73,5 +74,12 @@ object StringUtils {
     fun getLocationFromName(context: Context, string: String): Address? {
         val geocoder = Geocoder(context, Locale.getDefault())
         return geocoder.getFromLocationName(string, 7)[0]
+    }
+
+    fun hashString(input: String, algorithm: String): String {
+        return MessageDigest
+            .getInstance(algorithm)
+            .digest(input.toByteArray())
+            .fold("", { str, it -> str + "%02x".format(it) })
     }
 }

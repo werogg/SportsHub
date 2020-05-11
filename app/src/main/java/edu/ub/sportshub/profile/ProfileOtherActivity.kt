@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -19,9 +20,11 @@ import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.auth.login.LoginActivity
 import edu.ub.sportshub.data.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.enums.NotificationType
 import edu.ub.sportshub.data.events.database.DataEvent
 import edu.ub.sportshub.data.events.database.UserLoadedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
+import edu.ub.sportshub.data.models.notification.NotificationDao
 import edu.ub.sportshub.data.models.user.UserDao
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
@@ -37,8 +40,9 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     private val mFirebaseAuth = AuthDatabaseHelper()
     private val mStoreDatabaseHelper = StoreDatabaseHelper()
     private var mDots = arrayListOf<TextView>()
+    private var userfollow: User? = null
     private lateinit var userDao : UserDao
-    private lateinit var userfollow: User
+    private lateinit var notificationDao : NotificationDao
     private lateinit var uid: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +53,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         val fragmentAdapter2 = ViewPagerAdapterProfile(supportFragmentManager, id)
         pager_profile.adapter = fragmentAdapter2
         userDao = DataAccessObjectFactory.getUserDao()
+        notificationDao = DataAccessObjectFactory.getNotificationDao()
         userDao.registerListener(this)
 
         Thread {
@@ -123,7 +128,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         val dpValue1 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 350f, displayMetrics)
         val dpValue2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480f, displayMetrics)
         val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val customView = inflater.inflate(R.layout.fragment_notifications_primary, null)
+        val customView = inflater.inflate(R.layout.fragment_notifications, null)
         val coordinates = findViewById<ConstraintLayout>(R.id.profile_constraint_layout)
         popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
         popupWindow!!.width = dpValue1.toInt()
@@ -142,12 +147,35 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     }
 
     private fun followProfileTextClicked() {
-        val uid = mFirebaseAuth.getCurrentUser()?.uid
-        val dd = mStoreDatabaseHelper.getUsersCollection().document(uid!!)
-        dd.update("followingUsers", FieldValue.arrayUnion(userfollow.getUid())).addOnSuccessListener(){
-            Toast.makeText(this,resources.getText(R.string.followed), Toast.LENGTH_LONG).show()
-        }.addOnFailureListener(){
-            Toast.makeText(this,resources.getText(R.string.event_creation_error), Toast.LENGTH_LONG).show()
+
+        val follower = mFirebaseAuth.getCurrentUser()?.uid!!
+
+        if (userfollow != null) {
+            val followerDoc = mStoreDatabaseHelper.getUsersCollection().document(follower)
+            val followedDoc = mStoreDatabaseHelper.getUsersCollection().document(uid)
+
+            if (!userfollow!!.getFollowersUsers().contains(follower)) {
+                followerDoc.update("followingUsers", FieldValue.arrayUnion(userfollow!!.getUid()))
+                    .addOnSuccessListener {
+                        followedDoc.update("followersUsers", FieldValue.arrayUnion(follower))
+                            .addOnSuccessListener {
+                                // TODO: notify follow
+                                notificationDao.sendNotification(follower, uid, NotificationType.FOLLOWED)
+                            }
+                    }
+            } else {
+                followerDoc.update("followingUsers", FieldValue.arrayRemove(userfollow!!.getUid()))
+                    .addOnSuccessListener {
+                        followedDoc.update("followersUsers", FieldValue.arrayRemove(follower))
+                            .addOnSuccessListener {
+                                // TODO: notify unfollow
+                            }
+                            .addOnFailureListener {
+                                Log.e("errrorr", it.message)
+                            }
+                    }
+            }
+            userDao.fetchUser(uid)
         }
     }
 
@@ -179,6 +207,8 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         val description = findViewById<TextView>(R.id.txt_descrp)
         val textFollowers = findViewById<TextView>(R.id.txt_nfollowers)
         val textFollowing = findViewById<TextView>(R.id.txt_nfollowing)
+        val buttonFollow = findViewById<Button>(R.id.btn_profile_other)
+
         textName.text = user.getUsername()
         //Check Image
         val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, resources?.displayMetrics).toInt()
@@ -201,6 +231,14 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         }
         textFollowers.text = user.getFollowersUsers().size.toString()
         textFollowing.text = user.getFollowingUsers().size.toString()
+
+        val follower = mFirebaseAuth.getCurrentUser()?.uid!!
+
+        if (userfollow!!.getFollowersUsers().contains(follower)) {
+            buttonFollow.text = getString(R.string.unfollow)
+        } else {
+            buttonFollow.text = getString(R.string.follow)
+        }
     }
 
     override fun onDataLoaded(event: DataEvent) {
