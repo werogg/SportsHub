@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +35,7 @@ class UsersFragment : Fragment(), UserDataChangeListener {
     private val authDatabaseHelper = AuthDatabaseHelper()
     private val storeDatabaseHelper = StoreDatabaseHelper()
     private var followingUsers = mutableListOf<User>()
+    private var sQuery = ""
     private lateinit var userDao : UserDao
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -70,13 +72,18 @@ class UsersFragment : Fragment(), UserDataChangeListener {
 
     @SuppressLint("SetTextI18n")
     private fun searchUsers(query: String) {
+        sQuery = query
+        val curr = authDatabaseHelper.getCurrentUser()!!.uid
+        userDao.fetchFollowees(curr)
+    }
+
+    private fun search(){
 
         var n = false
         var userContainer = view?.findViewById<LinearLayout>(R.id.userContainer)
         val curr = authDatabaseHelper.getCurrentUser()!!.uid
-        userDao.fetchFollowees(curr)
 
-        storeDatabaseHelper.getUsersCollection().whereGreaterThanOrEqualTo("username", query).get()
+        storeDatabaseHelper.getUsersCollection().whereGreaterThanOrEqualTo("username", sQuery).get()
             .addOnSuccessListener { users ->
                 for (user in  users) {
 
@@ -92,12 +99,12 @@ class UsersFragment : Fragment(), UserDataChangeListener {
 
                         userViewTitleView.text = user.getData().get("username").toString()
 
-                        if(!followee.isEmpty()){
-                            userViewFollowView.text = "@string/not_following_status"
+                        if(followee.isEmpty()){
+                            userViewFollowView.text = "Not Following"
                             userViewFollowView.setTextColor(Color.parseColor("#fc030b"))
                         }
                         else{
-                            userViewFollowView.text = "@string/following_status"
+                            userViewFollowView.text = "Following"
                             userViewFollowView.setTextColor(Color.parseColor("#03fc31"))
                         }
 
@@ -127,7 +134,8 @@ class UsersFragment : Fragment(), UserDataChangeListener {
 
     override fun onDataLoaded(user: DataUser){
         if(user is UsersFolloweesUser){
-            followingUsers = user.followersUsers;
+            followingUsers = user.followeesUsers;
+            search()
         }
     }
 
