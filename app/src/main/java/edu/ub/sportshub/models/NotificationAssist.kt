@@ -8,18 +8,15 @@ class NotificationAssist(
     id: String,
     uid: String,
     date: Timestamp,
-    private val assistUid : String,
-    creatorUid: String
+    creatorUid: String,
+    checked: Boolean
 ) : Notification(
     id,
     uid,
     date,
-    creatorUid
+    creatorUid,
+    checked
 ), INotification {
-
-    fun getAssistUid() : String {
-        return assistUid
-    }
 
     override fun getMessage(originUsername : String): String {
         return Resources.getSystem().getString(R.string.follow_message, originUsername)

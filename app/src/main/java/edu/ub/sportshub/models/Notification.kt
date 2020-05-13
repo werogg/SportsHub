@@ -6,11 +6,12 @@ open class Notification (
     private var id : String,
     private var uid : String,
     private var date : Timestamp,
-    private var creatorUid : String
+    private var creatorUid : String,
+    private var checked : Boolean
 ) {
 
     constructor() : this(
-        "", "", Timestamp.now(), ""
+        "", "", Timestamp.now(), "", false
     )
 
     fun getId() : String {
@@ -27,6 +28,10 @@ open class Notification (
 
     fun getCreatorUid() : String {
         return creatorUid
+    }
+
+    fun isChecked() : Boolean {
+        return checked
     }
 
 }

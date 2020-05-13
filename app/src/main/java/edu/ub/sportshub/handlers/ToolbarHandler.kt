@@ -29,6 +29,7 @@ import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
 import edu.ub.sportshub.models.*
 import edu.ub.sportshub.profile.ProfileActivity
+import edu.ub.sportshub.profile.ProfileOtherActivity
 
 class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataChangeListener {
 
@@ -36,6 +37,7 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
     private var mStoreDatabaseHelper = StoreDatabaseHelper()
     private var notificationsToShow = mutableListOf<Pair<Notification, User>>()
     private lateinit var notificationDao : NotificationDao
+    private var numRequest = true
 
     enum class NotificationsVisibility {
         VISIBLE,
@@ -45,6 +47,9 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
     var popupWindow : PopupWindow? = null
 
     fun setupToolbarBasics() {
+        notificationDao = DataAccessObjectFactory.getNotificationDao()
+        notificationDao.registerListener(this)
+
         val name = appCompatActivity::class.java.simpleName
 
         val homeText = appCompatActivity.findViewById<TextView>(R.id.toolbar_home)
@@ -54,6 +59,10 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
         }
 
         val notificationsButton = appCompatActivity.findViewById<ImageView>(R.id.toolbar_notifications)
+
+        notificationsButton.setOnClickListener {
+            onNotificationsButtonClicked()
+        }
 
         notificationsButton.setOnClickListener {
             onNotificationsButtonClicked()
@@ -78,6 +87,19 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
                 onProfileClick(appCompatActivity.applicationContext)
             }
             setupUserInfo(profileImage, profileText)
+        }
+
+        numRequest = true
+        notificationDao.fetchUserNotifications(mAuthDatabaseHelper.getCurrentUser()!!.uid)
+
+        setupDatabaseListener()
+    }
+
+    private fun setupDatabaseListener() {
+        val userId = mAuthDatabaseHelper.getCurrentUser()!!.uid
+        mStoreDatabaseHelper.getUsersCollection().document(userId).addSnapshotListener { _, _ ->
+            numRequest = true
+            notificationDao.fetchUserNotifications(mAuthDatabaseHelper.getCurrentUser()!!.uid)
         }
     }
 
@@ -112,8 +134,7 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
     }
 
     private fun retrieveNotifications() {
-        notificationDao = DataAccessObjectFactory.getNotificationDao()
-        notificationDao.registerListener(this)
+        numRequest = false
         notificationDao.fetchUserNotifications(mAuthDatabaseHelper.getCurrentUser()!!.uid)
     }
 
@@ -203,11 +224,21 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
                 .load(notification.second.getProfilePicture())
                 .into(notificationPicture)
 
+            notificationView.setOnClickListener {
+                val intent = Intent(appCompatActivity, ProfileOtherActivity::class.java)
+                intent.putExtra("userId", notification.second.getUid())
+                appCompatActivity.startActivity(intent)
+            }
+
             notificationsLayout.addView(notificationView)
         }
 
+        val notificationsToMark = mutableListOf<Notification>()
+        for (notification in notificationsToShow) notificationsToMark.add(notification.first)
+        notificationDao.markNotificationsAsChecked(notificationsToMark)
 
-
+        val notificationsNum = appCompatActivity.findViewById<TextView>(R.id.notificationsNum)
+        notificationsNum.text = ""
 
 
         popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
@@ -244,7 +275,29 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
     override fun onDataLoaded(event: DataEvent) {
         if (event is UserNotificationsLoadedEvent) {
             notificationsToShow = event.notifications
-            showNotificationsPopup()
+
+            if (numRequest) {
+                showNumNotifications()
+            } else {
+                numRequest = true
+                showNotificationsPopup()
+            }
+        }
+    }
+
+    private fun showNumNotifications() {
+        val notificationsNum = appCompatActivity.findViewById<TextView>(R.id.notificationsNum)
+
+        var numCount = 0
+
+        for (notification in notificationsToShow) {
+            if (!notification.first.isChecked()) numCount += 1
+        }
+
+        if (numCount == 0) {
+            notificationsNum.text = ""
+        } else {
+            notificationsNum.text = numCount.toString()
         }
     }
 }

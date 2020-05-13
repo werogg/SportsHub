@@ -41,6 +41,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     private val mStoreDatabaseHelper = StoreDatabaseHelper()
     private var mDots = arrayListOf<TextView>()
     private var userfollow: User? = null
+    private lateinit var user : User
     private lateinit var userDao : UserDao
     private lateinit var notificationDao : NotificationDao
     private lateinit var uid: String
@@ -159,8 +160,8 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                     .addOnSuccessListener {
                         followedDoc.update("followersUsers", FieldValue.arrayUnion(follower))
                             .addOnSuccessListener {
-                                // TODO: notify follow
                                 notificationDao.sendNotification(follower, uid, NotificationType.FOLLOWED)
+                                userDao.fetchUser(user.getUid())
                             }
                     }
             } else {
@@ -168,7 +169,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                     .addOnSuccessListener {
                         followedDoc.update("followersUsers", FieldValue.arrayRemove(follower))
                             .addOnSuccessListener {
-                                // TODO: notify unfollow
+                                userDao.fetchUser(user.getUid())
                             }
                             .addOnFailureListener {
                                 Log.e("errrorr", it.message)
@@ -200,7 +201,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         }
     }
 
-    private fun loadData(user:User){
+    private fun loadData(user: User){
         userfollow = user
         val textName = findViewById<TextView>(R.id.txt_nameprofile)
         val imageProfile = findViewById<CircleImageView>(R.id.img_profile)
@@ -243,6 +244,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
 
     override fun onDataLoaded(event: DataEvent) {
         if(event is UserLoadedEvent){
+            user = event.user
             loadData(event.user)
         }
     }

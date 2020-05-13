@@ -8,12 +8,14 @@ class NotificationFollowed(
     id: String,
     uid: String,
     date: Timestamp,
-    creatorUid: String
+    creatorUid: String,
+    checked: Boolean
 ) : Notification(
     id,
     uid,
     date,
-    creatorUid
+    creatorUid,
+    checked
 ), INotification {
 
     override fun getMessage(originUsername : String): String {

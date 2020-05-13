@@ -7,9 +7,11 @@ import edu.ub.sportshub.data.enums.NotificationType
 import edu.ub.sportshub.data.events.database.UserNotificationsLoadedEvent
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Notification
+import edu.ub.sportshub.models.NotificationAssist
 import edu.ub.sportshub.models.NotificationFollowed
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.utils.StringUtils
+import java.util.*
 
 class NotificationDaoFirestoreImplementation : NotificationDao() {
 
@@ -26,9 +28,13 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
                     storeDatabaseHelper.retrieveUser(notification!!.getCreatorUid())
                         .addOnSuccessListener { creator ->
                             val creatorUser = creator.toObject(User::class.java)
-                            notifications.add(Pair(notification, creatorUser!!))
+                            val today = Timestamp.now().toDate()
+                            val lastMonthDate = Date(today.year, today.month - 1, today.day)
 
-                            executeListeners(UserNotificationsLoadedEvent(notifications))
+                            if (notification.getDate().toDate().after(lastMonthDate)) {
+                                notifications.add(Pair(notification, creatorUser!!))
+                                executeListeners(UserNotificationsLoadedEvent(notifications))
+                            }
                     }
                 }
             }
@@ -40,7 +46,7 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
 
         if (notificationType == NotificationType.FOLLOWED) {
             val notificationId = StringUtils.hashString(creatorId, "MD5")
-            val notification = NotificationFollowed(notificationId, recieverId, Timestamp.now(), creatorId)
+            val notification = NotificationFollowed(notificationId, recieverId, Timestamp.now(), creatorId, false)
             storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
                 storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnFailureListener {
                     // ERROR
@@ -49,7 +55,25 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
 
 
         } else if (notificationType == NotificationType.ASSIST) {
+            val notificationId = StringUtils.hashString(creatorId, "MD5")
+            val notification = NotificationAssist(notificationId, recieverId, Timestamp.now(), creatorId, false)
+            storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
+                storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnFailureListener {
+                    // ERROR
+                }
+            }
+        }
+    }
 
+    override fun markNotificationsAsChecked(notificationList : MutableList<Notification>) {
+        val storeDatabaseHelper = StoreDatabaseHelper()
+
+        for (notification in notificationList) {
+            storeDatabaseHelper.getNotificationsCollection().document(notification.getId()).update(
+                "checked", true
+            ).addOnFailureListener {
+                // ERROR
+            }
         }
     }
 
