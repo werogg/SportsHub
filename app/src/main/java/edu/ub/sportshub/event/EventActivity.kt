@@ -51,7 +51,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
     private val toolbarHandler = ToolbarHandler(this)
     private lateinit var userDao : UserDao
     private lateinit var eventDao : EventDao
-    private lateinit var privatedialog: Dialog
+    private lateinit var loadingDialog : Dialog
 
 
     private var loadedUser : User? = null
@@ -67,7 +67,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         eventDao.registerListener(this)
 
         setContentView(R.layout.activity_event)
-        dialogshow()
+        showDialog()
         eventId = intent.getStringExtra("eventId")
         setupActivityFunctionalities(savedInstanceState)
 
@@ -78,16 +78,16 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         toolbarHandler.setupToolbarBasics()
     }
 
-    private fun dialogshow(){
+    private fun showDialog(){
         //Dialog creation for loading data.
         val dialog = Dialog(this,R.style.Theme_Design_Light)
         val view: View = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
-        val params: WindowManager.LayoutParams = dialog.getWindow()!!.getAttributes()
+        val params: WindowManager.LayoutParams = dialog.window!!.attributes
         params.width = WindowManager.LayoutParams.MATCH_PARENT
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT
+        params.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.setContentView(view)
-        privatedialog = dialog
-        privatedialog.show()
+        loadingDialog = dialog
+        loadingDialog.show()
     }
     /**
      * Update the event related info
@@ -126,7 +126,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
 
         setupMap()
         checkUserLikeAssist()
-        privatedialog.dismiss()
+        loadingDialog.dismiss()
     }
 
     private fun checkUserLikeAssist() {
@@ -340,7 +340,6 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
     }
 
     override fun onDataLoaded(event: DataEvent) {
-        privatedialog.dismiss()
         if (event is UserLoadedEvent) {
             loadedUser = event.user
             onAllDataLoaded()
@@ -353,6 +352,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
 
     private fun onAllDataLoaded() {
         updateEventInfo()
+        loadingDialog.dismiss()
     }
 
     private fun eventFetched() {
