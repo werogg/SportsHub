@@ -98,9 +98,9 @@
     <string name="title_activity_create_event" translatable="false">Create Event</string>
     <string name="title_activity_profile_other">Profile Other</string>
     <string name="event_creation_error">An error has occurred.</string>
-    <string name="follow_message">%1$s have just followed you!</string>
+    <string name="follow_message">%1$s has just started following you! Check his profile.</string>
     <string name="unfollow">Unfollow</string>
-    <string name="follow">follow</string>
+    <string name="follow">Follow</string>
     <!-- End -->
 
 </resources>

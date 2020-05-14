@@ -35,7 +35,7 @@ class FireauthLoginHandler : LoginHandler() {
 
     private fun continueLogin(mail: String?, password: String) {
         if (!mail.isNullOrEmpty()) {
-            authDatabaseHelper.loginAccount(mail!!, password)
+            authDatabaseHelper.loginAccount(mail, password)
                 .addOnSuccessListener {
                     onLoginSuccess()
                 }

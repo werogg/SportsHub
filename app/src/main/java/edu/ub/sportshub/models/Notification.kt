@@ -1,17 +1,19 @@
 package edu.ub.sportshub.models
 
 import com.google.firebase.Timestamp
+import edu.ub.sportshub.data.enums.NotificationType
 
 open class Notification (
     private var id : String,
     private var uid : String,
     private var date : Timestamp,
     private var creatorUid : String,
-    private var checked : Boolean
+    private var checked : Boolean,
+    private var notificationType : NotificationType
 ) {
 
     constructor() : this(
-        "", "", Timestamp.now(), "", false
+        "", "", Timestamp.now(), "", false, NotificationType.FOLLOWED
     )
 
     fun getId() : String {
@@ -32,6 +34,10 @@ open class Notification (
 
     fun isChecked() : Boolean {
         return checked
+    }
+
+    fun getNotificationType() : NotificationType {
+        return notificationType
     }
 
 }

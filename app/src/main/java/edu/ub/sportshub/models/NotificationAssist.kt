@@ -1,24 +1,32 @@
 package edu.ub.sportshub.models
 
+import android.content.Context
 import android.content.res.Resources
 import com.google.firebase.Timestamp
 import edu.ub.sportshub.R
+import edu.ub.sportshub.data.enums.NotificationType
 
 class NotificationAssist(
     id: String,
     uid: String,
     date: Timestamp,
     creatorUid: String,
-    checked: Boolean
+    checked: Boolean,
+    notificationType : NotificationType
 ) : Notification(
     id,
     uid,
     date,
     creatorUid,
-    checked
+    checked,
+    notificationType
 ), INotification {
 
-    override fun getMessage(originUsername : String): String {
-        return Resources.getSystem().getString(R.string.follow_message, originUsername)
+    constructor() : this(
+        "", "", Timestamp.now(), "", false, NotificationType.FOLLOWED
+    )
+
+    override fun getMessage(context : Context, originUsername : String): String {
+        return context.getString(R.string.follow_message, originUsername)
     }
 }

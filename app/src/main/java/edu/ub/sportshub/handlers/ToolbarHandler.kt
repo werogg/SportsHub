@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import edu.ub.sportshub.R
 import edu.ub.sportshub.data.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.enums.NotificationType
 import edu.ub.sportshub.data.events.database.DataEvent
 import edu.ub.sportshub.data.events.database.UserNotificationsLoadedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
@@ -210,13 +211,13 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
                 }
             }
 
-            when (notification.first) {
-                is NotificationFollowed -> {
-                    notificationText.text = (notification.first as NotificationFollowed).getMessage(notification.second.getUsername())
+            when (notification.first.getNotificationType()) {
+                NotificationType.FOLLOWED -> {
+                    notificationText.text = (notification.first as NotificationFollowed).getMessage(appCompatActivity, notification.second.getUsername())
                 }
 
-                is NotificationAssist -> {
-                    notificationText.text = (notification.first as NotificationAssist).getMessage(notification.second.getUsername())
+                NotificationType.ASSIST -> {
+                    notificationText.text = (notification.first as NotificationAssist).getMessage(appCompatActivity, notification.second.getUsername())
                 }
             }
 

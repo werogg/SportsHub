@@ -1,5 +1,7 @@
 package edu.ub.sportshub.models
 
+import android.content.Context
+
 interface INotification {
-    fun getMessage(originUsername : String): String
+    fun getMessage(context : Context, originUsername : String): String
 }

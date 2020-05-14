@@ -23,17 +23,24 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
 
             for (notificationId in user!!.getNotifications()) {
                 storeDatabaseHelper.retrieveNotification(notificationId).addOnSuccessListener {not ->
-                    val notification = not.toObject(Notification::class.java)
+                    var notification : Notification? = null
 
-                    storeDatabaseHelper.retrieveUser(notification!!.getCreatorUid())
-                        .addOnSuccessListener { creator ->
-                            val creatorUser = creator.toObject(User::class.java)
-                            val today = Timestamp.now().toDate()
-                            val lastMonthDate = Date(today.year, today.month - 1, today.day)
+                    when (not.get("notificationType")) {
+                        "FOLLOWED" -> notification = not.toObject(NotificationFollowed::class.java)
+                        "ASSIST" -> notification = not.toObject(NotificationAssist::class.java)
+                    }
 
-                            if (notification.getDate().toDate().after(lastMonthDate)) {
-                                notifications.add(Pair(notification, creatorUser!!))
-                                executeListeners(UserNotificationsLoadedEvent(notifications))
+                    if (notification != null) {
+                        storeDatabaseHelper.retrieveUser(notification.getCreatorUid())
+                            .addOnSuccessListener { creator ->
+                                val creatorUser = creator.toObject(User::class.java)
+                                val today = Timestamp.now().toDate()
+                                val lastMonthDate = Date(today.year, today.month - 1, today.day)
+
+                                if (notification.getDate().toDate().after(lastMonthDate)) {
+                                    notifications.add(Pair(notification, creatorUser!!))
+                                    executeListeners(UserNotificationsLoadedEvent(notifications))
+                                }
                             }
                     }
                 }
@@ -46,17 +53,19 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
 
         if (notificationType == NotificationType.FOLLOWED) {
             val notificationId = StringUtils.hashString(creatorId, "MD5")
-            val notification = NotificationFollowed(notificationId, recieverId, Timestamp.now(), creatorId, false)
+            val notification = NotificationFollowed(notificationId, recieverId, Timestamp.now(), creatorId, false, NotificationType.FOLLOWED)
             storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
-                storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnFailureListener {
-                    // ERROR
+                storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnSuccessListener {
+                    storeDatabaseHelper.getUsersCollection().document(recieverId).collection("notifications").document(notificationId).set(
+                        notification
+                    )
                 }
             }
 
 
         } else if (notificationType == NotificationType.ASSIST) {
             val notificationId = StringUtils.hashString(creatorId, "MD5")
-            val notification = NotificationAssist(notificationId, recieverId, Timestamp.now(), creatorId, false)
+            val notification = NotificationAssist(notificationId, recieverId, Timestamp.now(), creatorId, false, NotificationType.ASSIST)
             storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
                 storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnFailureListener {
                     // ERROR

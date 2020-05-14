@@ -73,8 +73,9 @@
     <string name="title_activity_profile_other">Perfiles Externos</string>
     <string name="title_activity_profile">Perfil</string>
     <string name="title_activity_edit_profile">Editar perfil</string>
-    <string name="follow_message">%1$s have just followed you!</string>
+    <string name="follow_message">%1$s te acaba de seguir! Mira su perfil.</string>
     <string name="unfollow">Unfollow</string>
+    <string name="follow">Follow</string>
 
 
 </resources>
