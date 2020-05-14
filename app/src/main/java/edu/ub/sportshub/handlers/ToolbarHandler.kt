@@ -242,9 +242,8 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
         notificationsNum.text = ""
 
 
-        popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
+        popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT, true)
         popupWindow!!.width = dpValue1.toInt()
-        popupWindow!!.height = dpValue2.toInt()
         popupWindow!!.showAtLocation(coord, Gravity.TOP,0,220)
     }
 
