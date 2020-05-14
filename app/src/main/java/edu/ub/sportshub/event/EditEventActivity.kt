@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -54,6 +55,9 @@ class EditEventActivity : AppCompatActivity(), DataChangeListener {
     private var addressHandler : Handler? = null
     private var filePath : Uri? = null
     private var imageUploaded = false
+    private var timeStampWhen : Timestamp? = null
+    private var hourSelected = false
+    private var daySelected = true
     private lateinit var eventDao : EventDao
     private lateinit var event : Event
 
@@ -88,6 +92,8 @@ class EditEventActivity : AppCompatActivity(), DataChangeListener {
 
         val desc = event.getDescription()
         descEvent.setText(desc)
+
+        timeStampWhen = event.getStartEventDate()
 
         val place = StringUtils.getAddressFromLocation(this,event.getPosition().latitude
             , event.getPosition().longitude) //event?.getPosition()
@@ -189,6 +195,7 @@ class EditEventActivity : AppCompatActivity(), DataChangeListener {
             this.year = year
             this.month = month
             this.day = day
+            daySelected = true
             viewTextCreate.text = "$day/$month/$year"
         }, year, month, day)
 
@@ -199,6 +206,7 @@ class EditEventActivity : AppCompatActivity(), DataChangeListener {
         val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
             this.hour = hour
             this.minute = minute
+            hourSelected = true
             viewTextCreate.text = "$hour:$minute"
         }
         TimePickerDialog(this, timeSetListener, hour, minute, true).show()
@@ -302,6 +310,8 @@ class EditEventActivity : AppCompatActivity(), DataChangeListener {
         val titleEvent = findViewById<EditText>(R.id.title_text).text.toString()
         val whereEvent = findViewById<EditText>(R.id.where_text).text.toString()
         val descEvent = findViewById<EditText>(R.id.description_text).text.toString()
+
+        if (hourSelected && daySelected)  timeStampWhen = Timestamp(Date(year,month,day,hour,minute))
 
         if (!imageUploaded) imageSelected = event.getEventImage()
 
