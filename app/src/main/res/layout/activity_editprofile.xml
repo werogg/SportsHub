@@ -65,7 +65,7 @@
                             android:ems="10"
                             android:fontFamily="serif-monospace"
                             android:gravity="center"
-                            android:hint="New Name"
+                            android:hint="@string/new_name"
                             android:inputType="textPersonName" />
 
                     </LinearLayout>
@@ -148,7 +148,7 @@
                             android:layout_height="49dp"
                             android:layout_marginTop="32dp"
                             android:background="@drawable/bnt_profile"
-                            android:text="EMAIL"
+                            android:text="@string/txt_email_hint"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -160,7 +160,7 @@
                             android:layout_marginTop="24dp"
                             android:layout_marginBottom="32dp"
                             android:background="@drawable/bnt_profile"
-                            android:text="PASSWORD"
+                            android:text="@string/txt_password_hint"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.498"
@@ -185,7 +185,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="An app developed by SportsTech" />
+            android:text="@string/sportshub_description" />
 
     </LinearLayout>
 

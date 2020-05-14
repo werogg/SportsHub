@@ -1,5 +1,7 @@
 package edu.ub.sportshub.profile
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -8,6 +10,8 @@ import android.text.Html
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -30,6 +34,7 @@ import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.events.ViewPagerAdapterProfile
 import edu.ub.sportshub.profile.follow.ProfileUsersActivity
 import kotlinx.android.synthetic.main.activity_profile.*
+import java.lang.reflect.Field
 
 
 class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
@@ -40,6 +45,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     private lateinit var userDao : UserDao
     private lateinit var userfollow: User
     private lateinit var uid: String
+    private lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +56,8 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         pager_profile.adapter = fragmentAdapter2
         userDao = DataAccessObjectFactory.getUserDao()
         userDao.registerListener(this)
+
+        dialogshow()
 
         Thread {
             kotlin.run {
@@ -104,6 +112,18 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                 }
     }
 
+    private fun dialogshow(){
+        //Dialog creation for loading data.
+        val dialog = Dialog(this,R.style.Theme_Design_Light)
+        val view: View = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
+        val params: WindowManager.LayoutParams = dialog.getWindow()!!.getAttributes()
+        params.width = WindowManager.LayoutParams.MATCH_PARENT
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT
+        dialog.setContentView(view)
+        this.dialog = dialog
+        this.dialog.show()
+    }
+
     private fun followeesClicked(){
         val popupIntent = Intent(this, ProfileUsersActivity::class.java)
         popupIntent.putExtra("select",1)
@@ -142,13 +162,41 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     }
 
     private fun followProfileTextClicked() {
+
         val uid = mFirebaseAuth.getCurrentUser()?.uid
-        val dd = mStoreDatabaseHelper.getUsersCollection().document(uid!!)
-        dd.update("followingUsers", FieldValue.arrayUnion(userfollow.getUid())).addOnSuccessListener(){
-            Toast.makeText(this,resources.getText(R.string.followed), Toast.LENGTH_LONG).show()
-        }.addOnFailureListener(){
-            Toast.makeText(this,resources.getText(R.string.event_creation_error), Toast.LENGTH_LONG).show()
+        val bdd = mStoreDatabaseHelper.getUsersCollection().document(uid!!)
+        val bdd2 = mStoreDatabaseHelper.getUsersCollection().document(userfollow.getUid())
+
+            //IF FOLLOWED
+        if (userfollow.getFollowersUsers().contains(uid)){
+            //  UNFOLOW for both
+            // Current user deletes user profile followingUsers matrix.
+            // User profile deletes current user in followersUsers matrix.
+            bdd.update("followingUsers",FieldValue.arrayRemove(userfollow.getUid())).addOnSuccessListener(){
+                bdd2.update("followersUsers",FieldValue.arrayRemove(uid)).addOnSuccessListener(){
+                    Toast.makeText(this,resources.getText(R.string.unfollow), Toast.LENGTH_LONG).show()
+                }
+            }   //Exception
+                .addOnFailureListener(){
+                Toast.makeText(this,resources.getText(R.string.event_creation_error), Toast.LENGTH_LONG).show()
+            }
+
+            //NOT FOLLOWED
+        } else {
+            // FOLLOW for both
+            // Current user adds profile user to followingUsers matrix.
+            // Profile user adds current user to followers matrix.
+            bdd.update("followingUsers", FieldValue.arrayUnion(userfollow.getUid())).addOnSuccessListener(){
+                bdd2.update("followersUsers",FieldValue.arrayUnion(uid)).addOnSuccessListener(){
+                    Toast.makeText(this,resources.getText(R.string.followed), Toast.LENGTH_LONG).show()
+                }
+            }   //Exception
+                .addOnFailureListener(){
+                Toast.makeText(this,resources.getText(R.string.event_creation_error), Toast.LENGTH_LONG).show()
+            }
         }
+
+
     }
 
     private fun addDots(position : Int){
@@ -201,12 +249,24 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         }
         textFollowers.text = user.getFollowersUsers().size.toString()
         textFollowing.text = user.getFollowingUsers().size.toString()
+
+        val followProfileText = findViewById<Button>(R.id.btn_profile_other)
+        val uid = mFirebaseAuth.getCurrentUser()?.uid
+
+        // If user loaded has current user in followers
+        // Button text -> unfollow
+        if (user.getFollowersUsers().contains(uid)){
+            followProfileText.text = resources.getText(R.string.unfollow)
+        }
+
     }
 
     override fun onDataLoaded(event: DataEvent) {
         if(event is UserLoadedEvent){
             loadData(event.user)
         }
+        dialog.dismiss()
+
     }
 
 

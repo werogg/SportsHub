@@ -77,6 +77,7 @@
     <string name="preferences">Preferences</string>
     <string name="activities">Activities</string>
     <string name="my_events">My events</string>
+    <string name="new_name">New Name</string>
     <string name="my_activities">My activities</string>
     <string name="events">Events</string>
     <string name="new_profile_image">New image</string>
@@ -98,6 +99,9 @@
     <string name="title_activity_create_event" translatable="false">Create Event</string>
     <string name="title_activity_profile_other">Profile Other</string>
     <string name="event_creation_error">An error has occurred.</string>
+    <string name="sportshub_description">An app developed by SportsTech</string>
     <!-- End -->
+    <string name="loading">Please, wait...</string>
+    <string name="unfollow" translatable="false">Unfollow</string>
 
 </resources>
