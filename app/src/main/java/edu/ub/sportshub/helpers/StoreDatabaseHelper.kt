@@ -12,6 +12,7 @@ class StoreDatabaseHelper : DatabaseHelper() {
     private var mFirebaseFirestore = getFirebaseStore()
     private var usersCollectionRef = mFirebaseFirestore.collection("users")
     private var eventsCollectionRef = mFirebaseFirestore.collection("events")
+    private var notificationsCollectionRef = mFirebaseFirestore.collection("notifications")
 
     fun storeUser(user : User) {
         usersCollectionRef.document(user.getUid()).set(user)
@@ -39,5 +40,13 @@ class StoreDatabaseHelper : DatabaseHelper() {
 
     fun getEventsCollection(): CollectionReference {
         return mFirebaseFirestore.collection("events")
+    }
+
+    fun getNotificationsCollection() : CollectionReference {
+        return mFirebaseFirestore.collection("notifications")
+    }
+
+    fun retrieveNotification(id: String)  : Task<DocumentSnapshot> {
+        return notificationsCollectionRef.document(id).get()
     }
 }
