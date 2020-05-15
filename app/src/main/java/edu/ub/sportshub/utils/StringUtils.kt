@@ -82,4 +82,8 @@ object StringUtils {
             .digest(input.toByteArray())
             .fold("", { str, it -> str + "%02x".format(it) })
     }
+
+    fun generateRandomId() : String {
+        return UUID.randomUUID().toString()
+    }
 }

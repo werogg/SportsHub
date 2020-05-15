@@ -192,6 +192,10 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
         customView = inflater.inflate(R.layout.fragment_notifications, null)
         val notificationsLayout = customView.findViewById<LinearLayout>(R.id.notificationsLayout)
 
+        notificationsToShow.sortByDescending {
+            it.first.getDate()
+        }
+
         for (notification in notificationsToShow) {
             val notificationView = LayoutInflater.from(appCompatActivity.applicationContext).inflate(R.layout.notification_view, null);
             val notificationPicture = notificationView.findViewById<CircleImageView>(R.id.notificationPicture)
@@ -216,8 +220,16 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
                     notificationText.text = (notification.first as NotificationFollowed).getMessage(appCompatActivity, notification.second.getUsername())
                 }
 
-                NotificationType.ASSIST -> {
+                NotificationType.ASSIST_TO_FOLLOWERS -> {
                     notificationText.text = (notification.first as NotificationAssist).getMessage(appCompatActivity, notification.second.getUsername())
+                }
+
+                NotificationType.ASSIST_TO_CREATOR -> {
+                    notificationText.text = (notification.first as NotificationAssist).getMessage(appCompatActivity, notification.second.getUsername())
+                }
+
+                NotificationType.LIKED_TO_CREATOR -> {
+
                 }
             }
 
@@ -275,6 +287,12 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
     override fun onDataLoaded(event: DataEvent) {
         if (event is UserNotificationsLoadedEvent) {
             notificationsToShow = event.notifications
+
+            if (isNotificationsPopupVisible()) {
+                hideNotificationsPopup()
+                showNotificationsPopup()
+                return
+            }
 
             if (numRequest) {
                 showNumNotifications()

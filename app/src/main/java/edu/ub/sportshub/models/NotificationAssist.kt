@@ -12,7 +12,8 @@ class NotificationAssist(
     date: Timestamp,
     creatorUid: String,
     checked: Boolean,
-    notificationType : NotificationType
+    notificationType : NotificationType,
+    private var eventName: String
 ) : Notification(
     id,
     uid,
@@ -23,10 +24,23 @@ class NotificationAssist(
 ), INotification {
 
     constructor() : this(
-        "", "", Timestamp.now(), "", false, NotificationType.FOLLOWED
+        "", "", Timestamp.now(), "", false, NotificationType.FOLLOWED, ""
     )
 
+    fun getEventName() : String {
+        return eventName
+    }
+
     override fun getMessage(context : Context, originUsername : String): String {
-        return context.getString(R.string.follow_message, originUsername)
+        return when (getNotificationType()) {
+            NotificationType.ASSIST_TO_CREATOR -> {
+                context.getString(R.string.notify_assist_to_creator, originUsername, eventName)
+            }
+
+            NotificationType.ASSIST_TO_FOLLOWERS -> {
+                context.getString(R.string.notify_assist_to_followers, originUsername, eventName)
+            }
+            else -> "ERROR"
+        }
     }
 }

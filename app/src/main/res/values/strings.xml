@@ -101,6 +101,9 @@
     <string name="follow_message">%1$s has just started following you! Check his profile.</string>
     <string name="unfollow">Unfollow</string>
     <string name="follow">Follow</string>
+    <string name="notify_assist_to_creator">%1$s will assist to your %2$s event!</string>
+    <string name="notify_assist_to_followers">%1$s will assist to the %2$s event!</string>
+
     <!-- End -->
 
 </resources>

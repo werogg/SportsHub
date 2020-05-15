@@ -23,7 +23,7 @@ class NotificationFollowed(
 ), INotification {
 
     constructor() : this(
-        "", "", Timestamp.now(), "", false, NotificationType.ASSIST
+        "", "", Timestamp.now(), "", false, NotificationType.FOLLOWED
     )
 
     override fun getMessage(context : Context, originUsername : String): String {

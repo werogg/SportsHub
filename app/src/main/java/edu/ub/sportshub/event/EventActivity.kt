@@ -25,11 +25,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 import edu.ub.sportshub.R
 import edu.ub.sportshub.data.data.DataAccessObjectFactory
+import edu.ub.sportshub.data.enums.NotificationType
 import edu.ub.sportshub.data.events.database.DataEvent
 import edu.ub.sportshub.data.events.database.EventLoadedEvent
 import edu.ub.sportshub.data.events.database.UserLoadedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
 import edu.ub.sportshub.data.models.event.EventDao
+import edu.ub.sportshub.data.models.notification.NotificationDao
 import edu.ub.sportshub.data.models.user.UserDao
 import edu.ub.sportshub.handlers.ToolbarHandler
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
@@ -49,7 +51,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
     private val toolbarHandler = ToolbarHandler(this)
     private lateinit var userDao : UserDao
     private lateinit var eventDao : EventDao
-
+    private lateinit var notificationDao : NotificationDao
     private var loadedUser : User? = null
     private var loadedEvent : Event? = null
 
@@ -58,6 +60,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
 
         userDao = DataAccessObjectFactory.getUserDao()
         eventDao = DataAccessObjectFactory.getEventDao()
+        notificationDao = DataAccessObjectFactory.getNotificationDao()
 
         userDao.registerListener(this)
         eventDao.registerListener(this)
@@ -201,7 +204,6 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
     }
 
     private fun onAssistButtonClicked() {
-        // TODO notifications
 
         val userId = mAuthDatabaseHelper.getCurrentUser()?.uid
 
@@ -226,13 +228,14 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
                 } else {
                     assistButton.icon = resources.getDrawable(R.drawable.baseline_star_24)
                 }
+
+                notificationDao.sendEventNotificationToCreator(userId, loadedEvent!!.getCreatorUid(), loadedEvent!!.getTitle(), NotificationType.ASSIST_TO_CREATOR)
+                notificationDao.sendEventNotificationToFollowers(userId, loadedEvent!!.getTitle(), NotificationType.ASSIST_TO_FOLLOWERS)
             }
         }
     }
 
     private fun onLikeButtonClicked() {
-        // TODO notifications
-
         val userId = mAuthDatabaseHelper.getCurrentUser()?.uid
 
         if (loadedEvent != null && userId != null) {

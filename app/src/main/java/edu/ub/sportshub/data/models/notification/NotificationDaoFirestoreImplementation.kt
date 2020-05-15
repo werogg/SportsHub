@@ -11,6 +11,7 @@ import edu.ub.sportshub.models.NotificationAssist
 import edu.ub.sportshub.models.NotificationFollowed
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.utils.StringUtils
+import java.lang.Exception
 import java.util.*
 
 class NotificationDaoFirestoreImplementation : NotificationDao() {
@@ -27,7 +28,8 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
 
                     when (not.get("notificationType")) {
                         "FOLLOWED" -> notification = not.toObject(NotificationFollowed::class.java)
-                        "ASSIST" -> notification = not.toObject(NotificationAssist::class.java)
+                        "ASSIST_TO_CREATOR" -> notification = not.toObject(NotificationAssist::class.java)
+                        "ASSIST_TO_FOLLOWERS" -> notification = not.toObject(NotificationAssist::class.java)
                     }
 
                     if (notification != null) {
@@ -51,25 +53,54 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
     override fun sendNotification(creatorId : String, recieverId : String, notificationType: NotificationType) {
         val storeDatabaseHelper = StoreDatabaseHelper()
 
-        if (notificationType == NotificationType.FOLLOWED) {
-            val notificationId = StringUtils.hashString(creatorId, "MD5")
-            val notification = NotificationFollowed(notificationId, recieverId, Timestamp.now(), creatorId, false, NotificationType.FOLLOWED)
-            storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
-                storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnSuccessListener {
-                    storeDatabaseHelper.getUsersCollection().document(recieverId).collection("notifications").document(notificationId).set(
-                        notification
-                    )
+        when (notificationType) {
+            NotificationType.FOLLOWED -> {
+                val notificationId = StringUtils.hashString(creatorId, "MD5")
+                val notification = NotificationFollowed(notificationId, recieverId, Timestamp.now(), creatorId, false, notificationType)
+                storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
+                    storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnSuccessListener {
+                        storeDatabaseHelper.getUsersCollection().document(recieverId).collection("notifications").document(notificationId).set(
+                            notification
+                        )
+                    }
                 }
             }
 
 
-        } else if (notificationType == NotificationType.ASSIST) {
-            val notificationId = StringUtils.hashString(creatorId, "MD5")
-            val notification = NotificationAssist(notificationId, recieverId, Timestamp.now(), creatorId, false, NotificationType.ASSIST)
-            storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
-                storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnFailureListener {
-                    // ERROR
+        }
+    }
+
+    override fun sendEventNotificationToFollowers(userId: String, eventName: String, notificationType: NotificationType) {
+        val storeDatabaseHelper = StoreDatabaseHelper()
+
+        storeDatabaseHelper.retrieveUser(userId).addOnSuccessListener {
+            val user = it.toObject(User::class.java)
+            for (followerId in user!!.getFollowersUsers()) {
+                val notificationId = StringUtils.generateRandomId()
+                val notification = NotificationAssist(notificationId, followerId, Timestamp.now(), userId, false, NotificationType.ASSIST_TO_FOLLOWERS, eventName)
+
+                storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
+                    storeDatabaseHelper.getUsersCollection().document(followerId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnSuccessListener {
+                        storeDatabaseHelper.getUsersCollection().document(followerId).collection("notifications").document(notificationId).set(
+                            notification
+                        )
+                    }
                 }
+            }
+        }
+    }
+
+    override fun sendEventNotificationToCreator(creatorId: String, recieverId: String, eventName: String, notificationType: NotificationType) {
+        val storeDatabaseHelper = StoreDatabaseHelper()
+
+        val notificationId = StringUtils.generateRandomId()
+        val notification = NotificationAssist(notificationId, recieverId, Timestamp.now(), creatorId, false, notificationType, eventName)
+
+        storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
+            storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnSuccessListener {
+                storeDatabaseHelper.getUsersCollection().document(recieverId).collection("notifications").document(notificationId).set(
+                    notification
+                )
             }
         }
     }
