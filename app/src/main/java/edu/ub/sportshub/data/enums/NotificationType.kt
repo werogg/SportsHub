@@ -4,5 +4,5 @@ enum class NotificationType {
     FOLLOWED,
     ASSIST_TO_CREATOR,
     ASSIST_TO_FOLLOWERS,
-    LIKED_TO_CREATOR
+    LIKED
 }

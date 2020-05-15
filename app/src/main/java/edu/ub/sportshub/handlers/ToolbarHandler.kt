@@ -228,8 +228,8 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
                     notificationText.text = (notification.first as NotificationAssist).getMessage(appCompatActivity, notification.second.getUsername())
                 }
 
-                NotificationType.LIKED_TO_CREATOR -> {
-
+                NotificationType.LIKED -> {
+                    notificationText.text = (notification.first as NotificationLiked).getMessage(appCompatActivity, notification.second.getUsername())
                 }
             }
 

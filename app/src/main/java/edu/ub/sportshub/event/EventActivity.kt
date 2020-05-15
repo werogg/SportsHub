@@ -259,6 +259,8 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
                 } else {
                     likeButton.icon = resources.getDrawable(R.drawable.baseline_thumb_up_alt_24)
                 }
+
+                notificationDao.sendEventNotificationToCreator(userId, loadedEvent!!.getCreatorUid(), loadedEvent!!.getTitle(), NotificationType.LIKED)
             }
         }
     }

@@ -6,10 +6,7 @@ import com.google.firebase.firestore.FieldValue
 import edu.ub.sportshub.data.enums.NotificationType
 import edu.ub.sportshub.data.events.database.UserNotificationsLoadedEvent
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
-import edu.ub.sportshub.models.Notification
-import edu.ub.sportshub.models.NotificationAssist
-import edu.ub.sportshub.models.NotificationFollowed
-import edu.ub.sportshub.models.User
+import edu.ub.sportshub.models.*
 import edu.ub.sportshub.utils.StringUtils
 import java.lang.Exception
 import java.util.*
@@ -30,6 +27,7 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
                         "FOLLOWED" -> notification = not.toObject(NotificationFollowed::class.java)
                         "ASSIST_TO_CREATOR" -> notification = not.toObject(NotificationAssist::class.java)
                         "ASSIST_TO_FOLLOWERS" -> notification = not.toObject(NotificationAssist::class.java)
+                        "LIKED" -> notification = not.toObject(NotificationLiked::class.java)
                     }
 
                     if (notification != null) {
@@ -65,8 +63,6 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
                     }
                 }
             }
-
-
         }
     }
 
@@ -92,15 +88,26 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
 
     override fun sendEventNotificationToCreator(creatorId: String, recieverId: String, eventName: String, notificationType: NotificationType) {
         val storeDatabaseHelper = StoreDatabaseHelper()
-
         val notificationId = StringUtils.generateRandomId()
-        val notification = NotificationAssist(notificationId, recieverId, Timestamp.now(), creatorId, false, notificationType, eventName)
 
-        storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
-            storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnSuccessListener {
-                storeDatabaseHelper.getUsersCollection().document(recieverId).collection("notifications").document(notificationId).set(
-                    notification
-                )
+        val notification = when (notificationType) {
+            NotificationType.ASSIST_TO_CREATOR -> {
+                NotificationAssist(notificationId, recieverId, Timestamp.now(), creatorId, false, notificationType, eventName)
+            }
+
+            NotificationType.LIKED -> {
+                NotificationLiked(notificationId, recieverId, Timestamp.now(), creatorId, false, notificationType, eventName)
+            }
+            else -> null
+        }
+
+        if (notification != null) {
+            storeDatabaseHelper.getNotificationsCollection().document(notificationId).set(notification).addOnSuccessListener {
+                storeDatabaseHelper.getUsersCollection().document(recieverId).update("notifications", FieldValue.arrayUnion(notificationId)).addOnSuccessListener {
+                    storeDatabaseHelper.getUsersCollection().document(recieverId).collection("notifications").document(notificationId).set(
+                        notification
+                    )
+                }
             }
         }
     }
