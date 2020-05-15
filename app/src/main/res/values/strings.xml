@@ -59,18 +59,25 @@
     <!--End-->
 
     <!-- Profile -->
-    <string name="title_activity_profile" translatable="false">Profile</string>
+    <string name="title_activity_profile">Profile</string>
     <string name="button_edit_event">EDIT</string>
-    <string name="title_activity_edit_profile" translatable="false">edit profile</string>
+    <string name="title_activity_edit_profile">edit profile</string>
     <string name="four_clicks_left_logout">4 clicks left to logout</string>
     <string name="three_clicks_left_logout">3 clicks left to logout</string>
     <string name="two_clicks_left_logout">2 clicks left to logout</string>
     <string name="one_click_left_logout">1 click left to logout</string>
     <string name="followers">Followers</string>
+    <string name="default_description" >"Hey there,\nI'm using SportsHub."</string>
+    <string name="followees2" >FOLLOWEES</string>
+    <string name="followed" >followed</string>
+    <string name="followers2" >FOLLOWERS</string>
+    <string name="following" >following</string>
+    <string name="other_events" >Other Events</string>
     <string name="followees">Followees</string>
     <string name="preferences">Preferences</string>
     <string name="activities">Activities</string>
     <string name="my_events">My events</string>
+    <string name="new_name">New Name</string>
     <string name="my_activities">My activities</string>
     <string name="events">Events</string>
     <string name="new_profile_image">New image</string>
@@ -90,8 +97,15 @@
     <string name="title_activity_event" translatable="false">Event</string>
     <string name="title_activity_edit_event" translatable="false">Edit Event</string>
     <string name="title_activity_create_event" translatable="false">Create Event</string>
-    <string name="title_activity_profile_other" translatable="false">Profile Other</string>
+    <string name="title_activity_profile_other">Profile Other</string>
     <string name="event_creation_error">An error has occurred.</string>
+    <string name="follow_message">%1$s has just started following you! Check his profile.</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="follow">Follow</string>
+    <string name="notify_assist_to_creator">%1$s will assist to your %2$s event!</string>
+    <string name="notify_assist_to_followers">%1$s will assist to the %2$s event!</string>
+    <string name="notify_event_liked">%1$s just liked your event: %2$s!</string>
+    <string name="sportshub_description">An app developed by SportsTech</string>
     <!-- End -->
-
+    <string name="loading">Please, wait...</string>
 </resources>

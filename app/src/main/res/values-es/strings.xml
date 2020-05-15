@@ -64,4 +64,22 @@
     <string name="event_image_not_uploaded">Error: Imagen no subida! Intentalo de nuevo!</string>
     <string name="event_created_by">Creado por</string>
     <string name="event_creation_error">Ha ocurrido un error.</string>
+    <string name="followees2">SEGUIDOS</string>
+    <string name="followed">seguido</string>
+    <string name="followers2">SEGUIDORES</string>
+    <string name="following">siguiendo</string>
+    <string name="other_events">Otros Eventos</string>
+    <string name="default_description" >"Hey, estoy usando SportsHub!"</string>
+    <string name="title_activity_profile_other">Perfiles Externos</string>
+    <string name="title_activity_profile">Perfil</string>
+    <string name="title_activity_edit_profile">Editar perfil</string>
+    <string name="follow_message">%1$s te acaba de seguir! Mira su perfil.</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="follow">Follow</string>
+    <string name="notify_assist_to_creator">%1$s asistirá a tu evento %2$s!</string>
+    <string name="notify_assist_to_followers">%1$s asistirá al evento %2$s!</string>
+    <string name="notify_event_liked">%1$s acaba de dar me gusta a tu evento: %2$s!</string>
+    <string name="new_name">Nuevo Nombre</string>
+    <string name="sportshub_description">Una aplicación de SportsTech</string>
+    <string name="loading">Porfavor, espere...</string>
 </resources>

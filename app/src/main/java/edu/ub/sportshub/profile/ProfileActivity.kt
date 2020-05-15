@@ -1,10 +1,15 @@
 package edu.ub.sportshub.profile
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.TypedValue
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -35,7 +40,9 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
     private val mStoreDatabaseHelper = StoreDatabaseHelper()
     private var mDots = arrayListOf<TextView>()
     private lateinit var userDao : UserDao
+    private lateinit var user : User
     private val toolbarHandler = ToolbarHandler(this)
+    private lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +54,8 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
         pager_profile.adapter = fragmentAdapter2
         userDao = DataAccessObjectFactory.getUserDao()
         userDao.registerListener(this)
+        dialogshow()
+
         Thread {
             kotlin.run {
                 userDao.fetchUser(uid)
@@ -90,6 +99,18 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
         toolbarHandler.setupToolbarBasics()
     }
 
+    private fun dialogshow(){
+        //Dialog creation for loading data.
+        val dialog = Dialog(this,R.style.Theme_Design_Light)
+        val view: View = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
+        val params: WindowManager.LayoutParams = dialog.getWindow()!!.getAttributes()
+        params.width = WindowManager.LayoutParams.MATCH_PARENT
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT
+        dialog.setContentView(view)
+        this.dialog = dialog
+        this.dialog.show()
+    }
+
     private fun editProfileTextClicked() {
         val popupIntent = Intent(this, EditProfileActivity::class.java)
         startActivity(popupIntent)
@@ -98,12 +119,14 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
     private fun followersClicked(){
         val popupIntent = Intent(this, ProfileUsersActivity::class.java)
         popupIntent.putExtra("select",0)
+        popupIntent.putExtra("id", user.getUid())
         startActivity(popupIntent)
     }
 
     private fun followeesClicked(){
         val popupIntent = Intent(this, ProfileUsersActivity::class.java)
         popupIntent.putExtra("select",1)
+        popupIntent.putExtra("id", user.getUid())
         startActivity(popupIntent)
     }
 
@@ -158,30 +181,34 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
                 .into(imageProfile)
         } else {
             Picasso.with(this)
-                .load(user.getProfilePicture().toString())
+                .load(user.getProfilePicture())
                 .resize(dpSize, dpSize)
                 .into(imageProfile)
         }
 
         if (user.getBiography() == ""){
-            textDescription.text = "Hey there,\nI'm using SportsHub."
+            textDescription.text = resources.getText(R.string.default_description)
         }else{
             textDescription.text = user.getBiography()
         }
-        textFollowers.text = user.getFollowersUsers()?.size.toString()
-        textFollowing.text = user.getFollowingUsers()?.size.toString()
+        textFollowers.text = user.getFollowersUsers().size.toString()
+        textFollowing.text = user.getFollowingUsers().size.toString()
+
     }
 
     override fun onDataLoaded(event: DataEvent) {
         if(event is UserLoadedEvent){
             loadData(event.user)
+            user = event.user
         }
+        dialog.dismiss()
     }
 
     override fun onBackPressed() {
         if (toolbarHandler.isNotificationsPopupVisible()) toolbarHandler.setNotificationsPopupVisibility(ToolbarHandler.NotificationsVisibility.GONE)
         super.onBackPressed()
     }
+
 
 
 }

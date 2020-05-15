@@ -2,6 +2,7 @@ package edu.ub.sportshub.data.data
 
 import edu.ub.sportshub.data.enums.DatabaseType
 import edu.ub.sportshub.data.models.event.EventDao
+import edu.ub.sportshub.data.models.notification.NotificationDao
 import edu.ub.sportshub.data.models.user.UserDao
 
 object DataAccessObjectFactory :
@@ -14,5 +15,9 @@ object DataAccessObjectFactory :
 
     override fun getEventDao(): EventDao {
         return Class.forName("edu.ub.sportshub.data.models.event.EventDao${databaseType.implementationName}Implementation").newInstance() as EventDao
+    }
+
+    override fun getNotificationDao(): NotificationDao {
+        return Class.forName("edu.ub.sportshub.data.models.notification.NotificationDao${databaseType.implementationName}Implementation").newInstance() as NotificationDao
     }
 }

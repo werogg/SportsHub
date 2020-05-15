@@ -15,12 +15,13 @@ class User(
     private var email: String,
     private var profilePicture: String,
     private var uid: String,
-    private var banned: Boolean
+    private var banned: Boolean,
+    private var notifications : MutableList<String>
 ) {
 
     constructor() : this(
         "", "", "", Timestamp.now(), mutableListOf(), mutableListOf(), mutableListOf(),
-        mutableListOf(), mutableListOf(), "", "", "", false
+        mutableListOf(), mutableListOf(), "", "", "", false, mutableListOf()
     )
 
     fun getUsername() : String {
@@ -73,5 +74,9 @@ class User(
 
     fun getEventsOwned() : MutableList<String> {
         return eventsOwned
+    }
+
+    fun getNotifications() : MutableList<String> {
+        return notifications
     }
 }

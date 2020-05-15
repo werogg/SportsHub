@@ -145,7 +145,7 @@ class EventDaoFirestoreImplementation : EventDao() {
                                 )
                                 .addOnSuccessListener {
                                     // Add the event from to user's events liked list
-                                    mStoreDatabaseHelper.retrieveUserRef(uid!!)
+                                    mStoreDatabaseHelper.retrieveUserRef(uid)
                                         .update("eventsLiked",
                                             FieldValue.arrayUnion(eid)
                                         )
