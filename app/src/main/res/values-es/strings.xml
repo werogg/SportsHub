@@ -79,6 +79,8 @@
     <string name="notify_assist_to_creator">%1$s asistirá a tu evento %2$s!</string>
     <string name="notify_assist_to_followers">%1$s asistirá al evento %2$s!</string>
     <string name="notify_event_liked">%1$s acaba de dar me gusta a tu evento: %2$s!</string>
-
-
+    <string name="new_name">Nuevo Nombre</string>
+    <string name="title_activity_edit_profile">Editar perfil</string>
+    <string name="sportshub_description">Una aplicación de SportsTech</string>
+    <string name="loading">Porfavor, espere...</string>
 </resources>

@@ -1,10 +1,15 @@
 package edu.ub.sportshub.profile
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.TypedValue
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -37,6 +42,7 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
     private lateinit var userDao : UserDao
     private lateinit var user : User
     private val toolbarHandler = ToolbarHandler(this)
+    private lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +54,8 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
         pager_profile.adapter = fragmentAdapter2
         userDao = DataAccessObjectFactory.getUserDao()
         userDao.registerListener(this)
+        dialogshow()
+
         Thread {
             kotlin.run {
                 userDao.fetchUser(uid)
@@ -89,6 +97,18 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
         }
 
         toolbarHandler.setupToolbarBasics()
+    }
+
+    private fun dialogshow(){
+        //Dialog creation for loading data.
+        val dialog = Dialog(this,R.style.Theme_Design_Light)
+        val view: View = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
+        val params: WindowManager.LayoutParams = dialog.getWindow()!!.getAttributes()
+        params.width = WindowManager.LayoutParams.MATCH_PARENT
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT
+        dialog.setContentView(view)
+        this.dialog = dialog
+        this.dialog.show()
     }
 
     private fun editProfileTextClicked() {
@@ -173,6 +193,7 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
         }
         textFollowers.text = user.getFollowersUsers().size.toString()
         textFollowing.text = user.getFollowingUsers().size.toString()
+
     }
 
     override fun onDataLoaded(event: DataEvent) {
@@ -180,12 +201,14 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
             loadData(event.user)
             user = event.user
         }
+        dialog.dismiss()
     }
 
     override fun onBackPressed() {
         if (toolbarHandler.isNotificationsPopupVisible()) toolbarHandler.setNotificationsPopupVisibility(ToolbarHandler.NotificationsVisibility.GONE)
         super.onBackPressed()
     }
+
 
 
 }

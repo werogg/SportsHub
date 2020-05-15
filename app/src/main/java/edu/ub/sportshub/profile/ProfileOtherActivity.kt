@@ -1,5 +1,7 @@
 package edu.ub.sportshub.profile
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -9,6 +11,8 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +37,7 @@ import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.events.ViewPagerAdapterProfile
 import edu.ub.sportshub.profile.follow.ProfileUsersActivity
 import kotlinx.android.synthetic.main.activity_profile.*
+import java.lang.reflect.Field
 
 
 class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
@@ -45,6 +50,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     private lateinit var userDao : UserDao
     private lateinit var notificationDao : NotificationDao
     private lateinit var uid: String
+    private lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +62,8 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         userDao = DataAccessObjectFactory.getUserDao()
         notificationDao = DataAccessObjectFactory.getNotificationDao()
         userDao.registerListener(this)
+
+        dialogshow()
 
         Thread {
             kotlin.run {
@@ -110,6 +118,18 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                 }
     }
 
+    private fun dialogshow(){
+        //Dialog creation for loading data.
+        val dialog = Dialog(this,R.style.Theme_Design_Light)
+        val view: View = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
+        val params: WindowManager.LayoutParams = dialog.getWindow()!!.getAttributes()
+        params.width = WindowManager.LayoutParams.MATCH_PARENT
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT
+        dialog.setContentView(view)
+        this.dialog = dialog
+        this.dialog.show()
+    }
+
     private fun followeesClicked(){
         val popupIntent = Intent(this, ProfileUsersActivity::class.java)
         popupIntent.putExtra("select",1)
@@ -148,7 +168,6 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     }
 
     private fun followProfileTextClicked() {
-
         val follower = mFirebaseAuth.getCurrentUser()?.uid!!
 
         if (userfollow != null) {
@@ -247,6 +266,8 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
             user = event.user
             loadData(event.user)
         }
+        dialog.dismiss()
+
     }
 
 

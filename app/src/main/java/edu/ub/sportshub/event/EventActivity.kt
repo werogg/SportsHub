@@ -1,5 +1,6 @@
 package edu.ub.sportshub.event
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -52,6 +54,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
     private lateinit var userDao : UserDao
     private lateinit var eventDao : EventDao
     private lateinit var notificationDao : NotificationDao
+    private lateinit var loadingDialog : Dialog
     private var loadedUser : User? = null
     private var loadedEvent : Event? = null
 
@@ -66,7 +69,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         eventDao.registerListener(this)
 
         setContentView(R.layout.activity_event)
-
+        showDialog()
         eventId = intent.getStringExtra("eventId")
         setupActivityFunctionalities(savedInstanceState)
 
@@ -77,11 +80,22 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         toolbarHandler.setupToolbarBasics()
     }
 
+    private fun showDialog(){
+        //Dialog creation for loading data.
+        val dialog = Dialog(this,R.style.Theme_Design_Light)
+        val view: View = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
+        val params: WindowManager.LayoutParams = dialog.window!!.attributes
+        params.width = WindowManager.LayoutParams.MATCH_PARENT
+        params.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.setContentView(view)
+        loadingDialog = dialog
+        loadingDialog.show()
+    }
     /**
      * Update the event related info
      */
     private fun updateEventInfo() {
-        // Retrieve all info views
+
         val assistsTextView = findViewById<TextView>(R.id.assistsTextView)
         val likesTextView = findViewById<TextView>(R.id.likesTextView)
         val eventTitleTextView = findViewById<TextView>(R.id.eventNameTextView)
@@ -114,7 +128,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
 
         setupMap()
         checkUserLikeAssist()
-
+        loadingDialog.dismiss()
     }
 
     private fun checkUserLikeAssist() {
@@ -342,6 +356,7 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
 
     private fun onAllDataLoaded() {
         updateEventInfo()
+        loadingDialog.dismiss()
     }
 
     private fun eventFetched() {
@@ -354,5 +369,6 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
             val editButton = findViewById<FloatingActionButton>(R.id.event_edit_event_floating_button)
             editButton.visibility = View.VISIBLE
         }
+
     }
 }
