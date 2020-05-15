@@ -70,9 +70,17 @@ class HomeActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun showEventFragment() {
+        pager.currentItem = 0
+        pager.adapter?.notifyDataSetChanged()
+    }
+
     override fun onBackPressed() {
-        if (toolbarHandler.isNotificationsPopupVisible()) toolbarHandler.setNotificationsPopupVisibility(ToolbarHandler.NotificationsVisibility.GONE)
-        else super.onBackPressed()
+        when {
+            toolbarHandler.isNotificationsPopupVisible() -> toolbarHandler.setNotificationsPopupVisibility(ToolbarHandler.NotificationsVisibility.GONE)
+            pager.currentItem != 0 -> showEventFragment()
+            else -> super.onBackPressed()
+        }
     }
 
 

@@ -105,6 +105,13 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
     }
 
     private fun onHomeClick(applicationContext: Context) {
+        val className = appCompatActivity::class.java.simpleName
+
+        if (className == "HomeActivity") {
+            (appCompatActivity as HomeActivity).showEventFragment()
+            return
+        }
+
         val goHome = Intent(applicationContext, HomeActivity::class.java)
         goHome.flags = FLAG_ACTIVITY_NEW_TASK
         applicationContext.startActivity(goHome)
