@@ -35,6 +35,7 @@ class EventDaoFirestoreImplementation : EventDao() {
                     executeListeners(EventsLoadedEvent(events, user))
                 }
             }
+            executeListeners(EventsLoadedEvent(events, user))
         }
     }
 
@@ -57,8 +58,8 @@ class EventDaoFirestoreImplementation : EventDao() {
                     }
                 }
             }
-
         }
+        executeListeners(EventsAssistEvent(eventsToShow))
     }
 
     override fun fetchEvent(eid: String) {

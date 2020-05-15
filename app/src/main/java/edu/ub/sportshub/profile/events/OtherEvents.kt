@@ -141,6 +141,7 @@ class OtherEvents(id: String): Fragment(), DataChangeListener {
     }
 
     override fun onDataLoaded(event: DataEvent) {
+
         if (event is EventsAssistEvent){
             val ownedEvents = mutableListOf<Pair<Event, User>>()
             for (loadedEvent in event.eventList) {
@@ -148,7 +149,7 @@ class OtherEvents(id: String): Fragment(), DataChangeListener {
             }
             this.eventsToShow = ownedEvents
             updateShowingEvents()
-            val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
+            val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
             refreshingLayout?.isRefreshing = false
         }
     }

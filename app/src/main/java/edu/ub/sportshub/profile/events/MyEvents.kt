@@ -37,13 +37,13 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        eventDao = DataAccessObjectFactory.getEventDao()
-        eventDao.registerListener(this)
         return inflater.inflate(R.layout.fragment_events_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        eventDao = DataAccessObjectFactory.getEventDao()
+        eventDao.registerListener(this)
         val eventContainer = view.findViewById<LinearLayout>(R.id.eventsContainerProfile)
         val refreshingLayout = view.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
         setupRefreshListener()
@@ -145,7 +145,7 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
             }
             this.eventsToShow = ownedEvents
             updateShowingEvents()
-            val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
+            val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
             refreshingLayout?.isRefreshing = false
         }
 
