@@ -18,10 +18,7 @@ import edu.ub.sportshub.R
 import edu.ub.sportshub.data.enums.NotificationType
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
-import edu.ub.sportshub.models.Notification
-import edu.ub.sportshub.models.NotificationAssist
-import edu.ub.sportshub.models.NotificationFollowed
-import edu.ub.sportshub.models.User
+import edu.ub.sportshub.models.*
 
 class NotificationService : Service() {
 
@@ -70,15 +67,33 @@ class NotificationService : Service() {
 
                             mStoreDatabaseHelper.retrieveUser(notification!!.getCreatorUid()).addOnSuccessListener { user ->
                                 val creatorUser = user.toObject(User::class.java)
-                                showNotification("${creatorUser!!.getUsername()} has followed you.", (notification as NotificationFollowed).getMessage(applicationContext, creatorUser.getUsername()))
+                                showNotification(resources.getString(R.string.title_notification_followed, creatorUser!!.getUsername()), (notification as NotificationFollowed).getMessage(applicationContext, creatorUser.getUsername()))
                             }
                         }
-                        "ASSIST" -> {
+                        "ASSIST_TO_CREATOR" -> {
                             notification = it.toObject(NotificationAssist::class.java)
 
                             mStoreDatabaseHelper.retrieveUser(notification!!.getCreatorUid()).addOnSuccessListener { user ->
                                 val creatorUser = user.toObject(User::class.java)
-                                showNotification("${creatorUser!!.getUsername()} has followed you.", notification.getMessage(applicationContext, creatorUser.getUsername()))
+                                showNotification(resources.getString(R.string.title_notification_assist_creator, creatorUser!!.getUsername()), (notification as NotificationAssist).getMessage(applicationContext, creatorUser.getUsername()))
+                            }
+                        }
+
+                        "ASSIST_TO_FOLLOWERS" -> {
+                            notification = it.toObject(NotificationAssist::class.java)
+
+                            mStoreDatabaseHelper.retrieveUser(notification!!.getCreatorUid()).addOnSuccessListener { user ->
+                                val creatorUser = user.toObject(User::class.java)
+                                showNotification(resources.getString(R.string.title_notification_assist, creatorUser!!.getUsername()), (notification as NotificationAssist).getMessage(applicationContext, creatorUser.getUsername()))
+                            }
+                        }
+
+                        "LIKED" -> {
+                            notification = it.toObject(NotificationLiked::class.java)
+
+                            mStoreDatabaseHelper.retrieveUser(notification!!.getCreatorUid()).addOnSuccessListener { user ->
+                                val creatorUser = user.toObject(User::class.java)
+                                showNotification(resources.getString(R.string.title_notification_liked, creatorUser!!.getUsername()), (notification).getMessage(applicationContext, creatorUser.getUsername()))
                             }
                         }
                     }
