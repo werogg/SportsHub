@@ -356,7 +356,6 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
 
     private fun onAllDataLoaded() {
         updateEventInfo()
-        loadingDialog.dismiss()
     }
 
     private fun eventFetched() {

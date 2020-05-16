@@ -102,7 +102,7 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
         //Dialog creation for loading data.
         val dialog = Dialog(this,R.style.Theme_Design_Light)
         val view: View = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
-        val params: WindowManager.LayoutParams = dialog.window!!.attributes
+        val params: WindowManager.LayoutParams = dialog.getWindow()!!.getAttributes()
         params.width = WindowManager.LayoutParams.MATCH_PARENT
         params.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.setContentView(view)
@@ -193,6 +193,7 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
         textFollowers.text = user.getFollowersUsers().size.toString()
         textFollowing.text = user.getFollowingUsers().size.toString()
 
+        dialog.dismiss()
     }
 
     override fun onDataLoaded(event: DataEvent) {
@@ -200,7 +201,6 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
             loadData(event.user)
             user = event.user
         }
-        dialog.dismiss()
     }
 
     override fun onBackPressed() {

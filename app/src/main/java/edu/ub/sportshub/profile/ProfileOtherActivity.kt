@@ -257,6 +257,8 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         } else {
             buttonFollow.text = getString(R.string.follow)
         }
+
+        dialog.dismiss()
     }
 
     override fun onDataLoaded(event: DataEvent) {
@@ -264,8 +266,6 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
             user = event.user
             loadData(event.user)
         }
-        dialog.dismiss()
-
     }
 
 
