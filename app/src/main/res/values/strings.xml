@@ -71,7 +71,7 @@
     <string name="followees2" >FOLLOWEES</string>
     <string name="followed" >followed</string>
     <string name="followers2" >FOLLOWERS</string>
-    <string name="following" >following</string>
+    <string name="following" >Following</string>
     <string name="other_events" >Other Events</string>
     <string name="followees">Followees</string>
     <string name="preferences">Preferences</string>
@@ -112,4 +112,5 @@
     <string name="title_notification_assist_creator">%1$s will assist to your event!</string>
     <string name="title_notification_assist">%1$s will assist to an event!</string>
     <string name="title_notification_liked">%1$s liked your event!</string>
+    <string name="not_following">Not following</string>
 </resources>
