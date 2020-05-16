@@ -1,6 +1,5 @@
 package edu.ub.sportshub.profile
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -37,7 +36,6 @@ import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.events.ViewPagerAdapterProfile
 import edu.ub.sportshub.profile.follow.ProfileUsersActivity
 import kotlinx.android.synthetic.main.activity_profile.*
-import java.lang.reflect.Field
 
 
 class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
@@ -63,7 +61,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         notificationDao = DataAccessObjectFactory.getNotificationDao()
         userDao.registerListener(this)
 
-        dialogshow()
+        dialogShow()
 
         Thread {
             kotlin.run {
@@ -118,13 +116,13 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                 }
     }
 
-    private fun dialogshow(){
+    private fun dialogShow(){
         //Dialog creation for loading data.
         val dialog = Dialog(this,R.style.Theme_Design_Light)
         val view: View = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
         val params: WindowManager.LayoutParams = dialog.getWindow()!!.getAttributes()
         params.width = WindowManager.LayoutParams.MATCH_PARENT
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT
+        params.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.setContentView(view)
         this.dialog = dialog
         this.dialog.show()

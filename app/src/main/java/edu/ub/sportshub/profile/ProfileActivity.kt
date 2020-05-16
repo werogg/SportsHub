@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -54,7 +53,7 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
         pager_profile.adapter = fragmentAdapter2
         userDao = DataAccessObjectFactory.getUserDao()
         userDao.registerListener(this)
-        dialogshow()
+        dialogShow()
 
         Thread {
             kotlin.run {
@@ -99,13 +98,13 @@ class ProfileActivity : AppCompatActivity(), DataChangeListener {
         toolbarHandler.setupToolbarBasics()
     }
 
-    private fun dialogshow(){
+    private fun dialogShow(){
         //Dialog creation for loading data.
         val dialog = Dialog(this,R.style.Theme_Design_Light)
         val view: View = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
-        val params: WindowManager.LayoutParams = dialog.getWindow()!!.getAttributes()
+        val params: WindowManager.LayoutParams = dialog.window!!.attributes
         params.width = WindowManager.LayoutParams.MATCH_PARENT
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT
+        params.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.setContentView(view)
         this.dialog = dialog
         this.dialog.show()
