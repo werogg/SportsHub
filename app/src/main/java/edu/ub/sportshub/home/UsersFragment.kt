@@ -45,6 +45,9 @@ class UsersFragment : Fragment() {
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String): Boolean {
+                if(newText.trim().isNotEmpty()){
+                    searchUsers(newText);
+                }
                 return false
             }
             override fun onQueryTextSubmit(query: String): Boolean {
