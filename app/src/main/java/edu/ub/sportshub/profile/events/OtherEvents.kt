@@ -50,9 +50,8 @@ class OtherEvents(id: String): Fragment(), DataChangeListener {
         eventsToShow.clear()
         eventContainer?.removeAllViews()
         refreshingLayout?.isRefreshing = true
-        Thread(Runnable {
-            showFollowingEvents()
-        }).start()
+
+        showFollowingEvents()
     }
 
     private fun setupRefreshListener() {
@@ -75,11 +74,7 @@ class OtherEvents(id: String): Fragment(), DataChangeListener {
         //El nuevo id = uid.
         val loggedUserUid = uid
         // Retrieve the current logged user
-        Thread {
-            kotlin.run {
-                eventDao.fetchUserAssistEvents(loggedUserUid)
-            }
-        }.start()
+        eventDao.fetchUserAssistEvents(loggedUserUid)
 
     }
 

@@ -50,9 +50,8 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
         eventsToShow.clear()
         eventContainer?.removeAllViews()
         refreshingLayout?.isRefreshing = true
-        Thread(Runnable {
-            showFollowingEvents()
-        }).start()
+
+        showFollowingEvents()
     }
 
     private fun setupRefreshListener() {
@@ -74,12 +73,7 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
         val title = view?.findViewById<TextView>(R.id.txt_header)
         title?.text= resources.getText(R.string.my_events)
         // Retrieve the current logged user
-        Thread {
-            kotlin.run {
-                eventDao.fetchUserEvents(uid)
-            }
-        }.start()
-
+        eventDao.fetchUserEvents(uid)
     }
 
     private fun updateShowingEvents(){
