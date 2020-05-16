@@ -108,4 +108,8 @@
     <string name="sportshub_description">An app developed by SportsTech</string>
     <!-- End -->
     <string name="loading">Please, wait...</string>
+    <string name="title_notification_followed">%1$s has followed you!</string>
+    <string name="title_notification_assist_creator">%1$s will assist to your event!</string>
+    <string name="title_notification_assist">%1$s will assist to an event!</string>
+    <string name="title_notification_liked">%1$s liked your event!</string>
 </resources>
