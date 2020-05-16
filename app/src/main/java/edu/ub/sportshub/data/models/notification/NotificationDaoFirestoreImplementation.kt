@@ -5,6 +5,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import edu.ub.sportshub.data.enums.NotificationType
 import edu.ub.sportshub.data.events.database.UserNotificationsLoadedEvent
+import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.*
 import edu.ub.sportshub.utils.StringUtils
@@ -87,6 +88,9 @@ class NotificationDaoFirestoreImplementation : NotificationDao() {
     }
 
     override fun sendEventNotificationToCreator(creatorId: String, recieverId: String, eventName: String, notificationType: NotificationType) {
+        val mAuthDatabaseHelper = AuthDatabaseHelper()
+        if (mAuthDatabaseHelper.getCurrentUser()!!.uid == creatorId) return
+
         val storeDatabaseHelper = StoreDatabaseHelper()
         val notificationId = StringUtils.generateRandomId()
 
