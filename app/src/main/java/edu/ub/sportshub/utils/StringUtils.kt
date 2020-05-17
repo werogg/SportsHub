@@ -31,7 +31,9 @@ object StringUtils {
      * Return timestamp date in string with format dd/MM/yyyy
      */
     fun getFormatedDateFromTimestamp(timestamp: Timestamp) : String {
-        return SimpleDateFormat("dd/MM/yyyy").format(timestamp.toDate())
+        val date = timestamp.toDate()
+        date.year = date.year - 1900
+        return SimpleDateFormat("dd/MM/yyyy").format(date)
     }
 
     /**
