@@ -55,10 +55,9 @@ object StringUtils {
         }
     }
 
-    fun getAdressArrayFromName(context: Context, string: String): MutableList<String> {
-        // TODO Improve that method, not enough good results
-        val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses = geocoder.getFromLocationName(string, 15)
+    fun getAddressArrayFromName(context: Context, string: String): MutableList<String> {
+        val geoCoder = Geocoder(context, Locale.getDefault())
+        val addresses = geoCoder.getFromLocationName(string, 15)
 
         val addressesStrings = mutableListOf<String>()
 
