@@ -18,10 +18,10 @@ class ProfileUsersActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_follow)
         val id = intent.getIntExtra("select",0)
+        val uid = intent.getStringExtra("id")
         val fragmentAdapter2 =
             ViewPagerAdapterProfileFollow(
-                supportFragmentManager
-            )
+                supportFragmentManager,uid)
         pager_follow.adapter = fragmentAdapter2
         pager_follow.currentItem = id
         addDots(id)

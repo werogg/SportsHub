@@ -24,6 +24,7 @@ import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.ProfileActivity
+import edu.ub.sportshub.profile.ProfileOtherActivity
 import edu.ub.sportshub.utils.StringUtils
 
 class MyEvents(ind: String) : Fragment(), DataChangeListener {
@@ -37,22 +38,21 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        eventDao = DataAccessObjectFactory.getEventDao()
-        eventDao.registerListener(this)
         return inflater.inflate(R.layout.fragment_events_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        eventDao = DataAccessObjectFactory.getEventDao()
+        eventDao.registerListener(this)
         val eventContainer = view.findViewById<LinearLayout>(R.id.eventsContainerProfile)
         val refreshingLayout = view.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
         setupRefreshListener()
         eventsToShow.clear()
         eventContainer?.removeAllViews()
         refreshingLayout?.isRefreshing = true
-        Thread(Runnable {
-            showFollowingEvents()
-        }).start()
+
+        showFollowingEvents()
     }
 
     private fun setupRefreshListener() {
@@ -71,13 +71,10 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
     private fun showFollowingEvents(){
         val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
         refreshingLayout?.isRefreshing = true
+        val title = view?.findViewById<TextView>(R.id.txt_header)
+        title?.text= resources.getText(R.string.my_events)
         // Retrieve the current logged user
-        Thread {
-            kotlin.run {
-                eventDao.fetchUserEvents(uid)
-            }
-        }.start()
-
+        eventDao.fetchUserEvents(uid)
     }
 
     private fun updateShowingEvents(){
@@ -88,7 +85,7 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
         val eventContainer = view?.findViewById<LinearLayout>(R.id.eventsContainerProfile)
         eventContainer?.removeAllViews()
         val title = view?.findViewById<TextView>(R.id.txt_header)
-        title?.text="MY EVENTS"
+        title?.text= resources.getText(R.string.my_events)
         for (pair in eventsToShow) {
             val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
             val eventView = LayoutInflater.from(context).inflate(R.layout.event_view, null);
@@ -124,7 +121,7 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
                 val intent = if (pair.first.getCreatorUid() == authDatabaseHelper.getCurrentUser()?.uid) {
                     Intent(context, ProfileActivity::class.java)
                 } else {
-                    Intent(context, EventActivity::class.java)
+                    Intent(context, ProfileOtherActivity::class.java)
                 }
                 intent.putExtra("userId", pair.first.getCreatorUid())
                 startActivity(intent)
@@ -143,7 +140,7 @@ class MyEvents(ind: String) : Fragment(), DataChangeListener {
             }
             this.eventsToShow = ownedEvents
             updateShowingEvents()
-            val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
+            val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh2)
             refreshingLayout?.isRefreshing = false
         }
 

@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".home.MapFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView2"
         android:layout_width="match_parent"

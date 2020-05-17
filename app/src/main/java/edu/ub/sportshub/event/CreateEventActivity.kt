@@ -20,7 +20,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -35,7 +34,6 @@ import edu.ub.sportshub.data.models.event.EventDao
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
-import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.profile.ProfileActivity
 import edu.ub.sportshub.utils.StringUtils
 import kotlinx.android.synthetic.main.activity_create_event.*
@@ -185,7 +183,7 @@ class CreateEventActivity : AppCompatActivity(), DataChangeListener {
         if (value.isNotEmpty()) {
             autoCompleteAdapter?.clear()
 
-            for (string in StringUtils.getAdressArrayFromName(this, value)) {
+            for (string in StringUtils.getAddressArrayFromName(this, value)) {
                 autoCompleteAdapter?.add(string)
             }
 
@@ -225,7 +223,7 @@ class CreateEventActivity : AppCompatActivity(), DataChangeListener {
 
         val dpd = DatePickerDialog(this,DatePickerDialog.OnDateSetListener {
                 _, year, month, day ->
-            this.year = year
+            this.year = year - 1900
             this.month = month
             this.day = day
             dateSelected = true

@@ -24,6 +24,7 @@ import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
 import edu.ub.sportshub.profile.ProfileActivity
+import edu.ub.sportshub.profile.ProfileOtherActivity
 import edu.ub.sportshub.utils.StringUtils
 
 /**
@@ -43,9 +44,9 @@ class EventsFragment : Fragment(), DataChangeListener {
         savedInstanceState: Bundle?
     ): View? {
 
-        // Inflate the layout for this fragment
         eventDao = DataAccessObjectFactory.getEventDao()
         eventDao.registerListener(this)
+
         return inflater.inflate(R.layout.fragment_events, container, false)
     }
 
@@ -155,7 +156,7 @@ class EventsFragment : Fragment(), DataChangeListener {
                 val intent = if (pair.first.getCreatorUid() == authDatabaseHelper.getCurrentUser()?.uid) {
                     Intent(context, ProfileActivity::class.java)
                 } else {
-                    Intent(context, EventActivity::class.java)
+                    Intent(context, ProfileOtherActivity::class.java)
                 }
                 intent.putExtra("userId", pair.first.getCreatorUid())
                 startActivity(intent)
@@ -183,14 +184,18 @@ class EventsFragment : Fragment(), DataChangeListener {
     override fun onDataLoaded(event: DataEvent) {
         if (event is FollowingUsersEventsLoadedEvent) {
             followingUsersEvents = event.eventList
+            val refreshingLayout = view?.findViewById<SwipeRefreshLayout>(R.id.eventsSwipeRefresh)
+            if (followingUsersEvents!!.isEmpty()) refreshingLayout?.isRefreshing = false
+
         } else if (event is EventsLoadedEvent) {
             val tempList = mutableListOf<Pair<Event, User>>()
 
             for (loadedEvent in event.eventList)
                 tempList.add(Pair(loadedEvent, event.owner))
 
-            this.ownedEvents = tempList
+            ownedEvents = tempList
         }
+
         if (isEventsLoaded()) mergeEventsIntoShowListAndShow()
     }
 

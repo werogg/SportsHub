@@ -75,7 +75,6 @@
             android:layout_marginStart="30dp"
             android:layout_marginLeft="30dp"
             android:background="#00FFFFFF"
-            android:text="1"
             android:textColor="@android:color/holo_red_dark"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/toolbar_notifications"

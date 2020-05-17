@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -54,6 +55,9 @@ class EditEventActivity : AppCompatActivity(), DataChangeListener {
     private var addressHandler : Handler? = null
     private var filePath : Uri? = null
     private var imageUploaded = false
+    private var timeStampWhen : Timestamp? = null
+    private var hourSelected = false
+    private var daySelected = false
     private lateinit var eventDao : EventDao
     private lateinit var event : Event
 
@@ -88,6 +92,8 @@ class EditEventActivity : AppCompatActivity(), DataChangeListener {
 
         val desc = event.getDescription()
         descEvent.setText(desc)
+
+        timeStampWhen = event.getStartEventDate()
 
         val place = StringUtils.getAddressFromLocation(this,event.getPosition().latitude
             , event.getPosition().longitude) //event?.getPosition()
@@ -189,6 +195,7 @@ class EditEventActivity : AppCompatActivity(), DataChangeListener {
             this.year = year
             this.month = month
             this.day = day
+            daySelected = true
             viewTextCreate.text = "$day/$month/$year"
         }, year, month, day)
 
@@ -199,6 +206,7 @@ class EditEventActivity : AppCompatActivity(), DataChangeListener {
         val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
             this.hour = hour
             this.minute = minute
+            hourSelected = true
             viewTextCreate.text = "$hour:$minute"
         }
         TimePickerDialog(this, timeSetListener, hour, minute, true).show()
@@ -310,9 +318,30 @@ class EditEventActivity : AppCompatActivity(), DataChangeListener {
             val location = StringUtils.getLocationFromName(this, whereEvent)
 
             if (location != null) {
-                eventDao.editEvent(eventId!!, titleEvent, GeoPoint(location.latitude, location.longitude), descEvent, imageSelected!!)
+
+                if (daySelected || hourSelected) {
+                    var newTimestamp : Timestamp? = null
+                    if (daySelected && hourSelected) {
+                        newTimestamp = Timestamp(Date(year, month, day, hour, minute))
+                    } else if (daySelected && !hourSelected) {
+                        val buttonHour = findViewById<Button>(R.id.button_hour)
+                        buttonHour.requestFocus()
+                        buttonHour.error = getString(R.string.hour_not_selected)
+                        return
+                    } else if (!daySelected && hourSelected) {
+                        val buttonDay = findViewById<Button>(R.id.button_day)
+                        buttonDay.requestFocus()
+                        buttonDay.error = getString(R.string.day_not_selected)
+                        return
+                    }
+
+                    if (newTimestamp != null) eventDao.editEventDate(eventId!!, titleEvent, GeoPoint(location.latitude, location.longitude), descEvent, imageSelected!!, newTimestamp)
+
+                } else eventDao.editEvent(eventId!!, titleEvent, GeoPoint(location.latitude, location.longitude), descEvent, imageSelected!!)
+
                 val intent = Intent(this, EventActivity::class.java)
                 intent.putExtra("eventId", eventId)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP;
                 startActivity(intent)
             }
         }

@@ -41,7 +41,7 @@ class UserDaoFirestoreImplementation : UserDao() {
                             }
                     }
                 }
-
+                executeListeners(UsersFolloweesEvent(listausers))
             }
     }
 
@@ -62,7 +62,7 @@ class UserDaoFirestoreImplementation : UserDao() {
                             }
                     }
                 }
-
+                executeListeners(UsersFollowersEvent(listausers))
             }
     }
 

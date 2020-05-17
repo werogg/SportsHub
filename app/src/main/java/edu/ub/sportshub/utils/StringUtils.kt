@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import com.google.firebase.Timestamp
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,7 +31,9 @@ object StringUtils {
      * Return timestamp date in string with format dd/MM/yyyy
      */
     fun getFormatedDateFromTimestamp(timestamp: Timestamp) : String {
-        return SimpleDateFormat("dd/MM/yyyy").format(timestamp.toDate())
+        val date = timestamp.toDate()
+        date.year = date.year - 1900
+        return SimpleDateFormat("dd/MM/yyyy").format(date)
     }
 
     /**
@@ -54,10 +57,9 @@ object StringUtils {
         }
     }
 
-    fun getAdressArrayFromName(context: Context, string: String): MutableList<String> {
-        // TODO Improve that method, not enough good results
-        val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses = geocoder.getFromLocationName(string, 15)
+    fun getAddressArrayFromName(context: Context, string: String): MutableList<String> {
+        val geoCoder = Geocoder(context, Locale.getDefault())
+        val addresses = geoCoder.getFromLocationName(string, 15)
 
         val addressesStrings = mutableListOf<String>()
 
@@ -73,5 +75,16 @@ object StringUtils {
     fun getLocationFromName(context: Context, string: String): Address? {
         val geocoder = Geocoder(context, Locale.getDefault())
         return geocoder.getFromLocationName(string, 7)[0]
+    }
+
+    fun hashString(input: String, algorithm: String): String {
+        return MessageDigest
+            .getInstance(algorithm)
+            .digest(input.toByteArray())
+            .fold("", { str, it -> str + "%02x".format(it) })
+    }
+
+    fun generateRandomId() : String {
+        return UUID.randomUUID().toString()
     }
 }

@@ -10,8 +10,8 @@ cache:
  - $HOME/.gradle/wrapper/
 env:
   global:
-   - ANDROID_API_LEVEL=28
-   - EMULATOR_API_LEVEL=28
+   - ANDROID_API_LEVEL=29
+   - EMULATOR_API_LEVEL=29
    - ANDROID_ABI=google_apis/armeabi-v7a
    - ADB_INSTALL_TIMEOUT=20 # minutes (2 minutes by default)
 
@@ -19,8 +19,8 @@ android:
   components:
     - tools
     - platform-tools
-    - android-28
-    - build-tools-28.0.3
+    - android-29
+    - build-tools-29.0.3
     - extra-google-m2repository
     - extra-android-m2repository
     # Google Play Services

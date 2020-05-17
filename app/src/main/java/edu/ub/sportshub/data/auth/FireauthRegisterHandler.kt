@@ -65,7 +65,8 @@ class FireauthRegisterHandler : RegisterHandler() {
             email,
             defaultImage,
             authDatabaseHelper.getCurrentUser()!!.uid,
-            false
+            false,
+            mutableListOf()
         )
 
         storeDatabaseHelper.storeUser(newUser)

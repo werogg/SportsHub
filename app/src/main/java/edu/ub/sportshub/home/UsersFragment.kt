@@ -2,6 +2,7 @@ package edu.ub.sportshub.home
 
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -43,21 +44,23 @@ class UsersFragment : Fragment() {
 
         val searchView = view.findViewById<SearchView>(R.id.searchView)
 
-        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+
             override fun onQueryTextChange(newText: String): Boolean {
+                if(newText.trim().isNotEmpty()){
+                    searchUsers(newText);
+                }
                 return false
             }
+
             override fun onQueryTextSubmit(query: String): Boolean {
                 if(query.trim().isNotEmpty()){
                     searchUsers(query);
                 }
                 return false
             }
+
         })
-
-
-
-
     }
 
     private fun searchUsers(query: String) {
@@ -69,7 +72,8 @@ class UsersFragment : Fragment() {
         storeDatabaseHelper.getUsersCollection().whereGreaterThanOrEqualTo("username", query).get()
             .addOnSuccessListener { users ->
                 for (user in  users) {
-                    val uid = user.data["uid"].toString()
+                    val userObj = user.toObject(User::class.java)
+                    val uid = userObj.getUid()
                     if(uid!=curr){
                         val dpSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, context?.resources?.displayMetrics).toInt()
                         val userView = LayoutInflater.from(context).inflate(R.layout.user_view, null);
@@ -77,8 +81,16 @@ class UsersFragment : Fragment() {
                         val userViewFollowView = userView.findViewById<TextView>(R.id.follow)
                         val userViewBannerImage = userView.findViewById<ImageView>(R.id.profilePicture)
 
-                        userViewTitleView.text = user.getData().get("username").toString()
+                        userViewTitleView.text = userObj.getUsername()
 
+                        if (userObj.getFollowersUsers().contains(curr)) {
+                            userViewFollowView.text = getString(R.string.following)
+                            userViewFollowView.setTextColor(Color.GREEN)
+                        }
+                        else {
+                            userViewFollowView.text = getString(R.string.not_following)
+                            userViewFollowView.setTextColor(Color.RED)
+                        }
 
                         Picasso.with(context)
                             .load(user.data["profilePicture"].toString())
@@ -104,7 +116,6 @@ class UsersFragment : Fragment() {
     }
 
     private fun userClicked(userId: String) {
-
         val intent = Intent(context, ProfileOtherActivity::class.java)
         intent.putExtra("userId", userId)
         startActivity(intent)

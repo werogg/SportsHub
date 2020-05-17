@@ -35,6 +35,7 @@ class EventDaoFirestoreImplementation : EventDao() {
                     executeListeners(EventsLoadedEvent(events, user))
                 }
             }
+            executeListeners(EventsLoadedEvent(events, user))
         }
     }
 
@@ -57,8 +58,8 @@ class EventDaoFirestoreImplementation : EventDao() {
                     }
                 }
             }
-
         }
+        executeListeners(EventsAssistEvent(eventsToShow))
     }
 
     override fun fetchEvent(eid: String) {
@@ -145,7 +146,7 @@ class EventDaoFirestoreImplementation : EventDao() {
                                 )
                                 .addOnSuccessListener {
                                     // Add the event from to user's events liked list
-                                    mStoreDatabaseHelper.retrieveUserRef(uid!!)
+                                    mStoreDatabaseHelper.retrieveUserRef(uid)
                                         .update("eventsLiked",
                                             FieldValue.arrayUnion(eid)
                                         )
@@ -202,6 +203,27 @@ class EventDaoFirestoreImplementation : EventDao() {
                 "position" to loc,
                 "description" to description,
                 "eventImage" to image)
+            )
+    }
+
+    override fun editEventDate(
+        eid: String,
+        title: String,
+        loc: GeoPoint,
+        description: String,
+        image: String,
+        timestamp: Timestamp
+    ) {
+        val storeDatabaseHelper = StoreDatabaseHelper()
+        storeDatabaseHelper.retrieveEventRef(eid)
+            .update(
+                mapOf(
+                    "title" to title,
+                    "position" to loc,
+                    "description" to description,
+                    "eventImage" to image,
+                    "startEventDate" to timestamp
+                )
             )
     }
 

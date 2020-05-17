@@ -12,5 +12,6 @@ interface IEventDao {
     fun giveLike(uid: String, eid: String)
     fun giveAssist(uid: String, eid: String)
     fun editEvent(eid: String, title: String, loc: GeoPoint, description: String, image: String)
+    fun editEventDate(eid: String, title: String, loc: GeoPoint, description: String, image: String, timestamp: Timestamp)
     fun createEvent(uid: String, title: String, eventDate: Timestamp, creationDate: Timestamp, loc: GeoPoint, description: String, image: String)
 }
