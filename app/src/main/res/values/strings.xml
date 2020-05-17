@@ -113,4 +113,9 @@
     <string name="title_notification_assist">%1$s will assist to an event!</string>
     <string name="title_notification_liked">%1$s liked your event!</string>
     <string name="not_following">Not following</string>
+    <string name="no_username">You need an username to signup with</string>
+    <string name="repeat_password_wrong">Your passwords didn\'t match</string>
+    <string name="no_password_introduced">Please introduce a valid password</string>
+    <string name="no_email">Please introduce a valid mail to sginup</string>
+    <string name="no_fullname">Please add a full name to signup with</string>
 </resources>

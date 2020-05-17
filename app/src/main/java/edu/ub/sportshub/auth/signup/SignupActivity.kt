@@ -80,9 +80,26 @@ class SignupActivity : AppCompatActivity(), AuthPerformedListener {
         buttonSignup = findViewById<Button>(R.id.btn_signup)
         buttonSignup.isEnabled = false
 
-        if (pass.text.toString() != repeat_pass.text.toString()) {
+        if (username.text.isEmpty()) {
+            username.requestFocus()
+            username.error = getString(R.string.no_username)
+        } else if (email.text.isEmpty()) {
+            email.requestFocus()
+            email.error = getString(R.string.no_email)
+        } else if (fullname.text.isEmpty()) {
+            fullname.requestFocus()
+            fullname.error = getString(R.string.no_fullname)
+        }
+        else if (pass.text.toString().isEmpty() || repeat_pass.text.toString().isEmpty()) {
+            pass.text.clear()
+            repeat_pass.text.clear()
+            pass.requestFocus()
+            pass.error = getString(R.string.no_password_introduced)
+        }
+        else if (pass.text.toString() != repeat_pass.text.toString()) {
+            repeat_pass.text.clear()
             repeat_pass.requestFocus()
-            repeat_pass.error = getString(R.string.error_age_not_permitted)
+            repeat_pass.error = getString(R.string.repeat_password_wrong)
         } else if (!checkBox.isChecked) {
             checkBox.requestFocus()
             checkBox.error = getString(R.string.error_age_not_permitted)

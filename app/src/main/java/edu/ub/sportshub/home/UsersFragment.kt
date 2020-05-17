@@ -44,24 +44,23 @@ class UsersFragment : Fragment() {
 
         val searchView = view.findViewById<SearchView>(R.id.searchView)
 
-        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+
             override fun onQueryTextChange(newText: String): Boolean {
                 if(newText.trim().isNotEmpty()){
                     searchUsers(newText);
                 }
                 return false
             }
+
             override fun onQueryTextSubmit(query: String): Boolean {
                 if(query.trim().isNotEmpty()){
                     searchUsers(query);
                 }
                 return false
             }
+
         })
-
-
-
-
     }
 
     private fun searchUsers(query: String) {
@@ -117,7 +116,6 @@ class UsersFragment : Fragment() {
     }
 
     private fun userClicked(userId: String) {
-
         val intent = Intent(context, ProfileOtherActivity::class.java)
         intent.putExtra("userId", userId)
         startActivity(intent)

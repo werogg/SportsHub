@@ -67,7 +67,7 @@
     <string name="followees2">SEGUIDOS</string>
     <string name="followed">seguido</string>
     <string name="followers2">SEGUIDORES</string>
-    <string name="following">siguiendo</string>
+    <string name="following">Siguiendo</string>
     <string name="other_events">Otros Eventos</string>
     <string name="default_description" >"Hey, estoy usando SportsHub!"</string>
     <string name="title_activity_profile_other">Perfiles Externos</string>
@@ -82,9 +82,14 @@
     <string name="new_name">Nuevo Nombre</string>
     <string name="sportshub_description">Una aplicación de SportsTech</string>
     <string name="loading">Porfavor, espere...</string>
-    <string name="title_notification_followed">%1$s has followed you!</string>
-    <string name="title_notification_assist">%1$s will assist to an event!</string>
+    <string name="title_notification_followed">%1$s te ha seguido!</string>
+    <string name="title_notification_assist">%1$s asistirá a un evento!</string>
     <string name="title_notification_assist_creator">%1$s asistirá a tu evento!</string>
-    <string name="title_notification_liked">%1$s liked your event!</string>
-    <string name="not_following">Not following</string>
+    <string name="title_notification_liked">A %1$s le ha gustado tu evento!</string>
+    <string name="not_following">No seguido</string>
+    <string name="no_username">Necesitas un nombre de usuario con el que registrarte!</string>
+    <string name="repeat_password_wrong">Your passwords didn\'t match!</string>
+    <string name="no_password_introduced">Porfavor introduce una contraseña válida!</string>
+    <string name="no_email">Porfavor introduce un mail con el que registrarte!</string>
+    <string name="no_fullname">Porfavor añade un nombre completo con el que registrarte!</string>
 </resources>
