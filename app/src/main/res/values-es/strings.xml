@@ -92,4 +92,6 @@
     <string name="no_password_introduced">Porfavor introduce una contraseña válida!</string>
     <string name="no_email">Porfavor introduce un mail con el que registrarte!</string>
     <string name="no_fullname">Porfavor añade un nombre completo con el que registrarte!</string>
+    <string name="hour_not_selected">Has de establecer una hora de inicio para el evento!</string>
+    <string name="day_not_selected">Has de establecer un día de inicio para el evento!</string>
 </resources>

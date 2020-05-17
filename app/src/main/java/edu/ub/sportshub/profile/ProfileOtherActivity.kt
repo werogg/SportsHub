@@ -29,6 +29,7 @@ import edu.ub.sportshub.data.events.database.UserLoadedEvent
 import edu.ub.sportshub.data.listeners.DataChangeListener
 import edu.ub.sportshub.data.models.notification.NotificationDao
 import edu.ub.sportshub.data.models.user.UserDao
+import edu.ub.sportshub.handlers.ToolbarHandler
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.home.HomeActivity
@@ -47,6 +48,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
     private lateinit var user : User
     private lateinit var userDao : UserDao
     private lateinit var notificationDao : NotificationDao
+    private val toolbarHandler = ToolbarHandler(this)
     private lateinit var uid: String
     private lateinit var dialog: Dialog
 
@@ -91,18 +93,6 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                     textSignOutClicked()
                 }
 
-                val home = findViewById<TextView>(R.id.toolbar_home)
-                home.setOnClickListener() {
-                    buttonHomeClicked()
-                }
-
-                val notificationsButton =
-                    findViewById<ImageView>(R.id.toolbar_notifications)
-
-                notificationsButton.setOnClickListener {
-                    notificationsButtonClicked()
-                }
-
                 val layoutFollowers = findViewById<LinearLayout>(R.id.layout_followers)
 
                 layoutFollowers.setOnClickListener(){
@@ -114,6 +104,7 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
                 layoutFollowees.setOnClickListener(){
                     followeesClicked()
                 }
+        toolbarHandler.setupToolbarBasics()
     }
 
     private fun dialogShow(){
@@ -140,19 +131,6 @@ class ProfileOtherActivity : AppCompatActivity(), DataChangeListener {
         popupIntent.putExtra("select", 0)
         popupIntent.putExtra("id", uid)
         startActivity(popupIntent)
-    }
-
-    private fun notificationsButtonClicked() {
-        val displayMetrics = applicationContext.resources.displayMetrics
-        val dpValue1 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 350f, displayMetrics)
-        val dpValue2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480f, displayMetrics)
-        val inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val customView = inflater.inflate(R.layout.fragment_notifications, null)
-        val coordinates = findViewById<ConstraintLayout>(R.id.profile_constraint_layout)
-        popupWindow = PopupWindow(customView, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT, true)
-        popupWindow!!.width = dpValue1.toInt()
-        popupWindow!!.height = dpValue2.toInt()
-        popupWindow!!.showAtLocation(coordinates, Gravity.TOP,0,220)
     }
 
     private fun buttonHomeClicked() {

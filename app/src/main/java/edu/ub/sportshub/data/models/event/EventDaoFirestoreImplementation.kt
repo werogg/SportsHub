@@ -206,6 +206,27 @@ class EventDaoFirestoreImplementation : EventDao() {
             )
     }
 
+    override fun editEventDate(
+        eid: String,
+        title: String,
+        loc: GeoPoint,
+        description: String,
+        image: String,
+        timestamp: Timestamp
+    ) {
+        val storeDatabaseHelper = StoreDatabaseHelper()
+        storeDatabaseHelper.retrieveEventRef(eid)
+            .update(
+                mapOf(
+                    "title" to title,
+                    "position" to loc,
+                    "description" to description,
+                    "eventImage" to image,
+                    "startEventDate" to timestamp
+                )
+            )
+    }
+
     override fun createEvent(uid: String, title: String, eventDate: Timestamp, creationDate: Timestamp, loc: GeoPoint, description: String, image: String) {
         val storeDatabaseHelper = StoreDatabaseHelper()
 

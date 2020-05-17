@@ -118,4 +118,6 @@
     <string name="no_password_introduced">Please introduce a valid password</string>
     <string name="no_email">Please introduce a valid mail to sginup</string>
     <string name="no_fullname">Please add a full name to signup with</string>
+    <string name="hour_not_selected">You need to set an hour for the event start!</string>
+    <string name="day_not_selected">You need to set a day for the event start!</string>
 </resources>

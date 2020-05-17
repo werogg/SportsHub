@@ -65,11 +65,7 @@ class ToolbarHandler(private val appCompatActivity: AppCompatActivity) : DataCha
             onNotificationsButtonClicked()
         }
 
-        notificationsButton.setOnClickListener {
-            onNotificationsButtonClicked()
-        }
-
-        if (name == "ProfileActivity" || name == "EditProfileActivity") {
+        if (name == "ProfileActivity" || name == "EditProfileActivity" || name == "ProfileOtherActivity") {
             val signoutButton = appCompatActivity.findViewById<TextView>(R.id.toolbar_signout)
 
             signoutButton.setOnClickListener {
