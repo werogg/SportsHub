@@ -48,12 +48,15 @@ class MapFragment : Fragment() , OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         databaseHelper.getEventsCollection().get()
             .addOnSuccessListener {
-                for (event in it){
+                for (event in it) {
                     val event = event.toObject(Event::class.java)
-                    val lat = event.getPosition().latitude
-                    val lng = event.getPosition().longitude
-                    val coord = LatLng(lat,lng)
-                    googleMap?.addMarker(MarkerOptions().position(coord).title(event.getTitle()))?.showInfoWindow()
+                    if (!event.isCompleted()) {
+                        val lat = event.getPosition().latitude
+                        val lng = event.getPosition().longitude
+                        val coord = LatLng(lat,lng)
+                        googleMap?.addMarker(MarkerOptions().position(coord).title(event.getTitle()))?.showInfoWindow()
+                    }
+
                 }
             }
         //val location = CameraUpdateFactory.newLatLngZoom(coords1, 15F)
