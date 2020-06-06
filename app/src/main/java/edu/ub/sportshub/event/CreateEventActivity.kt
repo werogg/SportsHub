@@ -130,7 +130,8 @@ class CreateEventActivity : AppCompatActivity(), DataChangeListener {
         }
 
         val createEventButton = findViewById<Button>(R.id.button_add_event)
-
+        createEventButton.isEnabled = true
+        createEventButton.isClickable = true
         createEventButton.setOnClickListener {
             onCreateEventButtonClicked()
         }
@@ -339,29 +340,34 @@ class CreateEventActivity : AppCompatActivity(), DataChangeListener {
     }
 
     private fun onCreateEventButtonClicked() {
-
+        val button = findViewById<Button>(R.id.button_add_event)
         val titleEvent = findViewById<EditText>(R.id.title_text)
         val whereEvent = findViewById<AutoCompleteTextView>(R.id.where_text)  //Geocoder
         val descEvent = findViewById<EditText>(R.id.description_text)
+        if (!button.isEnabled and !button.isClickable){
+            Toast.makeText(this,getString(R.string.event_button_save), Toast.LENGTH_LONG).show();
+        } else {
+            if (dateSelected and hourSelected and imageUploaded and titleEvent.text.toString().isNotEmpty()
+                and whereEvent.text.toString().isNotEmpty() and descEvent.text.toString().isNotEmpty()
+            ) {
 
-        if (dateSelected and hourSelected and imageUploaded and titleEvent.text.toString().isNotEmpty()
-        and whereEvent.text.toString().isNotEmpty() and descEvent.text.toString().isNotEmpty()) {
+                val location = StringUtils.getLocationFromName(this, whereEvent.text.toString())
+                val currentUserUid = authDatabaseHelper.getCurrentUser()?.uid!!
 
-            val location = StringUtils.getLocationFromName(this, whereEvent.text.toString())
-            val currentUserUid = authDatabaseHelper.getCurrentUser()?.uid!!
+                if (location == null || imageSelected == null) return
 
-            if (location == null ||imageSelected == null) return
-
-            eventDao.createEvent(
-                currentUserUid,
-                titleEvent.text.toString(),
-                Timestamp(Date(year, month, day, hour, minute)),
-                Timestamp.now(),
-                GeoPoint(location.latitude, location.longitude),
-                descEvent.text.toString(),
-                imageSelected!!
-            )
-
+                eventDao.createEvent(
+                    currentUserUid,
+                    titleEvent.text.toString(),
+                    Timestamp(Date(year, month, day, hour, minute)),
+                    Timestamp.now(),
+                    GeoPoint(location.latitude, location.longitude),
+                    descEvent.text.toString(),
+                    imageSelected!!
+                )
+                button.isEnabled = false;
+                button.isClickable = false;
+            }
         }
 
     }
