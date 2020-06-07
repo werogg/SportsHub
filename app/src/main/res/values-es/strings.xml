@@ -60,6 +60,7 @@
     <string name="usersFragment">Usuarios</string>
     <string name="mapFragment">Mapa</string>
     <string name="event_image_uploaded">Imagen Subida!</string>
+    <string name="event_button_save">Se está cargando el evento...</string>
     <string name="event_created">El Evento ha sido creado!</string>
     <string name="event_image_not_uploaded">Error: Imagen no subida! Intentalo de nuevo!</string>
     <string name="event_created_by">Creado por</string>
