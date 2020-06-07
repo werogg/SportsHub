@@ -1,6 +1,7 @@
 package edu.ub.sportshub.home
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.fragment.app.Fragment
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 import edu.ub.sportshub.R
+import edu.ub.sportshub.event.EventActivity
 import edu.ub.sportshub.helpers.StoreDatabaseHelper
 import edu.ub.sportshub.models.Event
 
@@ -48,16 +50,26 @@ class MapFragment : Fragment() , OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         databaseHelper.getEventsCollection().get()
             .addOnSuccessListener {
-                for (event in it){
+                for (event in it) {
                     val event = event.toObject(Event::class.java)
-                    val lat = event.getPosition().latitude
-                    val lng = event.getPosition().longitude
-                    val coord = LatLng(lat,lng)
-                    googleMap?.addMarker(MarkerOptions().position(coord).title(event.getTitle()))?.showInfoWindow()
+                    if (!event.isCompleted()) {
+                        val lat = event.getPosition().latitude
+                        val lng = event.getPosition().longitude
+                        val coord = LatLng(lat,lng)
+                        googleMap?.addMarker(MarkerOptions().position(coord).title(event.getTitle()))?.showInfoWindow()
+                        googleMap?.setOnMarkerClickListener(GoogleMap.OnMarkerClickListener {
+                            val intent = Intent(context, EventActivity::class.java)
+                            intent.putExtra("eventId", event.getId())
+                            startActivity(intent)
+                            false
+                        })
+                    }
+
                 }
+
+
+
             }
-        //val location = CameraUpdateFactory.newLatLngZoom(coords1, 15F)
-        //googleMap?.animateCamera(location)
     }
 
     override fun onStart() {
