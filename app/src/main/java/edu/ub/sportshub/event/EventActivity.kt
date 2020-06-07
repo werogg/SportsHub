@@ -39,6 +39,7 @@ import edu.ub.sportshub.handlers.ToolbarHandler
 import edu.ub.sportshub.helpers.AuthDatabaseHelper
 import edu.ub.sportshub.models.Event
 import edu.ub.sportshub.models.User
+import edu.ub.sportshub.profile.ProfileOtherActivity
 import edu.ub.sportshub.utils.StringUtils
 
 class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListener {
@@ -214,7 +215,9 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
     }
 
     private fun onCreatorButtonClicked() {
-        // go to profile
+        val intent = Intent(applicationContext, ProfileOtherActivity::class.java)
+        intent.putExtra("userId", loadedEvent?.getCreatorUid())
+        startActivity(intent)
     }
 
     private fun onAssistButtonClicked() {
@@ -367,6 +370,9 @@ class EventActivity : AppCompatActivity(), OnMapReadyCallback, DataChangeListene
         if (loadedEvent?.getCreatorUid() == mAuthDatabaseHelper.getCurrentUser()?.uid) {
             val editButton = findViewById<FloatingActionButton>(R.id.event_edit_event_floating_button)
             editButton.visibility = View.VISIBLE
+
+            val creatorButton = findViewById<ConstraintLayout>(R.id.creatorButton)
+            creatorButton.isEnabled = false
         }
 
     }
