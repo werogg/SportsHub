@@ -49,20 +49,20 @@ class MapFragment : Fragment() , OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap?) {
         databaseHelper.getEventsCollection().get()
-            .addOnSuccessListener {
+            .addOnSuccessListener { it ->
                 for (event in it) {
                     val event = event.toObject(Event::class.java)
                     if (!event.isCompleted()) {
                         val lat = event.getPosition().latitude
                         val lng = event.getPosition().longitude
                         val coord = LatLng(lat,lng)
-                        googleMap?.addMarker(MarkerOptions().position(coord).title(event.getTitle()))?.showInfoWindow()
-                        googleMap?.setOnMarkerClickListener(GoogleMap.OnMarkerClickListener {
+                        googleMap?.addMarker(MarkerOptions().position(coord).title(event.getTitle()).snippet(event.getId()))
+
+                        googleMap?.setOnInfoWindowClickListener {mapMarker ->
                             val intent = Intent(context, EventActivity::class.java)
-                            intent.putExtra("eventId", event.getId())
+                            intent.putExtra("eventId", mapMarker.snippet)
                             startActivity(intent)
-                            false
-                        })
+                        }
                     }
 
                 }
